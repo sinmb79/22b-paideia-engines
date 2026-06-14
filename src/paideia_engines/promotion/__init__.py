@@ -103,6 +103,8 @@ class PromotionEngine:
         source: str,
         event: dict[str, Any],
         review: ReviewLabel,
+        *,
+        quarantine_reason: str | None = None,
     ) -> dict[str, Any]:
         experience_id = self._next_experience_id()
         ledger_version = self._next_ledger_version()
@@ -127,11 +129,17 @@ class PromotionEngine:
                 "ledger_version": ledger_version,
                 "review": _normalize_review(review),
                 "requires_boss_review": True,
-                "reason": "do_not_promote_without_verified_quality_review",
+                "reason": quarantine_reason or "do_not_promote_without_verified_quality_review",
                 "flags": ["needs_human_review", "do_not_promote"],
             }
             quarantined_entry = record.to_dict()
-            quarantined_entry.update({"version": ledger_version, "flags": ["needs_human_review", "do_not_promote"]})
+            quarantined_entry.update(
+                {
+                    "version": ledger_version,
+                    "flags": ["needs_human_review", "do_not_promote"],
+                    "decision": decision,
+                }
+            )
             self.ledger["quarantined_experiences"].append(quarantined_entry)
 
         self._append_history(

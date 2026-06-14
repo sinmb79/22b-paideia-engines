@@ -57,4 +57,10 @@ python -m paideia_engines.cli validate-contracts `
 - 오케스트레이션
 - 평가/벤치마크
 
+## 신뢰 경계 노트
+
+- 오케스트레이션 출력은 promotion이 governance와 runtime 뒤에 배치될 때 trace schema v2를 선언해야 합니다.
+- 승급 엔진은 governance-blocked promotion quarantine 계약을 지켜야 합니다. blocked governance는 active memory를 만들 수 없고, 보스가 검토할 수 있는 quarantined record만 남길 수 있습니다.
+- 평가 엔진은 결정적 rubric scoring을 위해 verified artifact를 셀 수 있지만, release-grade promotion은 runtime evidence validation이 파일 존재, byte hash, manifest hash, replay trace를 증명한 뒤에만 이를 증거로 신뢰해야 합니다.
+
 레지스트리는 `src/paideia_engines/contracts/registry.py`에 있습니다.

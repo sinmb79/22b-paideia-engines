@@ -60,3 +60,7 @@ Contracts are intentionally small so every engine can stay independent.
 ## Design Rule
 
 No engine should silently perform another engine's decision. Source parsers can normalize a verified local file, but they cannot decide whether the file is legally usable. Stress can produce a promotion candidate signal, but only Promotion can create a promotion decision. Runtime can record evidence, but it cannot make memory active. Governance can block or allow a run, but it does not generate model output. The Config Runner composes engines, writes outputs, and emits a verification summary; it does not rewrite the meaning of any engine result.
+
+## Trust Boundary
+
+Configured-suite outputs use trace schema v2 so review tools can rely on this order: assessment and stress first, then governance and runtime, then promotion, then verification. Promotion must enforce governance-blocked promotion quarantine: if Governance returns `blocked`, the Promotion record must be quarantined and require boss review even when Assessment produced a high score. A verified artifact is only a release-reviewable evidence claim until runtime evidence bundle validation proves the copied file, byte hash, manifest hash, and replay trace; deeper bundle-backed promotion is tracked for the v0.3 evidence pipeline.

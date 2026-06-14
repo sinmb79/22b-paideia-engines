@@ -22,6 +22,22 @@ def test_promotion_engine_versions_ledger_after_each_decision():
     assert [entry["version"] for entry in engine.ledger["history"]] == [1, 2]
 
 
+def test_promotion_engine_preserves_custom_quarantine_reason():
+    engine = PromotionEngine(owner="agent:math")
+
+    decision = engine.record_experience(
+        source="governance",
+        event={"summary": "Blocked by local-first governance.", "skills": ["governance"]},
+        review=ReviewLabel(score=91, status="needs_review", reviewed_by="governance"),
+        quarantine_reason="governance_blocked_promotion",
+    )
+
+    assert decision["status"] == "quarantined"
+    assert decision["reason"] == "governance_blocked_promotion"
+    assert decision["requires_boss_review"] is True
+    assert engine.ledger["quarantined_experiences"][0]["decision"]["reason"] == "governance_blocked_promotion"
+
+
 def test_promotion_engine_reconsiders_quarantined_experience_after_review():
     engine = PromotionEngine(owner="agent:math")
 

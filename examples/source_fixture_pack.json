@@ -16,7 +16,7 @@
       "sample_kind": "synthetic",
       "record_schema": "paideia-curriculum-standard/v1",
       "expected_min_records": 1,
-      "sha256": "sha256:880148a79d33bf4badb2d2b697ac1a5d0beab94d19d571b3c7c1322a3504c046",
+      "sha256": "sha256:9440a801fe170e9370813c08cf4eb4af48a482049bcc0852a2cd1c7300f53c10",
       "origin_note": "Synthetic tiny fixture with NCIC-style headers; not copied curriculum content."
     },
     {
@@ -32,7 +32,7 @@
       "sample_kind": "synthetic",
       "record_schema": "paideia-assessment-item/v1",
       "expected_min_records": 1,
-      "sha256": "sha256:87cb90587e8c3cb52949692937238a57da052b4e5d483164124ea3b5921a3d49",
+      "sha256": "sha256:a998e6acb5bd4988616dac7e4dcc9406a6564fc85737c1586422e9432d18dbaa",
       "origin_note": "Synthetic public assessment CSV fixture; not copied exam content."
     },
     {
@@ -48,7 +48,7 @@
       "sample_kind": "synthetic",
       "record_schema": "paideia-assessment-item/v1",
       "expected_min_records": 1,
-      "sha256": "sha256:189c69ed239b38bc280809ab9f19dc53eba439d135031b612cceacd5e1c2f8ed",
+      "sha256": "sha256:d5002060dae9dcf003be5c9c06507f3a71eb5a14eada3fd880990779fb459ed3",
       "origin_note": "Synthetic AI-Hub-like format fixture; not copied source data."
     },
     {
@@ -64,7 +64,7 @@
       "sample_kind": "metadata_only",
       "record_schema": "paideia-acquired-source/v1",
       "expected_min_records": 1,
-      "sha256": "sha256:d43795408bc91245340c2da0561cb9635d7df5bdd53c259ef577fe03bf98efba",
+      "sha256": "sha256:80bff381822e5eac150662ae0a7475951a3cb2e15b2a3a537f2c14fbc44fba67",
       "origin_note": "Synthetic metadata-only fixture; no exam text, answers, PDF, or HWP content."
     }
   ]
