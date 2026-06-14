@@ -38,21 +38,37 @@ class GovernanceEngine:
     schema = "paideia-governance-engine/v1"
 
     def __init__(self, policy: dict[str, object] | None = None) -> None:
-        self.policy = dict(policy or default_local_policy())
+        self._policy = deepcopy(policy or default_local_policy())
         self.created_at = _utc_now()
-        self.reviews = []
+        self._reviews = []
         self._approval_counter = 0
         self._decision_counter = 0
-        self.approval_ledger: dict[str, Any] = {
+        self._approval_ledger: dict[str, Any] = {
             "schema": "paideia-governance-approval-ledger/v1",
             "version": 0,
             "approvals": [],
         }
-        self.decision_ledger: dict[str, Any] = {
+        self._decision_ledger: dict[str, Any] = {
             "schema": "paideia-governance-decision-ledger/v1",
             "version": 0,
             "decisions": [],
         }
+
+    @property
+    def policy(self) -> dict[str, Any]:
+        return deepcopy(self._policy)
+
+    @property
+    def reviews(self) -> list[dict[str, Any]]:
+        return deepcopy(self._reviews)
+
+    @property
+    def approval_ledger(self) -> dict[str, Any]:
+        return deepcopy(self._approval_ledger)
+
+    @property
+    def decision_ledger(self) -> dict[str, Any]:
+        return deepcopy(self._decision_ledger)
 
     def create_board(self, program_id: str) -> dict[str, Any]:
         committees = ["education_committee", "oversight_committee"]
@@ -67,12 +83,12 @@ class GovernanceEngine:
                 "memory_promotion",
                 "credential_use",
             ],
-            "policy": self.policy,
-            "approval_ledger_schema": self.approval_ledger["schema"],
-            "decision_ledger_schema": self.decision_ledger["schema"],
+            "policy": deepcopy(self._policy),
+            "approval_ledger_schema": self._approval_ledger["schema"],
+            "decision_ledger_schema": self._decision_ledger["schema"],
             "timestamp": self.created_at,
         }
-        return board
+        return deepcopy(board)
 
     def _next_approval_id(self) -> str:
         self._approval_counter += 1
@@ -123,7 +139,7 @@ class GovernanceEngine:
     ) -> list[dict[str, Any]]:
         return [
             deepcopy(approval)
-            for approval in self.approval_ledger["approvals"]
+            for approval in self._approval_ledger["approvals"]
             if approval.get("approval_type") == approval_type and self._scope_matches(approval, context)
         ]
 
@@ -143,7 +159,7 @@ class GovernanceEngine:
         if not approved_by:
             raise ValueError("approved_by is required.")
 
-        self.approval_ledger["version"] += 1
+        self._approval_ledger["version"] += 1
         approval = {
             "schema": "paideia-governance-approval/v1",
             "approval_id": self._next_approval_id(),
@@ -153,14 +169,14 @@ class GovernanceEngine:
             "scope": deepcopy(scope),
             "notes": notes,
             "status": "active",
-            "ledger_version": self.approval_ledger["version"],
+            "ledger_version": self._approval_ledger["version"],
             "timestamp": _utc_now(),
         }
-        self.approval_ledger["approvals"].append(deepcopy(approval))
+        self._approval_ledger["approvals"].append(deepcopy(approval))
         return deepcopy(approval)
 
     def evaluate_policy(self, action: str, context: dict[str, Any] | None = None) -> dict[str, Any]:
-        ctx = dict(context or {})
+        ctx = deepcopy(context or {})
         action_key = str(action).lower()
         ctx["action"] = action_key
 
@@ -206,7 +222,7 @@ class GovernanceEngine:
         else:
             decision = "allowed"
 
-        return {
+        result = {
             "schema": "paideia-policy-evaluation/v1",
             "action": action,
             "context": ctx,
@@ -216,9 +232,10 @@ class GovernanceEngine:
             "approval_records": approval_records,
             "missing_approvals": missing_approvals,
             "override_allowed": override_allowed,
-            "policy_version": self.policy.get("schema", "paideia-local-policy/v1"),
+            "policy_version": self._policy.get("schema", "paideia-local-policy/v1"),
             "timestamp": _utc_now(),
         }
+        return deepcopy(result)
 
     def record_committee_decision(
         self,
@@ -238,7 +255,7 @@ class GovernanceEngine:
         if not reviewers:
             raise ValueError("reviewers is required.")
 
-        self.decision_ledger["version"] += 1
+        self._decision_ledger["version"] += 1
         record = {
             "schema": "paideia-committee-decision/v1",
             "decision_id": self._next_decision_id(),
@@ -247,10 +264,10 @@ class GovernanceEngine:
             "decision": decision,
             "reviewers": list(reviewers),
             "rationale": rationale,
-            "ledger_version": self.decision_ledger["version"],
+            "ledger_version": self._decision_ledger["version"],
             "timestamp": _utc_now(),
         }
-        self.decision_ledger["decisions"].append(deepcopy(record))
+        self._decision_ledger["decisions"].append(deepcopy(record))
         return deepcopy(record)
 
     def review_action(self, action: str, context: dict[str, Any] | None = None) -> dict[str, Any]:
@@ -264,14 +281,14 @@ class GovernanceEngine:
             "decision": decision,
             "requires_boss_review": requires_boss_review,
             "timestamp": _utc_now(),
-            "policy_version": self.policy.get("schema", "paideia-local-policy/v1"),
+            "policy_version": self._policy.get("schema", "paideia-local-policy/v1"),
             "policy_evaluation": policy_evaluation,
             "noted": {
                 "private_asset": bool((context or {}).get("contains_private_assets")),
                 "external_upload_risk": blocked and str(action).lower() in _EXPLICITLY_SENSITIVE_ACTIONS,
             },
         }
-        self.reviews.append(deepcopy(review))
+        self._reviews.append(deepcopy(review))
         return deepcopy(review)
 
 

@@ -1,3 +1,5 @@
+import pytest
+
 from paideia_engines.governance import GovernanceEngine
 
 
@@ -157,6 +159,27 @@ def test_record_approval_deep_copies_nested_scope_input():
     assert engine.approval_ledger["approvals"][0]["scope"]["constraints"]["expires_after"] == "24h"
 
 
+def test_approval_ledger_accessor_returns_snapshot_not_internal_store():
+    engine = GovernanceEngine()
+    engine.record_approval(
+        approval_type="boss_approval",
+        subject_id="agent_math-exp-0001",
+        approved_by="boss",
+        scope={
+            "action": "memory_promotion",
+            "source_id": "agent_math-exp-0001",
+            "allowed_use": "active_memory",
+            "quarantine_ref": "quarantine-ref-test",
+        },
+        notes="Allow this quarantined record for local active memory.",
+    )
+
+    ledger = engine.approval_ledger
+    ledger["approvals"][0]["scope"]["action"] = "tampered"
+
+    assert engine.approval_ledger["approvals"][0]["scope"]["action"] == "memory_promotion"
+
+
 def test_governance_records_committee_decision_trail():
     engine = GovernanceEngine()
 
@@ -189,6 +212,22 @@ def test_record_committee_decision_returns_snapshot_not_ledger_alias():
     assert engine.decision_ledger["decisions"][0]["reviewers"] == ["boss", "education_lead"]
 
 
+def test_decision_ledger_accessor_returns_snapshot_not_internal_store():
+    engine = GovernanceEngine()
+    engine.record_committee_decision(
+        committee="oversight_committee",
+        subject_id="memory:promotion:exp-1",
+        decision="approved_for_local_memory",
+        reviewers=["boss", "education_lead"],
+        rationale="Verified high-quality experience and local-only memory scope.",
+    )
+
+    ledger = engine.decision_ledger
+    ledger["decisions"][0]["reviewers"][0] = "tampered"
+
+    assert engine.decision_ledger["decisions"][0]["reviewers"] == ["boss", "education_lead"]
+
+
 def test_review_action_returns_snapshot_not_review_trail_alias():
     engine = GovernanceEngine()
 
@@ -199,3 +238,87 @@ def test_review_action_returns_snapshot_not_review_trail_alias():
     review["noted"]["private_asset"] = False
 
     assert engine.reviews[0]["noted"]["private_asset"] is True
+
+
+def test_reviews_accessor_returns_snapshot_not_internal_trail():
+    engine = GovernanceEngine()
+    engine.review_action(
+        action="upload_training_data",
+        context={"contains_private_assets": True},
+    )
+
+    reviews = engine.reviews
+    reviews[0]["noted"]["private_asset"] = False
+
+    assert engine.reviews[0]["noted"]["private_asset"] is True
+
+
+def test_governance_engine_deep_copies_policy_input():
+    policy = {
+        "schema": "paideia-local-policy/v1",
+        "rules": {
+            "external_upload": "blocked",
+        },
+    }
+
+    engine = GovernanceEngine(policy=policy)
+    policy["rules"]["external_upload"] = "allowed"
+
+    assert engine.policy["rules"]["external_upload"] == "blocked"
+
+
+def test_policy_accessor_returns_snapshot_not_internal_policy():
+    engine = GovernanceEngine(
+        policy={
+            "schema": "paideia-local-policy/v1",
+            "rules": {
+                "external_upload": "blocked",
+            },
+        }
+    )
+
+    policy = engine.policy
+    policy["rules"]["external_upload"] = "allowed"
+
+    assert engine.policy["rules"]["external_upload"] == "blocked"
+
+
+@pytest.mark.parametrize("attribute", ["policy", "reviews", "approval_ledger", "decision_ledger"])
+def test_governance_snapshot_accessors_are_read_only(attribute):
+    engine = GovernanceEngine()
+
+    with pytest.raises(AttributeError):
+        setattr(engine, attribute, {})
+
+
+def test_create_board_returns_policy_snapshot_not_internal_alias():
+    engine = GovernanceEngine(
+        policy={
+            "schema": "paideia-local-policy/v1",
+            "rules": {
+                "external_upload": "blocked",
+            },
+        }
+    )
+
+    board = engine.create_board(program_id="paideia:demo")
+    board["policy"]["rules"]["external_upload"] = "allowed"
+
+    assert engine.policy["rules"]["external_upload"] == "blocked"
+
+
+def test_evaluate_policy_deep_copies_nested_context_input():
+    engine = GovernanceEngine()
+    context = {
+        "source_id": "textbook:math-grade-3",
+        "license_tier": "manual_license_required",
+        "intended_use": "local_training",
+        "metadata": {
+            "grade": 3,
+        },
+    }
+
+    evaluation = engine.evaluate_policy(action="use_dataset", context=context)
+    context["metadata"]["grade"] = 99
+
+    assert evaluation["context"]["metadata"]["grade"] == 3
