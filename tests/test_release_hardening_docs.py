@@ -100,6 +100,8 @@ def test_ci_workflow_runs_release_quality_gates():
     text = workflow.read_text(encoding="utf-8")
     for required in [
         "python-version",
+        "setuptools",
+        "wheel",
         "python -m compileall src",
         "python -m pytest tests -q",
         "paideia-engines validate-release-candidate",
