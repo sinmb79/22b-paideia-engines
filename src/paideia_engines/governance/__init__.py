@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from copy import deepcopy
 from datetime import datetime, timezone
 from typing import Any
 
@@ -121,7 +122,7 @@ class GovernanceEngine:
         context: dict[str, Any],
     ) -> list[dict[str, Any]]:
         return [
-            approval
+            deepcopy(approval)
             for approval in self.approval_ledger["approvals"]
             if approval.get("approval_type") == approval_type and self._scope_matches(approval, context)
         ]

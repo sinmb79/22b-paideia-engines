@@ -125,6 +125,13 @@ def test_engine_contracts_document_governance_quarantine_reconsideration_gate():
         assert "approval ledger" in text
 
 
+def test_engine_contracts_document_quarantine_ref_nondeterminism():
+    for relative_path in ["docs/engine_contracts.md", "docs/engine_contracts.ko.md"]:
+        text = (ROOT / relative_path).read_text(encoding="utf-8")
+        assert "intentionally non-deterministic" in text
+        assert "capability token" in text
+
+
 def test_runtime_evidence_docs_use_trace_schema_v2_runtime_filename():
     paths = [
         "docs/release_checklist.md",

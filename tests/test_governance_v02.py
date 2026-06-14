@@ -85,6 +85,34 @@ def test_governance_risky_permission_requires_boss_approval():
     assert allowed["approval_records"][0]["approval_id"] == approval["approval_id"]
 
 
+def test_governance_review_approval_records_are_snapshots_not_ledger_aliases():
+    engine = GovernanceEngine()
+    engine.record_approval(
+        approval_type="boss_approval",
+        subject_id="agent_math-exp-0001",
+        approved_by="boss",
+        scope={
+            "action": "memory_promotion",
+            "source_id": "agent_math-exp-0001",
+            "allowed_use": "active_memory",
+            "quarantine_ref": "quarantine-ref-test",
+        },
+        notes="Allow this quarantined record for local active memory.",
+    )
+
+    review = engine.review_action(
+        "memory_promotion",
+        context={
+            "source_id": "agent_math-exp-0001",
+            "intended_use": "active_memory",
+            "quarantine_ref": "quarantine-ref-test",
+        },
+    )
+    review["policy_evaluation"]["approval_records"][0]["scope"]["action"] = "tampered"
+
+    assert engine.approval_ledger["approvals"][0]["scope"]["action"] == "memory_promotion"
+
+
 def test_governance_records_committee_decision_trail():
     engine = GovernanceEngine()
 
