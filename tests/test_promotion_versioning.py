@@ -124,6 +124,59 @@ def test_minimum_score_100_requires_perfect_verified_review():
     assert perfect["status"] == "promoted"
 
 
+@pytest.mark.parametrize("status", ["approved", "passed"])
+def test_promotion_memory_gate_requires_verified_status(status):
+    review = ReviewLabel(score=95, status=status, reviewed_by="boss")
+    engine = PromotionEngine(owner="agent:math")
+
+    decision = engine.record_experience(
+        source="assessment",
+        event={"summary": f"Generic {status} review is not promotion verified.", "skills": ["review_boundary"]},
+        review=review,
+    )
+
+    assert review.is_verified() is True
+    assert decision["status"] == "quarantined"
+    assert decision["reason"] == "do_not_promote_without_verified_quality_review"
+
+
+@pytest.mark.parametrize("status", ["approved", "passed"])
+def test_quarantine_reconsideration_requires_verified_status(status):
+    engine = PromotionEngine(owner="agent:math")
+    quarantined = engine.record_experience(
+        source="stress",
+        event={"summary": "Initially weak stress response.", "skills": ["stress_rehearsal"]},
+        review=ReviewLabel(score=62, status="needs_review", reviewed_by="committee"),
+    )
+
+    reconsidered = engine.reconsider_quarantined(
+        quarantined["experience_id"],
+        review=ReviewLabel(score=95, status=status, reviewed_by="boss"),
+        notes=f"Generic {status} status is not promotion verified.",
+    )
+
+    assert reconsidered["status"] == "quarantined"
+    assert reconsidered["reason"] == "reconsideration_failed_verified_quality_gate"
+
+
+@pytest.mark.parametrize("status", ["approved", "passed"])
+def test_promoted_supersession_requires_verified_status(status):
+    engine = PromotionEngine(owner="agent:math")
+    promoted = engine.record_experience(
+        source="assessment",
+        event={"summary": "Old method for place value.", "skills": ["place_value"]},
+        review=ReviewLabel(score=92, status="verified", reviewed_by="boss"),
+    )
+
+    with pytest.raises(ValueError, match="verified high-quality review"):
+        engine.supersede_promoted(
+            promoted["experience_id"],
+            event={"summary": f"Generic {status} replacement.", "skills": ["place_value"]},
+            review=ReviewLabel(score=95, status=status, reviewed_by="boss"),
+            reason=f"generic {status} status is not promotion verified",
+        )
+
+
 def test_minimum_score_gate_applies_to_quarantine_reconsideration():
     engine = PromotionEngine(owner="agent:math", minimum_score=90)
     quarantined = engine.record_experience(

@@ -16,6 +16,26 @@ class ReviewLabel:
     reviewed_by: str
     notes: str = ""
 
+    def __post_init__(self) -> None:
+        if isinstance(self.score, bool) or not isinstance(self.score, int):
+            raise TypeError("score must be an integer.")
+        if not 0 <= self.score <= 100:
+            raise ValueError("score must be between 0 and 100.")
+        if not isinstance(self.status, str):
+            raise TypeError("status must be a string.")
+        if not self.status.strip():
+            raise ValueError("status must be a non-empty string.")
+        if self.status != self.status.strip():
+            raise ValueError("status must not contain surrounding whitespace.")
+        if not isinstance(self.reviewed_by, str):
+            raise TypeError("reviewed_by must be a string.")
+        if not self.reviewed_by.strip():
+            raise ValueError("reviewed_by must be a non-empty string.")
+        if self.reviewed_by != self.reviewed_by.strip():
+            raise ValueError("reviewed_by must not contain surrounding whitespace.")
+        if not isinstance(self.notes, str):
+            raise TypeError("notes must be a string.")
+
     def is_verified(self, *, minimum_score: int = 80) -> bool:
         return self.score >= minimum_score and self.status in {"verified", "approved", "passed"}
 
@@ -33,7 +53,7 @@ class PromotionDecision:
 
     @classmethod
     def from_review(cls, experience_id: str, review: ReviewLabel) -> "PromotionDecision":
-        if not review.is_verified():
+        if review.status != "verified" or not review.is_verified():
             raise ValueError("PromotionDecision requires a verified high-quality review label.")
         return cls(experience_id=experience_id, status="promoted", review=review)
 

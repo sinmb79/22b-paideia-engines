@@ -159,6 +159,16 @@ def test_engine_contracts_document_promotion_snapshot_accessors():
         assert "0 and 100" in text
 
 
+def test_engine_contracts_document_review_label_validation_and_promotion_status_semantics():
+    for relative_path in ["docs/engine_contracts.md", "docs/engine_contracts.ko.md"]:
+        text = (ROOT / relative_path).read_text(encoding="utf-8")
+        assert "ReviewLabel trust fields are validated at initialization" in text
+        assert "score must be an integer between 0 and 100" in text
+        assert "PromotionEngine only promotes review.status == `verified`" in text
+        assert "PromotionDecision.from_review also requires review.status == `verified`" in text
+        assert "`approved` and `passed`" in text
+
+
 def test_promotion_readme_documents_snapshot_copy_cost():
     for relative_path in ["src/paideia_engines/promotion/README.md", "src/paideia_engines/promotion/README.ko.md"]:
         text = (ROOT / relative_path).read_text(encoding="utf-8")
