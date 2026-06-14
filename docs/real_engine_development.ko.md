@@ -6,7 +6,7 @@
 
 ## 현재 위치
 
-현재 엔진 모음은 데이터 확보, 교육과정 매핑, 육성, 평가, 스트레스, 승급, 거버넌스, 런타임, 설정 기반 오케스트레이션까지 v0.2 core를 갖추었습니다. Phase 6에서는 릴리스 하드닝을 추가했고, Phase 7에서는 확보 자료 validation report와 JSON 어댑터를 추가했습니다. Phase 8에서는 NCIC/data.go.kr 형식 CSV parsing, AI-Hub식 수학 JSON parsing, 공개 평가 CSV parsing, 공개 시험 metadata manifest를 추가했습니다. Phase 9에서는 parser diagnostics와 공개 안전 fixture pack을 추가했습니다. 다음 심화 작업은 suite output validation 강화와 과목별 stress pack입니다.
+현재 엔진 모음은 데이터 확보, 교육과정 매핑, 육성, 평가, 스트레스, 승급, 거버넌스, 런타임, 설정 기반 오케스트레이션까지 v0.2 core를 갖추었습니다. Phase 6에서는 릴리스 하드닝을 추가했고, Phase 7에서는 확보 자료 validation report와 JSON 어댑터를 추가했습니다. Phase 8에서는 NCIC/data.go.kr 형식 CSV parsing, AI-Hub식 수학 JSON parsing, 공개 평가 CSV parsing, 공개 시험 metadata manifest를 추가했습니다. Phase 9에서는 parser diagnostics와 공개 안전 fixture pack을 추가했습니다. Phase 10에서는 configured-suite output validation을 추가했습니다. 다음 심화 작업은 확보 자료 manifest diagnostics와 과목별 stress pack입니다.
 
 ## Phase 1: 데이터와 교육과정
 
@@ -169,9 +169,27 @@ tests/test_source_diagnostics.py
 - Parser 실행 완료와 출력 record 수 검사
 - CLI 명령: `diagnose-source`
 
+## Phase 10: Configured-suite output validation
+
+추가 파일:
+
+```text
+src/paideia_engines/orchestration/output_validator.py
+tests/test_configured_suite_output_validator.py
+```
+
+기능:
+
+- 엔진을 다시 실행하지 않는 엔진별 JSON output validation
+- full suite result와 엔진별 파일 교차 검증
+- `01_data_acquisition.json`부터 `10_verification.json`까지 번호가 붙은 output file 검증
+- 엔진별 schema 계약 검증
+- 확보 자료 검증, 평가, verification, stress candidate-only 경계, governance, runtime replayability release guardrail
+- CLI 명령: `validate-suite-output`
+
 ## 다음 개발 순서
 
-1. 확보 자료 manifest와 configured suite output에 대한 더 강한 validation report.
+1. fixture pack을 넘어선 확보 자료 manifest diagnostics 강화.
 2. 과목별 평가를 위한 stress scenario pack 확대.
 3. 최종 검증이 계속 통과할 때 Ready PR/release 준비.
 
@@ -185,5 +203,7 @@ python examples\assessment_and_cultivation_pipeline.py
 python examples\stress_and_promotion_pipeline.py
 python examples\governance_and_runtime_pipeline.py
 python -m paideia_engines.cli diagnose-source --manifest examples\source_fixture_pack.json --output .paideia-runs\source-diagnostics.json
+python -m paideia_engines.cli run-config --config examples\configured_suite.json --output .paideia-runs\result.json --output-dir .paideia-runs\engines
+python -m paideia_engines.cli validate-suite-output --output-dir .paideia-runs\engines --result .paideia-runs\result.json --output .paideia-runs\suite-output-validation.json
 python -m paideia_engines.cli smoke --engine all --output .paideia-runs\smoke.json
 ```

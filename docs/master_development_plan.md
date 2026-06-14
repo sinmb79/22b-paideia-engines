@@ -21,7 +21,7 @@ The project is complete only when:
 - Governance enforces boss approval, copyright/license rules, external upload bans, risky permissions, and committee decision trails.
 - Runtime records traces, acceptance checklists, artifact manifests, and replayable execution evidence.
 - Orchestration composes engines from configuration without hiding individual engine contracts.
-- CLI commands provide JSON input/output and engine-by-engine smoke checks.
+- CLI commands provide JSON input/output, configured-suite output validation, and engine-by-engine smoke checks.
 - Tests, examples, compile checks, CLI checks, and README link checks pass.
 - GitHub PR/release history is verifiable.
 
@@ -39,6 +39,7 @@ The project is complete only when:
 | 7 | Dataset adapters and validation reports | Implemented v0.2 core |
 | 8 | Source-specific parsers | Implemented v0.2 core |
 | 9 | Source parser diagnostics and fixture packs | Implemented v0.2 core |
+| 10 | Configured-suite output validator | Implemented v0.2 core |
 
 ## Phase 0. Foundation
 
@@ -207,6 +208,24 @@ Completion criteria:
 - Failed parser runs are reported as diagnostics issues instead of being hidden.
 - Release checklist includes the diagnostics CLI command.
 
+## Phase 10. Configured-Suite Output Validator
+
+Delivered:
+
+- Per-engine output validator for configured-suite runs
+- Result JSON to engine-file cross-checks
+- Expected numbered file checks from `01_data_acquisition.json` through `10_verification.json`
+- Engine schema contract checks
+- Release guardrails for acquisition validation, final verification, stress-to-promotion boundaries, governance, and runtime replayability
+- CLI command: `validate-suite-output`
+
+Completion criteria:
+
+- A configured-suite run can be validated without rerunning any engine.
+- Missing or tampered per-engine output files block release validation.
+- Stress output remains candidate-only and cannot directly include promotion decision records.
+- Release checklist includes the output validator CLI command.
+
 ## Active Branch And PR
 
 ```text
@@ -219,6 +238,6 @@ https://github.com/sinmb79/22b-paideia-engines/pull/1
 Final release loop for this branch:
 
 1. Run full validation.
-2. Commit and push the latest diagnostics and release-readiness changes.
+2. Commit and push the latest output-validation and release-readiness changes.
 3. Update the draft PR with the new validation evidence.
 4. Convert the PR to ready or cut a release only after the checklist remains green.

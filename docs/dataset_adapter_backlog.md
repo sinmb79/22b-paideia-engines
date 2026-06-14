@@ -33,6 +33,15 @@ The Phase 8 parsers consume local CSV/JSON exports only. They intentionally do n
 
 The Phase 9 diagnostics layer verifies fixture file existence, hash, parser support, required headers or JSON fields, parser completion, and minimum record counts before a parser pack is treated as release-ready.
 
+## Implemented In Phase 10
+
+- `validate_configured_suite_outputs(...)`
+- `validate_configured_suite_result(...)`
+- CLI command: `validate-suite-output`
+- Release-quality cross-checks for per-engine output files, expected schemas, acquisition validation, final verification, stress-to-promotion boundaries, governance, and runtime replayability
+
+The Phase 10 validator reads existing local JSON outputs only. It does not rerun engines, download source data, or create promotion decisions.
+
 ## Adapter Priorities
 
 1. **Public curriculum standards importer**
@@ -50,12 +59,7 @@ The Phase 9 diagnostics layer verifies fixture file existence, hash, parser supp
    - Output: validation report with hash, license note, approver, and missing fields.
    - Guardrail: fail closed when a restricted source lacks approval.
 
-4. **Configured-suite output validator**
-   - Input: per-engine JSON outputs.
-   - Output: release-quality validation report.
-   - Guardrail: verify `02_acquisition_validation.json`, `10_verification.json`, and no direct stress-to-promotion decision.
-
-5. **Official format-specific parser hardening**
+4. **Official format-specific parser hardening**
    - Input: real public-source CSV/JSON exports collected under a valid manifest.
    - Output: normalized engine records plus parser diagnostics.
    - Guardrail: keep HWP/PDF and restricted source parsing out of the public repo until explicit license evidence exists.

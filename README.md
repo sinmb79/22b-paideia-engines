@@ -12,6 +12,7 @@ AI agents become hard to trust when training, evaluation, memory, runtime execut
 
 - **Data Acquisition Engine**: plans data use with license gates.
 - **Source Parser Diagnostics**: validates public-safe parser fixture packs before release.
+- **Suite Output Validator**: cross-checks configured-suite result JSON and per-engine outputs before release.
 - **Curriculum Mapping Engine**: maps standards into learning units.
 - **Cultivation Engine**: builds training blueprints and roadmaps.
 - **Assessment Engine**: scores outputs with deterministic rubrics and transcripts.
@@ -36,6 +37,7 @@ flowchart LR
     Governance --> Runtime["Runtime trace"]
     Runtime --> Verification["Verification"]
     Verification --> Outputs["Per-engine JSON outputs"]
+    Outputs --> Validator["Suite output validator"]
 ```
 
 ## Install For Local Development
@@ -81,6 +83,11 @@ python -m paideia_engines.cli run-config `
   --output .paideia-runs/result.json `
   --output-dir .paideia-runs/engines
 
+python -m paideia_engines.cli validate-suite-output `
+  --output-dir .paideia-runs/engines `
+  --result .paideia-runs/result.json `
+  --output .paideia-runs/suite-output-validation.json
+
 python -m paideia_engines.cli smoke --engine all --output .paideia-runs/smoke.json
 ```
 
@@ -111,6 +118,7 @@ decision = engine.record_experience(
 - Phase 7: acquired-source validation, public curriculum adapters, and public item-bank adapters
 - Phase 8: NCIC/data.go.kr, AI-Hub, and public exam metadata source parsers
 - Phase 9: parser diagnostics and public-safe source fixture packs
+- Phase 10: configured-suite output validator
 
 ## Documentation
 
@@ -149,6 +157,7 @@ decision = engine.record_experience(
 - Runtime traces and artifact manifests are retained as review evidence.
 - CLI output is JSON so runs can be audited and replayed.
 - Configured runs write `acquisition_validation` and `verification` JSON outputs.
+- Suite output validation checks per-engine files, schemas, and stress-to-promotion boundaries before release.
 
 ## License
 

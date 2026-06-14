@@ -21,7 +21,7 @@
 - 거버넌스는 보스 승인, 저작권/라이선스 규칙, 외부 업로드 금지, 위험 권한, 위원회 판단 이력을 강제한다.
 - 런타임은 trace, checklist, artifact manifest, 재실행 가능한 실행 증거를 기록한다.
 - 오케스트레이션은 각 엔진의 독립 계약을 숨기지 않고 설정으로 조합한다.
-- CLI 명령은 JSON 입력/출력과 엔진별 smoke check를 제공한다.
+- CLI 명령은 JSON 입력/출력, configured-suite output validation, 엔진별 smoke check를 제공한다.
 - 테스트, 예제, 컴파일, CLI, README 링크 검증이 통과한다.
 - GitHub PR/release 이력이 검증 가능해야 한다.
 
@@ -39,6 +39,7 @@
 | 7 | 데이터셋 어댑터와 검증 리포트 | v0.2 core 구현 |
 | 8 | 출처별 파서 | v0.2 core 구현 |
 | 9 | 출처 parser diagnostics와 fixture pack | v0.2 core 구현 |
+| 10 | configured-suite output validator | v0.2 core 구현 |
 
 ## Phase 0. Foundation
 
@@ -207,6 +208,24 @@ python -m paideia_engines.cli smoke --engine all --output .paideia-runs/smoke.js
 - Parser 실행 실패가 숨겨지지 않고 diagnostics issue로 기록된다.
 - Release checklist에 diagnostics CLI 명령이 포함된다.
 
+## Phase 10. Configured-suite output validator
+
+산출물:
+
+- 설정 기반 suite 실행 결과의 엔진별 output validator
+- result JSON과 엔진별 파일의 교차 검증
+- `01_data_acquisition.json`부터 `10_verification.json`까지 번호가 붙은 파일 검증
+- 엔진별 schema 계약 검증
+- 확보 자료 검증, 최종 verification, stress-to-promotion 경계, governance, runtime replayability release guardrail
+- CLI 명령: `validate-suite-output`
+
+완료 기준:
+
+- 엔진을 다시 실행하지 않고도 configured-suite 산출물을 검증할 수 있다.
+- 엔진별 파일이 누락되거나 변조되면 release validation이 blocked가 된다.
+- Stress output은 candidate-only이며 promotion decision record를 직접 포함할 수 없다.
+- Release checklist에 output validator CLI 명령이 포함된다.
+
 ## 현재 브랜치와 PR
 
 ```text
@@ -219,6 +238,6 @@ https://github.com/sinmb79/22b-paideia-engines/pull/1
 이 브랜치의 최종 릴리스 루프를 진행합니다.
 
 1. 전체 검증 실행
-2. 최신 diagnostics와 릴리스 준비 변경 커밋 및 푸시
+2. 최신 output validation과 릴리스 준비 변경 커밋 및 푸시
 3. 검증 증거를 Draft PR에 반영
 4. 체크리스트가 계속 통과할 때만 PR ready 전환 또는 release 생성

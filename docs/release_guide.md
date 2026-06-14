@@ -39,6 +39,11 @@ python -m paideia_engines.cli run-config `
   --output .paideia-runs\result.json `
   --output-dir .paideia-runs\engines
 
+python -m paideia_engines.cli validate-suite-output `
+  --output-dir .paideia-runs\engines `
+  --result .paideia-runs\result.json `
+  --output .paideia-runs\suite-output-validation.json
+
 python -m paideia_engines.cli smoke --engine all --output .paideia-runs\smoke.json
 ```
 
@@ -48,6 +53,7 @@ python -m paideia_engines.cli smoke --engine all --output .paideia-runs\smoke.js
 - `.paideia-runs/engines/*.json`: per-engine outputs.
 - `02_acquisition_validation.json`: acquired-source validation report.
 - `10_verification.json`: final verification summary for the configured run.
+- `suite-output-validation.json`: release-quality validation report that cross-checks result JSON, per-engine files, schemas, and stress-to-promotion boundaries.
 - `smoke.json`: engine-by-engine smoke result.
 
 ## Public Release Boundary

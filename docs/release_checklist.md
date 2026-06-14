@@ -16,6 +16,7 @@ python examples\governance_and_runtime_pipeline.py
 python examples\source_specific_parsers.py
 python -m paideia_engines.cli diagnose-source --manifest examples\source_fixture_pack.json --output .paideia-runs\source-diagnostics.json
 python -m paideia_engines.cli run-config --config examples\configured_suite.json --output .paideia-runs\result.json --output-dir .paideia-runs\engines
+python -m paideia_engines.cli validate-suite-output --output-dir .paideia-runs\engines --result .paideia-runs\result.json --output .paideia-runs\suite-output-validation.json
 python -m paideia_engines.cli smoke --engine all --output .paideia-runs\smoke.json
 python -m compileall src
 rg -n "<release-sensitive-patterns>" README.md README.ko.md docs src tests data examples -g "!**/__pycache__/**"

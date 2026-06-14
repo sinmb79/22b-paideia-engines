@@ -33,6 +33,15 @@ Phase 8 parser는 로컬 CSV/JSON export만 읽습니다. HWP/PDF 교과서를 p
 
 Phase 9 diagnostics layer는 parser pack을 release-ready로 보기 전에 fixture 파일 존재, hash, parser 지원 여부, 필수 header 또는 JSON field, parser 실행 완료, 최소 record 수를 검증합니다.
 
+## Phase 10 구현
+
+- `validate_configured_suite_outputs(...)`
+- `validate_configured_suite_result(...)`
+- CLI 명령: `validate-suite-output`
+- 엔진별 output file, expected schema, 확보 자료 검증, 최종 verification, stress-to-promotion 경계, governance, runtime replayability에 대한 release-quality cross-check
+
+Phase 10 validator는 이미 생성된 로컬 JSON output만 읽습니다. 엔진을 다시 실행하거나, source data를 다운로드하거나, promotion decision을 만들지 않습니다.
+
 ## 어댑터 우선순위
 
 1. **공개 교육과정 standards importer**
@@ -50,12 +59,7 @@ Phase 9 diagnostics layer는 parser pack을 release-ready로 보기 전에 fixtu
    - 출력: hash, license note, approver, missing field validation report
    - 보호장치: 제한 자료 승인 누락 시 fail closed
 
-4. **설정 기반 suite output validator**
-   - 입력: 엔진별 JSON output
-   - 출력: release-quality validation report
-   - 보호장치: `02_acquisition_validation.json`, `10_verification.json`, stress-to-promotion 직접 결정 없음 확인
-
-5. **공식 포맷별 parser 강화**
+4. **공식 포맷별 parser 강화**
    - 입력: 유효한 manifest 아래 확보한 실제 공개 출처 CSV/JSON export
    - 출력: 정규화된 엔진 record와 parser diagnostics
    - 보호장치: 명시적 license evidence가 있기 전에는 HWP/PDF와 제한 원본 parsing을 공개 저장소 밖에 둠

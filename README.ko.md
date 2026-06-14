@@ -12,6 +12,7 @@ AI 에이전트가 훈련, 평가, 기억, 실행, 통제를 하나의 불투명
 
 - **데이터 확보 엔진**: 라이선스 gate를 기준으로 데이터 사용 계획을 만듭니다.
 - **출처 parser diagnostics**: 릴리스 전에 공개 안전 parser fixture pack을 검증합니다.
+- **Suite output validator**: 릴리스 전에 configured-suite result JSON과 엔진별 출력을 교차 검증합니다.
 - **교육과정 매핑 엔진**: 성취기준을 학습 단위로 매핑합니다.
 - **육성 엔진**: 훈련 청사진과 학습 로드맵을 만듭니다.
 - **평가 엔진**: 결정적 rubric과 transcript로 결과물을 평가합니다.
@@ -36,6 +37,7 @@ flowchart LR
     Governance --> Runtime["런타임 trace"]
     Runtime --> Verification["검증"]
     Verification --> Outputs["엔진별 JSON 출력"]
+    Outputs --> Validator["Suite output validator"]
 ```
 
 ## 로컬 개발 설치
@@ -81,6 +83,11 @@ python -m paideia_engines.cli run-config `
   --output .paideia-runs/result.json `
   --output-dir .paideia-runs/engines
 
+python -m paideia_engines.cli validate-suite-output `
+  --output-dir .paideia-runs/engines `
+  --result .paideia-runs/result.json `
+  --output .paideia-runs/suite-output-validation.json
+
 python -m paideia_engines.cli smoke --engine all --output .paideia-runs/smoke.json
 ```
 
@@ -111,6 +118,7 @@ decision = engine.record_experience(
 - Phase 7: 확보 자료 검증, 공개 교육과정 어댑터, 공개 문항 bank 어댑터
 - Phase 8: NCIC/data.go.kr, AI-Hub, 공개 시험 metadata 출처별 parser
 - Phase 9: parser diagnostics와 공개 안전 source fixture pack
+- Phase 10: configured-suite output validator
 
 ## 문서
 
@@ -149,6 +157,7 @@ decision = engine.record_experience(
 - 런타임 trace와 artifact manifest는 검토 증거로 보존
 - CLI 출력은 JSON이므로 실행을 감사하고 재검토할 수 있음
 - 설정 기반 실행은 `acquisition_validation`과 `verification` JSON 출력을 남김
+- Suite output validation은 릴리스 전에 엔진별 파일, schema, stress-to-promotion 경계를 검증함
 
 ## 라이선스
 

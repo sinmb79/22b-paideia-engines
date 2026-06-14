@@ -8,6 +8,10 @@ from typing import Sequence
 
 from paideia_engines.data_acquisition.source_diagnostics import diagnose_source_fixture_pack
 from paideia_engines.orchestration.config_runner import run_config_file, run_engine_smoke, write_json
+from paideia_engines.orchestration.output_validator import (
+    validate_configured_suite_outputs,
+    validate_configured_suite_result,
+)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -29,6 +33,14 @@ def build_parser() -> argparse.ArgumentParser:
     )
     diagnose_source.add_argument("--manifest", required=True, help="Path to a source fixture-pack JSON file.")
     diagnose_source.add_argument("--output", required=True, help="Path to write the diagnostics report JSON.")
+
+    validate_suite = subcommands.add_parser(
+        "validate-suite-output",
+        help="Validate configured-suite per-engine output JSON files.",
+    )
+    validate_suite.add_argument("--output-dir", required=True, help="Directory containing numbered engine outputs.")
+    validate_suite.add_argument("--result", help="Optional full configured-suite result JSON for cross-checking.")
+    validate_suite.add_argument("--output", required=True, help="Path to write the validation report JSON.")
 
     return parser
 
@@ -56,6 +68,24 @@ def main(argv: Sequence[str] | None = None) -> int:
                 {
                     "wrote": output_path,
                     "source_diagnostics": result["summary"],
+                    "status": result["status"],
+                },
+                ensure_ascii=False,
+            )
+        )
+        return 0 if result["status"] == "passed" else 1
+
+    if args.command == "validate-suite-output":
+        if args.result:
+            result = validate_configured_suite_result(args.result, output_dir=args.output_dir)
+        else:
+            result = validate_configured_suite_outputs(args.output_dir)
+        output_path = write_json(args.output, result)
+        print(
+            json.dumps(
+                {
+                    "wrote": output_path,
+                    "suite_output_validation": result["summary"],
                     "status": result["status"],
                 },
                 ensure_ascii=False,

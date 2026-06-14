@@ -6,7 +6,7 @@ This roadmap tracks the work needed to turn the Paideia engine suite from a scaf
 
 ## Current Position
 
-The suite now has v0.2 cores for data acquisition, curriculum mapping, cultivation, assessment, stress, promotion, governance, runtime, and config-driven orchestration. Phase 6 adds release hardening. Phase 7 adds acquired-source validation reports and JSON adapters. Phase 8 adds NCIC/data.go.kr-style CSV parsing, AI-Hub-like math JSON parsing, public assessment CSV parsing, and public exam metadata manifests. Phase 9 adds parser diagnostics and public-safe fixture packs. The next depth work is stronger suite output validation and subject-specific stress packs.
+The suite now has v0.2 cores for data acquisition, curriculum mapping, cultivation, assessment, stress, promotion, governance, runtime, and config-driven orchestration. Phase 6 adds release hardening. Phase 7 adds acquired-source validation reports and JSON adapters. Phase 8 adds NCIC/data.go.kr-style CSV parsing, AI-Hub-like math JSON parsing, public assessment CSV parsing, and public exam metadata manifests. Phase 9 adds parser diagnostics and public-safe fixture packs. Phase 10 adds configured-suite output validation. The next depth work is acquired-source manifest diagnostics and subject-specific stress packs.
 
 ## Phase 1: Data And Curriculum
 
@@ -169,9 +169,27 @@ Capabilities:
 - Parser completion and output record-count checks
 - CLI command: `diagnose-source`
 
+## Phase 10: Configured-Suite Output Validation
+
+Added:
+
+```text
+src/paideia_engines/orchestration/output_validator.py
+tests/test_configured_suite_output_validator.py
+```
+
+Capabilities:
+
+- Per-engine JSON output validation without rerunning engines
+- Full suite result to engine-file cross-checks
+- Numbered output file validation from `01_data_acquisition.json` to `10_verification.json`
+- Engine schema contract checks
+- Release guardrails for acquisition validation, assessment, verification, stress candidate-only boundaries, governance, and runtime replayability
+- CLI command: `validate-suite-output`
+
 ## Next Development Order
 
-1. Stronger validation reports for acquired source manifests and configured suite outputs.
+1. Stronger diagnostics for acquired source manifests beyond fixture packs.
 2. Broader stress scenario packs for subject-specific evaluation.
 3. Ready PR/release preparation after final validation remains green.
 
@@ -185,5 +203,7 @@ python examples\assessment_and_cultivation_pipeline.py
 python examples\stress_and_promotion_pipeline.py
 python examples\governance_and_runtime_pipeline.py
 python -m paideia_engines.cli diagnose-source --manifest examples\source_fixture_pack.json --output .paideia-runs\source-diagnostics.json
+python -m paideia_engines.cli run-config --config examples\configured_suite.json --output .paideia-runs\result.json --output-dir .paideia-runs\engines
+python -m paideia_engines.cli validate-suite-output --output-dir .paideia-runs\engines --result .paideia-runs\result.json --output .paideia-runs\suite-output-validation.json
 python -m paideia_engines.cli smoke --engine all --output .paideia-runs\smoke.json
 ```

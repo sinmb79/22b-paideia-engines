@@ -39,6 +39,11 @@ python -m paideia_engines.cli run-config `
   --output .paideia-runs\result.json `
   --output-dir .paideia-runs\engines
 
+python -m paideia_engines.cli validate-suite-output `
+  --output-dir .paideia-runs\engines `
+  --result .paideia-runs\result.json `
+  --output .paideia-runs\suite-output-validation.json
+
 python -m paideia_engines.cli smoke --engine all --output .paideia-runs\smoke.json
 ```
 
@@ -48,6 +53,7 @@ python -m paideia_engines.cli smoke --engine all --output .paideia-runs\smoke.js
 - `.paideia-runs/engines/*.json`: 엔진별 출력입니다.
 - `02_acquisition_validation.json`: 확보 자료 검증 리포트입니다.
 - `10_verification.json`: 설정 기반 실행의 최종 검증 요약입니다.
+- `suite-output-validation.json`: result JSON, 엔진별 파일, 스키마, stress-to-promotion 경계를 교차 검증하는 release-quality 리포트입니다.
 - `smoke.json`: 엔진별 smoke 결과입니다.
 
 ## 공개 릴리스 경계

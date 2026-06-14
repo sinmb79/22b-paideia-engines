@@ -130,3 +130,54 @@ def test_cli_diagnose_source_fixture_pack_writes_report(tmp_path):
     assert payload["status"] == "passed"
     assert payload["summary"]["total"] == 3
     assert "source_diagnostics" in completed.stdout
+
+
+def test_cli_validate_suite_output_writes_report(tmp_path):
+    result_path = tmp_path / "result.json"
+    output_dir = tmp_path / "outputs"
+    validation_path = tmp_path / "suite-output-validation.json"
+
+    subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "paideia_engines.cli",
+            "run-config",
+            "--config",
+            str(ROOT / "examples" / "configured_suite.json"),
+            "--output",
+            str(result_path),
+            "--output-dir",
+            str(output_dir),
+        ],
+        cwd=ROOT,
+        env=_env(),
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "paideia_engines.cli",
+            "validate-suite-output",
+            "--output-dir",
+            str(output_dir),
+            "--result",
+            str(result_path),
+            "--output",
+            str(validation_path),
+        ],
+        cwd=ROOT,
+        env=_env(),
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+
+    payload = json.loads(validation_path.read_text(encoding="utf-8"))
+    assert payload["schema"] == "paideia-configured-suite-output-validation/v1"
+    assert payload["status"] == "passed"
+    assert payload["summary"]["failed"] == 0
+    assert "suite_output_validation" in completed.stdout
