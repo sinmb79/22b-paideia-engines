@@ -198,11 +198,13 @@ def test_ci_workflow_runs_release_quality_gates():
         assert required in text
 
 
-def test_ci_workflow_opts_into_node24_actions_runtime():
+def test_ci_workflow_uses_node24_actions_runtime():
     workflow = ROOT / ".github" / "workflows" / "ci.yml"
 
     text = workflow.read_text(encoding="utf-8")
-    assert 'FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"' in text
+    assert "actions/checkout@v6" in text
+    assert "actions/setup-python@v6" in text
+    assert "FORCE_JAVASCRIPT_ACTIONS_TO_NODE24" not in text
 
 
 def test_public_asset_audit_declares_forbidden_asset_classes():
