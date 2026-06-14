@@ -73,6 +73,8 @@ decision = engine.record_experience(
 - [Data acquisition plan in Korean](docs/data_acquisition.ko.md)
 - [Real engine development roadmap](docs/real_engine_development.md)
 - [Real engine development roadmap in Korean](docs/real_engine_development.ko.md)
+- [Master development plan](docs/master_development_plan.md)
+- [Master development plan in Korean](docs/master_development_plan.ko.md)
 
 ## Safety Defaults
 

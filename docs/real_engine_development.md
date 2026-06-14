@@ -32,13 +32,37 @@ Responsibilities:
 - Dataset coverage reports
 - Handoffs to cultivation, assessment, stress, and promotion engines
 
+## Phase 2 Progress
+
+Added:
+
+```text
+src/paideia_engines/assessment/item_bank.py
+examples/assessment_and_cultivation_pipeline.py
+```
+
+Capabilities:
+
+- Assessment item bank
+- Gate construction
+- Objective, short-answer, and solution-process item models
+- Per-item rubric scoring
+- Review-label candidate output
+- Cultivation roadmap generation from learning units
+- Assessment gates embedded in the roadmap
+
+Example:
+
+```powershell
+python examples\assessment_and_cultivation_pipeline.py
+```
+
 ## Next Engine Development Order
 
-1. Assessment Engine v0.2
-2. Cultivation Engine v0.2
-3. Stress Engine v0.2
-4. Promotion Engine v0.2
-5. Governance Engine v0.2
+1. Stress Engine v0.2
+2. Promotion Engine v0.2
+3. Governance Engine v0.2
+4. Runtime/Orchestration v0.2
 
 ## Verification
 
