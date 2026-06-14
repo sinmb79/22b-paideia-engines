@@ -27,3 +27,14 @@ def test_architecture_docs_and_basic_example_exist():
     assert (ROOT / "examples" / "data_and_curriculum_pipeline.py").exists()
     assert (ROOT / "examples" / "assessment_and_cultivation_pipeline.py").exists()
     assert (ROOT / "examples" / "stress_and_promotion_pipeline.py").exists()
+    assert (ROOT / "examples" / "governance_and_runtime_pipeline.py").exists()
+
+
+def test_architecture_docs_expose_language_choice_and_phase4_terms():
+    architecture = (ROOT / "docs" / "architecture.md").read_text(encoding="utf-8")
+    korean = (ROOT / "docs" / "architecture.ko.md").read_text(encoding="utf-8")
+
+    assert "[한국어](architecture.ko.md)" in architecture
+    assert "[English](architecture.md)" in korean
+    assert "Artifact Manifest" in architecture
+    assert "위원회 판단 원장" in korean

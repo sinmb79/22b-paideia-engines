@@ -16,108 +16,167 @@ The project is complete only when:
 - Cultivation creates learning roadmaps from curriculum units and licensed data sources.
 - Assessment supports item banks, answers, distractors, explanations, written-response scoring, and solution-process rubrics.
 - Stress simulates misconceptions, time pressure, contradictory evidence, trap items, and missing review.
-- Promotion promotes only reviewed high-quality experiences and supports quarantine review.
-- Governance enforces boss approval, copyright/license rules, external upload bans, and risky permissions.
-- Runtime records traces, checklists, artifact manifests, and replayable execution evidence.
-- Orchestration composes engines from configuration.
+- Promotion promotes only reviewed high-quality experiences and supports quarantine review, versioning, and supersession.
+- Governance enforces boss approval, copyright/license rules, external upload bans, risky permissions, and committee decision trails.
+- Runtime records traces, acceptance checklists, artifact manifests, and replayable execution evidence.
+- Orchestration composes engines from configuration without hiding individual engine contracts.
 - Tests, examples, compile checks, and README link checks pass.
 - GitHub PR/release history is verifiable.
 
-## Phases
+## Phase Status
 
-### Phase 0. Foundation
+| Phase | Area | Status |
+| --- | --- | --- |
+| 0 | Foundation package and initial engines | Complete |
+| 1 | Data acquisition and curriculum mapping | Implemented, still needs deeper importers |
+| 2 | Assessment and cultivation | Implemented v0.2 core |
+| 3 | Stress and promotion | Implemented v0.2 core |
+| 4 | Governance and runtime | Implemented v0.2 core |
+| 5 | Orchestration and CLI | Planned |
+| 6 | Documentation, release, examples | Ongoing |
 
-Status: complete.
+## Phase 0. Foundation
 
-Includes package skeleton, basic engines, contracts, bilingual README, tests, examples, and public GitHub repo.
+Delivered:
 
-### Phase 1. Data And Curriculum Core
+- Python package skeleton
+- Seven basic engines
+- Shared contracts
+- Bilingual README
+- Basic tests and examples
+- Public GitHub repository
 
-Status: in progress.
+Verification:
 
-Includes `DataAcquisitionEngine`, `CurriculumMappingEngine`, seed catalog, license gates, sample standards, and a data/curriculum pipeline example.
+```powershell
+python -m pytest tests -q
+python examples\basic_growth_cycle.py
+```
 
-Remaining:
+## Phase 1. Data And Curriculum Core
 
-- manifest load/save API
-- acquired source validation report
-- curriculum importer
-- coverage gap recommendations
+Delivered:
 
-### Phase 2. Assessment And Cultivation Core
+- `DataAcquisitionEngine`
+- `CurriculumMappingEngine`
+- Education data seed catalog
+- License gates
+- Sample standards
+- Data/curriculum pipeline example
 
-Status: next implementation batch.
+Remaining depth:
 
-Deliverables:
+- Manifest load/save API
+- Acquired source validation report
+- Curriculum standard importer
+- Coverage gap recommendations
 
-- assessment item bank
-- objective, short-answer, written-response, and solution-process item models
-- answers, distractors, explanations, scoring rubric
-- cultivation learning roadmap
-- learning roadmap to data source linkage
-- assessment gate generation
+## Phase 2. Assessment And Cultivation Core
 
-### Phase 3. Stress And Promotion Core
+Delivered:
 
-Deliverables:
+- Assessment item bank
+- Objective, short-answer, written-response, and solution-process item models
+- Answers, distractors, explanations, and scoring rubric
+- Cultivation learning roadmap
+- Learning roadmap to data source linkage
+- Assessment gate generation
 
-- scenario bank
-- misconception, contradiction, time pressure, and trap-item simulation
-- promotion ledger versioning
-- quarantine review workflow
-- rollback or supersede decisions
+Completion criteria reached:
 
-### Phase 4. Governance And Runtime Core
+- Learning units can produce assessment gates and item banks.
+- Assessment results can create review-label candidates for promotion.
+- Learning roadmaps preserve data-source license state.
 
-Deliverables:
+## Phase 3. Stress And Promotion Core
 
-- policy rule evaluator
-- boss approval records
-- license approval records
-- runtime artifact manifest
-- replayable trace
+Delivered:
 
-### Phase 5. Orchestration And CLI
+- Stress scenario bank
+- Misconception, contradiction, time-pressure, and trap-item scenarios
+- Candidate-only stress signals
+- Promotion ledger versioning
+- Quarantine review workflow
+- Supersede decisions without deleting history
 
-Deliverables:
+Completion criteria reached:
 
-- config-driven suite runner
+- Stress creates promotion candidate signals but not promotion decisions.
+- Promotion never promotes memory without a verified review label.
+- Quarantined and superseded experiences are excluded from active memory routing.
+
+## Phase 4. Governance And Runtime Core
+
+Delivered:
+
+- Policy rule evaluator
+- Boss approval records
+- License approval records
+- Committee decision ledger
+- Runtime artifact manifest
+- Replayable trace
+- Run acceptance checklist
+
+Completion criteria reached:
+
+- Restricted source use is blocked without approval records.
+- External uploads, credentials, and private asset access stay blocked by default.
+- Runtime results remain review-required before promotion.
+- Runtime traces can be replayed by `run_id`.
+- Artifact manifests are retained with hashable records.
+
+Example:
+
+```powershell
+python examples\governance_and_runtime_pipeline.py
+```
+
+## Phase 5. Orchestration And CLI
+
+Planned deliverables:
+
+- Config-driven suite runner
 - CLI commands
 - JSON input/output
-- end-to-end local growth pipeline
-- engine smoke commands
+- End-to-end local growth pipeline
+- Engine-by-engine smoke commands
 
-### Phase 6. Documentation, Release, And Examples
+Completion criteria:
 
-Deliverables:
+- One local command runs data planning, curriculum mapping, cultivation, assessment, stress, promotion, governance, runtime, and verification.
+- Each step records output paths and trace metadata.
 
-- bilingual docs
-- per-engine README files
-- example data
-- architecture diagrams
-- release checklist
+## Phase 6. Documentation, Release, And Examples
+
+Planned deliverables:
+
+- Beginner-facing bilingual guide
+- Per-engine README files
+- Example data
+- Architecture diagrams
+- Release checklist
 - GitHub PR/release
 
-## Active Branch
+Completion criteria:
+
+- New users can install, test, and run examples from the README.
+- Korean documentation can be selected from README.
+- Public release excludes restricted textbooks, private voice data, credentials, and personal assets.
+
+## Active Branch And PR
 
 ```text
 codex/real-engine-v02
-```
-
-Draft PR:
-
-```text
 https://github.com/sinmb79/22b-paideia-engines/pull/1
 ```
 
 ## Next Work
 
-Start Phase 2 as a batch:
+Move to Phase 5 as a batch:
 
-1. Add assessment item bank tests.
-2. Strengthen assessment rubric/results.
-3. Add cultivation roadmap tests.
-4. Implement cultivation roadmap.
-5. Add data/curriculum/assessment example.
-6. Run full validation.
-7. Commit, push, and update PR.
+1. Add config-driven orchestration tests.
+2. Add CLI command tests.
+3. Implement engine-by-engine smoke commands.
+4. Add JSON input/output examples.
+5. Run full validation.
+6. Commit, push, and update the draft PR.

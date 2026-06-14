@@ -63,6 +63,7 @@ python examples/basic_growth_cycle.py
 python examples/data_and_curriculum_pipeline.py
 python examples/assessment_and_cultivation_pipeline.py
 python examples/stress_and_promotion_pipeline.py
+python examples/governance_and_runtime_pipeline.py
 ```
 
 ## Engine Independence
@@ -82,6 +83,8 @@ decision = engine.record_experience(
 ```
 
 Phase 3 adds a stress scenario bank and a versioned promotion ledger. Stress can emit a candidate-only signal, but it never creates a promotion decision. Promotion owns the auditable ledger, quarantine reconsideration, and supersession history.
+
+Phase 4 adds a governance policy evaluator, approval ledgers, committee decision trails, runtime artifact manifests, and replayable traces.
 
 ## Documentation
 
@@ -103,6 +106,7 @@ Phase 3 adds a stress scenario bank and a versioned promotion ledger. Stress can
 - Stress scenarios never write promoted memory directly.
 - Quarantined experiences are excluded from active memory routing.
 - Superseded promoted experiences remain in the ledger but are not active memory.
+- Runtime traces and artifact manifests are retained as review evidence.
 
 ## License
 

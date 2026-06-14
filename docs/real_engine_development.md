@@ -89,12 +89,37 @@ Example:
 python examples\stress_and_promotion_pipeline.py
 ```
 
+## Phase 4: Governance And Runtime
+
+Added:
+
+```text
+examples/governance_and_runtime_pipeline.py
+```
+
+Capabilities:
+
+- Policy rule evaluation for local-first action decisions
+- Boss and license approval records
+- Committee decision ledger
+- Hard external-upload blocking
+- Runtime run IDs
+- Runtime artifact manifests with hashable entries
+- Replayable runtime traces
+- Acceptance checklist evidence for promotion review
+
+Example:
+
+```powershell
+python examples\governance_and_runtime_pipeline.py
+```
+
 ## Next Engine Development Order
 
-1. Governance Engine v0.2: policy enforcement, approval records, and committee decision trails.
-2. Runtime Engine v0.2: stronger traces, acceptance evidence, and replayable task records.
-3. Orchestration v0.2: combine the upgraded engines without hiding their independent contracts.
-4. Dataset adapters: legal, manifest-driven adapters for public curriculum and assessment data.
+1. Orchestration v0.2: combine the upgraded engines without hiding their independent contracts.
+2. CLI v0.2: engine-by-engine smoke commands and JSON input/output.
+3. Dataset adapters: legal, manifest-driven adapters for public curriculum and assessment data.
+4. Release hardening: per-engine README files and release checklist.
 
 ## Verification
 
@@ -103,4 +128,5 @@ python -m pytest tests -q
 python examples\data_and_curriculum_pipeline.py
 python examples\assessment_and_cultivation_pipeline.py
 python examples\stress_and_promotion_pipeline.py
+python examples\governance_and_runtime_pipeline.py
 ```

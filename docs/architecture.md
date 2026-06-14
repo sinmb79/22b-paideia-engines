@@ -2,21 +2,27 @@
 
 [한국어](architecture.ko.md)
 
-Paideia Engines is organized around engine boundaries rather than a single agent loop.
+Paideia Engines is organized around engine boundaries rather than a single agent loop. Each engine owns one kind of decision and emits deterministic records that other engines can consume.
 
 ```mermaid
 flowchart TD
   A["Request"] --> O["Orchestration"]
-  O --> C["Cultivation"]
+  O --> DA["Data Acquisition"]
+  DA --> CM["Curriculum Mapping"]
+  CM --> C["Cultivation"]
   C --> AS["Assessment"]
-  AS --> G["Governance"]
+  AS --> S["Stress"]
+  S --> PS["Promotion Signal"]
+  PS --> P["Promotion"]
+  O --> G["Governance"]
   G --> R["Runtime"]
-  R --> S["Stress"]
-  S --> P["Promotion"]
+  R --> AM["Artifact Manifest"]
+  R --> RT["Replayable Trace"]
   R --> P
-  P --> M["Ledger / Kernel / Active Memory"]
-  G --> B["Boss Review Gate"]
-  P --> B
+  P --> M["Ledger / Active Memory"]
+  G --> B["Boss Approval Records"]
+  G --> L["License Approval Records"]
+  G --> CD["Committee Decision Ledger"]
 ```
 
 ## Contracts
@@ -35,14 +41,16 @@ Contracts are intentionally small so every engine can stay independent.
 
 | Engine | Owns | Does Not Own |
 | --- | --- | --- |
-| Cultivation | blueprint, curriculum, handoffs | scoring, promotion |
-| Assessment | rubric result, transcript | memory promotion |
-| Stress | scenario rollout, resilience signal | promotion decision |
-| Promotion | ledger, quarantine, active memory route | task execution |
-| Governance | review gates, local policy | model output generation |
-| Runtime | trace, checklist, task run record | learning update |
+| Data Acquisition | source decisions, license gates, acquisition manifests | curriculum design |
+| Curriculum Mapping | learning units and standard coverage | scoring or promotion |
+| Cultivation | blueprint, roadmaps, handoffs | scoring, promotion |
+| Assessment | item bank, rubric result, transcript | memory promotion |
+| Stress | scenario bank, resilience signal | promotion decision |
+| Promotion | versioned ledger, quarantine, active memory route | task execution |
+| Governance | policy evaluation, approval records, committee decisions | model output generation |
+| Runtime | run trace, artifact manifest, replay evidence, checklist | learning update |
 | Orchestration | composition | internal engine policy |
 
 ## Design Rule
 
-No engine should silently perform another engine's decision. For example, stress can produce a promotion candidate signal, but only promotion can create a promotion decision.
+No engine should silently perform another engine's decision. Stress can produce a promotion candidate signal, but only Promotion can create a promotion decision. Runtime can record evidence, but it cannot make memory active. Governance can block or allow a run, but it does not generate model output.

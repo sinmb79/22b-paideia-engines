@@ -63,6 +63,7 @@ python examples/basic_growth_cycle.py
 python examples/data_and_curriculum_pipeline.py
 python examples/assessment_and_cultivation_pipeline.py
 python examples/stress_and_promotion_pipeline.py
+python examples/governance_and_runtime_pipeline.py
 ```
 
 ## 엔진의 독립성
@@ -82,6 +83,8 @@ decision = engine.record_experience(
 ```
 
 Phase 3에서는 스트레스 시나리오 뱅크와 버전 원장 기반 승급 엔진을 추가했습니다. 스트레스 엔진은 승급 후보 신호만 만들고, 실제 기억 승급 결정은 승급 엔진이 담당합니다. 승급 엔진은 격리 경험 재심사, promoted 경험 대체, 원장 이력을 보존합니다.
+
+Phase 4에서는 거버넌스 정책 평가기, 승인 원장, 위원회 판단 trail, 런타임 artifact manifest, 재실행 가능한 trace를 추가했습니다.
 
 ## 문서
 
@@ -103,6 +106,7 @@ Phase 3에서는 스트레스 시나리오 뱅크와 버전 원장 기반 승급
 - 스트레스 시나리오는 promoted memory를 직접 쓰지 않음
 - 격리된 경험은 활성 기억 라우팅에서 제외
 - 대체된 promoted 경험은 원장에 남기되 활성 기억에서는 제외
+- 런타임 trace와 artifact manifest는 검토 증거로 보존
 
 ## 라이선스
 

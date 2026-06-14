@@ -89,12 +89,37 @@ examples/stress_and_promotion_pipeline.py
 python examples\stress_and_promotion_pipeline.py
 ```
 
+## Phase 4: 거버넌스와 런타임
+
+추가된 파일:
+
+```text
+examples/governance_and_runtime_pipeline.py
+```
+
+강화된 기능:
+
+- 로컬 우선 action 판단을 위한 policy rule evaluation
+- 보스 승인 및 라이선스 승인 기록
+- 위원회 판단 원장
+- 외부 업로드 hard blocking
+- Runtime run ID
+- hashable entry를 가진 runtime artifact manifest
+- 재실행 가능한 runtime trace
+- 승급 검토용 acceptance checklist evidence
+
+예제:
+
+```powershell
+python examples\governance_and_runtime_pipeline.py
+```
+
 ## 다음 개발 순서
 
-1. Governance Engine v0.2: 정책 enforcement, 승인 기록, 위원회 판단 trail.
-2. Runtime Engine v0.2: 더 강한 trace, acceptance evidence, 재현 가능한 task record.
-3. Orchestration v0.2: 업그레이드된 엔진들을 독립 계약을 숨기지 않는 방식으로 조합.
-4. Dataset adapters: 공개 교육과정/평가 데이터를 합법적으로 다루는 manifest 기반 adapter.
+1. Orchestration v0.2: 업그레이드된 엔진들을 독립 계약을 숨기지 않는 방식으로 조합.
+2. CLI v0.2: engine-by-engine smoke command와 JSON input/output.
+3. Dataset adapters: 공개 교육과정/평가 데이터를 합법적으로 다루는 manifest 기반 adapter.
+4. Release hardening: 엔진별 README와 release checklist.
 
 ## 검증
 
@@ -103,4 +128,5 @@ python -m pytest tests -q
 python examples\data_and_curriculum_pipeline.py
 python examples\assessment_and_cultivation_pipeline.py
 python examples\stress_and_promotion_pipeline.py
+python examples\governance_and_runtime_pipeline.py
 ```
