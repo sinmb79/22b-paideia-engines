@@ -67,6 +67,7 @@ The command fails if a required engine is missing from the registry, if contract
 - Governance ledgers and reviews use private stores with read-only snapshot accessors, and governance board/evaluation outputs must use policy snapshots instead of exposing mutable internal policy objects.
 - Promotion ledgers and events use private stores with read-only accessors that return detached mutable snapshots. Mutating returned promotion decisions, memory routes, ledger snapshots, or event snapshots must never mutate engine internal state.
 - Promotion trust config is fixed at engine initialization: `owner and minimum_score` are read-only accessors so downstream code cannot silently rewrite ledger identity or promotion quality gates.
+- Promotion trust config is validated at engine initialization: `owner` must be a non-empty string without surrounding whitespace, and `minimum_score` must be an integer between 0 and 100.
 - Assessment may count a verified artifact for deterministic rubric scoring, but release-grade promotion must treat it as evidence only after runtime evidence validation proves file existence, byte hash, manifest hash, and replay trace.
 
 The registry lives in `src/paideia_engines/contracts/registry.py`.
