@@ -75,3 +75,13 @@ Source diagnostics validate public-safe fixture packs before release. They do no
 ```powershell
 python -m paideia_engines.cli diagnose-source --manifest examples/source_fixture_pack.json --output .paideia-runs/source-diagnostics.json
 ```
+
+## Phase 11 Manifest Diagnostics
+
+Acquired-source manifest diagnostics validate the JSONL manifest itself before a release or before wiring larger local corpora into engines. The report checks JSONL parsing, acquired-source schema, duplicate source/path records, supported content scopes, hash and license-note validation, auto-download requests, and whether non-open full-content records are safe for a public release.
+
+```powershell
+python -m paideia_engines.cli diagnose-manifest --manifest examples/acquired_sources_manifest.jsonl --output .paideia-runs/manifest-diagnostics.json
+```
+
+Use `--allow-local-only-full-content` only for private local runs after the Boss has approved local storage and license evidence. Do not use that option for a public GitHub release.

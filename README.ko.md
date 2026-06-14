@@ -11,6 +11,7 @@
 AI 에이전트가 훈련, 평가, 기억, 실행, 통제를 하나의 불투명한 루프 안에서 처리하면 신뢰하기 어렵습니다. 파이데이아 엔진은 책임을 분리합니다.
 
 - **데이터 확보 엔진**: 라이선스 gate를 기준으로 데이터 사용 계획을 만듭니다.
+- **Manifest diagnostics**: 릴리스 또는 로컬 corpus 연결 전에 acquired-source JSONL manifest를 검증합니다.
 - **출처 parser diagnostics**: 릴리스 전에 공개 안전 parser fixture pack을 검증합니다.
 - **Suite output validator**: 릴리스 전에 configured-suite result JSON과 엔진별 출력을 교차 검증합니다.
 - **교육과정 매핑 엔진**: 성취기준을 학습 단위로 매핑합니다.
@@ -119,6 +120,7 @@ decision = engine.record_experience(
 - Phase 8: NCIC/data.go.kr, AI-Hub, 공개 시험 metadata 출처별 parser
 - Phase 9: parser diagnostics와 공개 안전 source fixture pack
 - Phase 10: configured-suite output validator
+- Phase 11: acquired-source manifest diagnostics
 
 ## 문서
 
@@ -158,6 +160,7 @@ decision = engine.record_experience(
 - CLI 출력은 JSON이므로 실행을 감사하고 재검토할 수 있음
 - 설정 기반 실행은 `acquisition_validation`과 `verification` JSON 출력을 남김
 - Suite output validation은 릴리스 전에 엔진별 파일, schema, stress-to-promotion 경계를 검증함
+- Manifest diagnostics는 릴리스 전에 malformed, duplicate, unsafe, non-public full-content source record를 차단함
 
 ## 라이선스
 

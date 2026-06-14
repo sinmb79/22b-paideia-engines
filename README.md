@@ -11,6 +11,7 @@ This repository is designed so each engine can be used independently or combined
 AI agents become hard to trust when training, evaluation, memory, runtime execution, and governance are mixed into one opaque loop. Paideia Engines separates those responsibilities:
 
 - **Data Acquisition Engine**: plans data use with license gates.
+- **Manifest Diagnostics**: validates acquired-source JSONL manifests before release or local corpus wiring.
 - **Source Parser Diagnostics**: validates public-safe parser fixture packs before release.
 - **Suite Output Validator**: cross-checks configured-suite result JSON and per-engine outputs before release.
 - **Curriculum Mapping Engine**: maps standards into learning units.
@@ -119,6 +120,7 @@ decision = engine.record_experience(
 - Phase 8: NCIC/data.go.kr, AI-Hub, and public exam metadata source parsers
 - Phase 9: parser diagnostics and public-safe source fixture packs
 - Phase 10: configured-suite output validator
+- Phase 11: acquired-source manifest diagnostics
 
 ## Documentation
 
@@ -158,6 +160,7 @@ decision = engine.record_experience(
 - CLI output is JSON so runs can be audited and replayed.
 - Configured runs write `acquisition_validation` and `verification` JSON outputs.
 - Suite output validation checks per-engine files, schemas, and stress-to-promotion boundaries before release.
+- Manifest diagnostics block malformed, duplicate, unsafe, or non-public full-content source records before release.
 
 ## License
 

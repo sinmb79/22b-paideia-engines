@@ -4,6 +4,8 @@ from pathlib import Path
 import subprocess
 import sys
 
+from paideia_engines.data_acquisition import DataAcquisitionEngine
+
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -130,6 +132,55 @@ def test_cli_diagnose_source_fixture_pack_writes_report(tmp_path):
     assert payload["status"] == "passed"
     assert payload["summary"]["total"] == 3
     assert "source_diagnostics" in completed.stdout
+
+
+def test_cli_diagnose_manifest_writes_report(tmp_path):
+    source_path = tmp_path / "public-items.jsonl"
+    source_path.write_text('{"question": "1+1", "answer": "2"}\n', encoding="utf-8")
+    manifest_path = tmp_path / "acquired_sources.jsonl"
+    manifest_path.write_text(
+        json.dumps(
+            {
+                "schema": "paideia-acquired-source/v1",
+                "source_id": "moe_csat_example_items",
+                "status": "acquired",
+                "local_path": str(source_path),
+                "hash": DataAcquisitionEngine.hash_path(source_path),
+                "content_scope": "public_content",
+                "license_note_path": None,
+                "approved_by": "boss",
+            },
+            ensure_ascii=False,
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    output_path = tmp_path / "manifest-diagnostics.json"
+
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "paideia_engines.cli",
+            "diagnose-manifest",
+            "--manifest",
+            str(manifest_path),
+            "--output",
+            str(output_path),
+        ],
+        cwd=ROOT,
+        env=_env(),
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+
+    payload = json.loads(output_path.read_text(encoding="utf-8"))
+    assert payload["schema"] == "paideia-acquired-source-manifest-diagnostics/v1"
+    assert payload["status"] == "passed"
+    assert payload["summary"]["failed"] == 0
+    assert "manifest_diagnostics" in completed.stdout
 
 
 def test_cli_validate_suite_output_writes_report(tmp_path):

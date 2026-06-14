@@ -12,6 +12,7 @@
 
 - 모든 엔진이 독립 API, 계약, 테스트, 예제, 문서를 가진다.
 - 데이터 확보는 출처, 라이선스, 해시, 승인자, 로컬 경로를 기록한다.
+- Acquired-source manifest diagnostics는 malformed, duplicate, unsafe, public-release-ineligible record를 잡아낸다.
 - 확보 자료 검증은 hash 불일치, 승인자 누락, license note 누락, 안전하지 않은 제한 원문 자료를 차단한다.
 - 교육과정 매핑은 학년, 과목, 영역, 성취기준으로 학습 단위를 만든다.
 - 육성은 교육과정 단위와 허가된 데이터 출처로 학습 로드맵을 만든다.
@@ -40,6 +41,7 @@
 | 8 | 출처별 파서 | v0.2 core 구현 |
 | 9 | 출처 parser diagnostics와 fixture pack | v0.2 core 구현 |
 | 10 | configured-suite output validator | v0.2 core 구현 |
+| 11 | acquired-source manifest diagnostics | v0.2 core 구현 |
 
 ## Phase 0. Foundation
 
@@ -225,6 +227,22 @@ python -m paideia_engines.cli smoke --engine all --output .paideia-runs/smoke.js
 - 엔진별 파일이 누락되거나 변조되면 release validation이 blocked가 된다.
 - Stress output은 candidate-only이며 promotion decision record를 직접 포함할 수 없다.
 - Release checklist에 output validator CLI 명령이 포함된다.
+
+## Phase 11. Acquired-source manifest diagnostics
+
+산출물:
+
+- Acquired-source JSONL manifest diagnostics
+- 공개 안전 manifest 예제
+- JSONL parsing, acquired-source schema, duplicate record, content-scope, hash/license-note, auto-download, public-release safety check
+- CLI 명령: `diagnose-manifest`
+
+완료 기준:
+
+- Manifest diagnostics가 malformed JSONL을 release check crash 없이 잡아낸다.
+- Duplicate source/path record는 release validation을 blocked로 만든다.
+- Non-open full-content record는 local-only mode를 명시하지 않는 한 public release에서 blocked가 된다.
+- Release checklist에 manifest diagnostics CLI 명령이 포함된다.
 
 ## 현재 브랜치와 PR
 

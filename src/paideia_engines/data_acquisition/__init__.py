@@ -379,6 +379,12 @@ from paideia_engines.data_acquisition.source_diagnostics import (
     diagnose_source_file,
     diagnose_source_fixture_pack,
 )
+from paideia_engines.data_acquisition.manifest_diagnostics import diagnose_acquired_source_manifest
 
 
-__all__ = ["DataAcquisitionEngine", "diagnose_source_file", "diagnose_source_fixture_pack"]
+__all__ = [
+    "DataAcquisitionEngine",
+    "diagnose_acquired_source_manifest",
+    "diagnose_source_file",
+    "diagnose_source_fixture_pack",
+]

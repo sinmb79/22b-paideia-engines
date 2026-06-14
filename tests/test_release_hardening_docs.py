@@ -66,6 +66,7 @@ def test_release_checklist_contains_required_validation_commands():
         "python -m paideia_engines.cli validate-suite-output",
         "python -m paideia_engines.cli smoke",
         "python -m paideia_engines.cli diagnose-source",
+        "python -m paideia_engines.cli diagnose-manifest",
         "rg -n",
     ]
     for command in required_commands:
@@ -79,6 +80,8 @@ def test_public_asset_audit_declares_forbidden_asset_classes():
         "private voice assets",
         "credentials",
         "restricted textbooks",
+        "AI-Hub downloaded corpora",
+        "exam PDFs",
         "personal data",
         "generated caches",
     ]:

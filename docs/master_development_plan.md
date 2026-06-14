@@ -12,6 +12,7 @@ The project is complete only when:
 
 - Every engine has an independent API, contract, tests, examples, and documentation.
 - Data acquisition records source, license, hash, approver, and local path.
+- Acquired-source manifest diagnostics catch malformed, duplicate, unsafe, and public-release-ineligible records.
 - Acquired-source validation blocks invalid hashes, missing approvers, missing license notes, and unsafe full-content restricted sources.
 - Curriculum mapping builds learning units from grade, subject, domain, and achievement standards.
 - Cultivation creates learning roadmaps from curriculum units and licensed data sources.
@@ -40,6 +41,7 @@ The project is complete only when:
 | 8 | Source-specific parsers | Implemented v0.2 core |
 | 9 | Source parser diagnostics and fixture packs | Implemented v0.2 core |
 | 10 | Configured-suite output validator | Implemented v0.2 core |
+| 11 | Acquired-source manifest diagnostics | Implemented v0.2 core |
 
 ## Phase 0. Foundation
 
@@ -225,6 +227,22 @@ Completion criteria:
 - Missing or tampered per-engine output files block release validation.
 - Stress output remains candidate-only and cannot directly include promotion decision records.
 - Release checklist includes the output validator CLI command.
+
+## Phase 11. Acquired-Source Manifest Diagnostics
+
+Delivered:
+
+- Acquired-source JSONL manifest diagnostics
+- Public-safe manifest example
+- JSONL parsing, acquired-source schema, duplicate record, content-scope, hash/license-note, auto-download, and public-release safety checks
+- CLI command: `diagnose-manifest`
+
+Completion criteria:
+
+- Manifest diagnostics catch malformed JSONL without crashing release checks.
+- Duplicate source/path records block release validation.
+- Non-open full-content records are blocked for public release unless explicitly running in local-only mode.
+- Release checklist includes the manifest diagnostics CLI command.
 
 ## Active Branch And PR
 

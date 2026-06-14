@@ -42,6 +42,15 @@ The Phase 9 diagnostics layer verifies fixture file existence, hash, parser supp
 
 The Phase 10 validator reads existing local JSON outputs only. It does not rerun engines, download source data, or create promotion decisions.
 
+## Implemented In Phase 11
+
+- `diagnose_acquired_source_manifest(...)`
+- CLI command: `diagnose-manifest`
+- Public-safe example acquired-source manifest: `examples/acquired_sources_manifest.jsonl`
+- JSONL parsing, acquired-source schema, duplicate record, content-scope, hash/license-note, auto-download, and public-release safety diagnostics
+
+The Phase 11 diagnostics layer verifies acquired-source manifests before larger local textbook, exam, or AI-Hub corpora are wired into engines. It reads manifest records and local evidence only; it does not download, scrape, copy, or upload source content.
+
 ## Adapter Priorities
 
 1. **Public curriculum standards importer**
@@ -54,15 +63,15 @@ The Phase 10 validator reads existing local JSON outputs only. It does not rerun
    - Output: `AssessmentItem` records.
    - Guardrail: no scraping restricted pages.
 
-3. **Acquired source manifest validator**
-   - Input: `acquired_sources.jsonl`.
-   - Output: validation report with hash, license note, approver, and missing fields.
-   - Guardrail: fail closed when a restricted source lacks approval.
-
-4. **Official format-specific parser hardening**
+3. **Official format-specific parser hardening**
    - Input: real public-source CSV/JSON exports collected under a valid manifest.
    - Output: normalized engine records plus parser diagnostics.
    - Guardrail: keep HWP/PDF and restricted source parsing out of the public repo until explicit license evidence exists.
+
+4. **Subject-specific stress fixture packs**
+   - Input: public-safe scenarios mapped to grade, subject, and standard IDs.
+   - Output: reusable stress banks for math, language, science, and evidence-review skills.
+   - Guardrail: stress packs emit candidate signals only; promotion decisions stay in the promotion engine.
 
 ## Deferred
 

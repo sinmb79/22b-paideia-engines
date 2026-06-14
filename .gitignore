@@ -14,3 +14,7 @@ runs/
 .paideia-runs/
 .paideia-data/
 .paideia-smoke/
+data/raw/
+data/processed/
+data/licenses/
+data/catalog/acquired_sources*.jsonl

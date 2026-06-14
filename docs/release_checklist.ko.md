@@ -15,6 +15,7 @@ python examples\stress_and_promotion_pipeline.py
 python examples\governance_and_runtime_pipeline.py
 python examples\source_specific_parsers.py
 python -m paideia_engines.cli diagnose-source --manifest examples\source_fixture_pack.json --output .paideia-runs\source-diagnostics.json
+python -m paideia_engines.cli diagnose-manifest --manifest examples\acquired_sources_manifest.jsonl --output .paideia-runs\manifest-diagnostics.json
 python -m paideia_engines.cli run-config --config examples\configured_suite.json --output .paideia-runs\result.json --output-dir .paideia-runs\engines
 python -m paideia_engines.cli validate-suite-output --output-dir .paideia-runs\engines --result .paideia-runs\result.json --output .paideia-runs\suite-output-validation.json
 python -m paideia_engines.cli smoke --engine all --output .paideia-runs\smoke.json
@@ -30,6 +31,9 @@ gh pr view 1 --json number,title,url,isDraft,headRefName,baseRefName,state,commi
 - 모든 엔진 패키지에 영문/한국어 README가 있어야 합니다.
 - `.paideia-runs/`, `.paideia-data/`, `.paideia-smoke/`, 로컬 생성 산출물이 staged 상태가 아니어야 합니다.
 - 공개 seed data는 metadata만 포함하고 제한 교과서 본문을 포함하지 않아야 합니다.
+- 공개 release validation에는 `--allow-local-only-full-content`를 사용하지 않습니다.
+- Acquired-source manifest는 `examples/`, `data/`, `docs/`, `src/`, `tests/` 안의 AI-Hub corpus, 시험지 PDF/HWP/audio/video, 교과서 원본을 가리키지 않아야 합니다.
+- Acquired-source manifest에는 `C:\Users\...` 같은 private absolute path가 없어야 합니다.
 - PR 본문에 검증 명령과 현재 draft/ready 상태가 적혀 있어야 합니다.
 
 ## 릴리스 판단

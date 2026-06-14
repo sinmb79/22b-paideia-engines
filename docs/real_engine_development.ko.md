@@ -6,7 +6,7 @@
 
 ## 현재 위치
 
-현재 엔진 모음은 데이터 확보, 교육과정 매핑, 육성, 평가, 스트레스, 승급, 거버넌스, 런타임, 설정 기반 오케스트레이션까지 v0.2 core를 갖추었습니다. Phase 6에서는 릴리스 하드닝을 추가했고, Phase 7에서는 확보 자료 validation report와 JSON 어댑터를 추가했습니다. Phase 8에서는 NCIC/data.go.kr 형식 CSV parsing, AI-Hub식 수학 JSON parsing, 공개 평가 CSV parsing, 공개 시험 metadata manifest를 추가했습니다. Phase 9에서는 parser diagnostics와 공개 안전 fixture pack을 추가했습니다. Phase 10에서는 configured-suite output validation을 추가했습니다. 다음 심화 작업은 확보 자료 manifest diagnostics와 과목별 stress pack입니다.
+현재 엔진 모음은 데이터 확보, 교육과정 매핑, 육성, 평가, 스트레스, 승급, 거버넌스, 런타임, 설정 기반 오케스트레이션까지 v0.2 core를 갖추었습니다. Phase 6에서는 릴리스 하드닝을 추가했고, Phase 7에서는 확보 자료 validation report와 JSON 어댑터를 추가했습니다. Phase 8에서는 NCIC/data.go.kr 형식 CSV parsing, AI-Hub식 수학 JSON parsing, 공개 평가 CSV parsing, 공개 시험 metadata manifest를 추가했습니다. Phase 9에서는 parser diagnostics와 공개 안전 fixture pack을 추가했습니다. Phase 10에서는 configured-suite output validation을 추가했습니다. Phase 11에서는 acquired-source manifest diagnostics를 추가했습니다. 다음 심화 작업은 과목별 stress pack입니다.
 
 ## Phase 1: 데이터와 교육과정
 
@@ -187,10 +187,29 @@ tests/test_configured_suite_output_validator.py
 - 확보 자료 검증, 평가, verification, stress candidate-only 경계, governance, runtime replayability release guardrail
 - CLI 명령: `validate-suite-output`
 
+## Phase 11: Acquired-source manifest diagnostics
+
+추가 파일:
+
+```text
+src/paideia_engines/data_acquisition/manifest_diagnostics.py
+examples/acquired_sources_manifest.jsonl
+tests/test_acquired_source_manifest_diagnostics.py
+```
+
+기능:
+
+- release check를 crash시키지 않고 issue로 보고하는 JSONL manifest diagnostics
+- duplicate source/path record 탐지
+- acquired-source schema와 content-scope 검사
+- hash, path, approver, license-note 검증을 위해 기존 acquired-source validation 재사용
+- non-open full-content record에 대한 public-release guardrail
+- CLI 명령: `diagnose-manifest`
+
 ## 다음 개발 순서
 
-1. fixture pack을 넘어선 확보 자료 manifest diagnostics 강화.
-2. 과목별 평가를 위한 stress scenario pack 확대.
+1. 과목별 평가를 위한 stress scenario pack 확대.
+2. 유효한 manifest 아래 실제 공개 출처 export를 이용한 official format-specific parser hardening.
 3. 최종 검증이 계속 통과할 때 Ready PR/release 준비.
 
 ## 검증
@@ -203,6 +222,7 @@ python examples\assessment_and_cultivation_pipeline.py
 python examples\stress_and_promotion_pipeline.py
 python examples\governance_and_runtime_pipeline.py
 python -m paideia_engines.cli diagnose-source --manifest examples\source_fixture_pack.json --output .paideia-runs\source-diagnostics.json
+python -m paideia_engines.cli diagnose-manifest --manifest examples\acquired_sources_manifest.jsonl --output .paideia-runs\manifest-diagnostics.json
 python -m paideia_engines.cli run-config --config examples\configured_suite.json --output .paideia-runs\result.json --output-dir .paideia-runs\engines
 python -m paideia_engines.cli validate-suite-output --output-dir .paideia-runs\engines --result .paideia-runs\result.json --output .paideia-runs\suite-output-validation.json
 python -m paideia_engines.cli smoke --engine all --output .paideia-runs\smoke.json

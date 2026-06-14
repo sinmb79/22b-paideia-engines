@@ -17,6 +17,7 @@
 - `evaluate_source(source_id)`
 - `build_engine_plan(engine_name)`
 - `register_acquired_source(...)`
+- `diagnose_acquired_source_manifest(...)`
 - `diagnose_source_file(...)`
 - `diagnose_source_fixture_pack(...)`
 
@@ -24,3 +25,4 @@
 
 이 엔진은 metadata와 로컬 확보 증거를 기록합니다. 제한 교과서를 자동 다운로드하지 않습니다.
 출처 diagnostics는 공개 안전 로컬 fixture만 검사하며, 자료 확보, scraping, 보호 content 우회를 수행하지 않습니다.
+Manifest diagnostics는 JSONL record와 public-release safety를 검사하며, source content를 복사, 업로드, 다운로드하지 않습니다.

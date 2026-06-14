@@ -29,6 +29,7 @@ python examples\stress_and_promotion_pipeline.py
 python examples\governance_and_runtime_pipeline.py
 python examples\source_specific_parsers.py
 python -m paideia_engines.cli diagnose-source --manifest examples\source_fixture_pack.json --output .paideia-runs\source-diagnostics.json
+python -m paideia_engines.cli diagnose-manifest --manifest examples\acquired_sources_manifest.jsonl --output .paideia-runs\manifest-diagnostics.json
 ```
 
 ## Run CLI
@@ -51,6 +52,7 @@ python -m paideia_engines.cli smoke --engine all --output .paideia-runs\smoke.js
 
 - `result.json`: full configured-suite result.
 - `.paideia-runs/engines/*.json`: per-engine outputs.
+- `manifest-diagnostics.json`: acquired-source manifest diagnostics for JSONL parsing, hashes, duplicate records, license notes, and public-release safety.
 - `02_acquisition_validation.json`: acquired-source validation report.
 - `10_verification.json`: final verification summary for the configured run.
 - `suite-output-validation.json`: release-quality validation report that cross-checks result JSON, per-engine files, schemas, and stress-to-promotion boundaries.
