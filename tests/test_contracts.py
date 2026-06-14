@@ -1,5 +1,7 @@
 from pathlib import Path
 
+import pytest
+
 from paideia_engines.contracts import (
     EngineContract,
     EngineEvent,
@@ -46,6 +48,72 @@ def test_review_label_controls_promotion_and_quarantine_decisions():
     assert quarantined.status == "quarantined"
     assert quarantined.requires_boss_review is True
     assert "do_not_promote" in quarantined.reason
+
+
+@pytest.mark.parametrize("score", ["100", 90.0, True, None])
+def test_review_label_score_must_be_an_integer(score):
+    with pytest.raises(TypeError, match="score must be an integer"):
+        ReviewLabel(score=score, status="verified", reviewed_by="boss")
+
+
+@pytest.mark.parametrize("score", [-1, 101])
+def test_review_label_score_must_be_between_zero_and_one_hundred(score):
+    with pytest.raises(ValueError, match="score must be between 0 and 100"):
+        ReviewLabel(score=score, status="verified", reviewed_by="boss")
+
+
+@pytest.mark.parametrize("status", ["", "   "])
+def test_review_label_status_must_not_be_empty(status):
+    with pytest.raises(ValueError, match="status must be a non-empty string"):
+        ReviewLabel(score=90, status=status, reviewed_by="boss")
+
+
+@pytest.mark.parametrize("status", [" verified", "verified "])
+def test_review_label_status_must_not_have_surrounding_whitespace(status):
+    with pytest.raises(ValueError, match="status must not contain surrounding whitespace"):
+        ReviewLabel(score=90, status=status, reviewed_by="boss")
+
+
+@pytest.mark.parametrize("status", [None, 123])
+def test_review_label_status_must_be_a_string(status):
+    with pytest.raises(TypeError, match="status must be a string"):
+        ReviewLabel(score=90, status=status, reviewed_by="boss")
+
+
+@pytest.mark.parametrize("reviewed_by", ["", "   "])
+def test_review_label_reviewed_by_must_not_be_empty(reviewed_by):
+    with pytest.raises(ValueError, match="reviewed_by must be a non-empty string"):
+        ReviewLabel(score=90, status="verified", reviewed_by=reviewed_by)
+
+
+@pytest.mark.parametrize("reviewed_by", [" boss", "boss "])
+def test_review_label_reviewed_by_must_not_have_surrounding_whitespace(reviewed_by):
+    with pytest.raises(ValueError, match="reviewed_by must not contain surrounding whitespace"):
+        ReviewLabel(score=90, status="verified", reviewed_by=reviewed_by)
+
+
+@pytest.mark.parametrize("reviewed_by", [None, 123])
+def test_review_label_reviewed_by_must_be_a_string(reviewed_by):
+    with pytest.raises(TypeError, match="reviewed_by must be a string"):
+        ReviewLabel(score=90, status="verified", reviewed_by=reviewed_by)
+
+
+def test_review_label_notes_must_be_a_string():
+    with pytest.raises(TypeError, match="notes must be a string"):
+        ReviewLabel(score=90, status="verified", reviewed_by="boss", notes=123)
+
+
+@pytest.mark.parametrize("status", ["verified", "approved", "passed"])
+def test_review_label_generic_verification_statuses(status):
+    assert ReviewLabel(score=90, status=status, reviewed_by="boss").is_verified()
+
+
+@pytest.mark.parametrize("status", ["approved", "passed"])
+def test_promotion_decision_from_review_requires_verified_status(status):
+    review = ReviewLabel(score=90, status=status, reviewed_by="boss")
+
+    with pytest.raises(ValueError, match="verified high-quality review label"):
+        PromotionDecision.from_review("exp-1", review)
 
 
 def test_default_policy_is_local_first_and_blocks_external_uploads():
