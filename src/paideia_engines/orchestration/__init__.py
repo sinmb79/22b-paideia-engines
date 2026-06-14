@@ -93,4 +93,24 @@ class PaideiaEngineSuite:
         }
 
 
-__all__ = ["PaideiaEngineSuite"]
+from paideia_engines.orchestration.config_runner import (
+    load_config,
+    run_config_file,
+    run_configured_suite,
+    run_engine_smoke,
+)
+from paideia_engines.orchestration.output_validator import (
+    validate_configured_suite_outputs,
+    validate_configured_suite_result,
+)
+
+
+__all__ = [
+    "PaideiaEngineSuite",
+    "load_config",
+    "run_config_file",
+    "run_configured_suite",
+    "run_engine_smoke",
+    "validate_configured_suite_outputs",
+    "validate_configured_suite_result",
+]

@@ -1,0 +1,71 @@
+{
+  "schema": "paideia-source-fixture-pack/v1",
+  "pack_id": "phase9-public-source-samples",
+  "description": "Tiny public-safe fixtures for validating source-specific parsers without shipping restricted textbook or exam contents.",
+  "fixtures": [
+    {
+      "fixture_id": "ncic-curriculum-sample",
+      "parser": "ncic_csv",
+      "path": "source_samples/ncic_curriculum_sample.csv",
+      "source_id": "ncic_curriculum_originals",
+      "provider": "National Curriculum Information Center",
+      "source_url": "https://ncic.re.kr/",
+      "license_tier": "open_public",
+      "content_scope": "public_sample",
+      "official_format_family": "ncic_data_go_kr_curriculum_csv",
+      "sample_kind": "synthetic",
+      "record_schema": "paideia-curriculum-standard/v1",
+      "expected_min_records": 1,
+      "sha256": "sha256:880148a79d33bf4badb2d2b697ac1a5d0beab94d19d571b3c7c1322a3504c046",
+      "origin_note": "Synthetic tiny fixture with NCIC-style headers; not copied curriculum content."
+    },
+    {
+      "fixture_id": "public-assessment-sample",
+      "parser": "public_assessment_csv",
+      "path": "source_samples/public_assessment_sample.csv",
+      "source_id": "moe_csat_example_items",
+      "provider": "Ministry of Education",
+      "source_url": "https://www.moe.go.kr/",
+      "license_tier": "open_public",
+      "content_scope": "public_sample",
+      "official_format_family": "public_assessment_csv",
+      "sample_kind": "synthetic",
+      "record_schema": "paideia-assessment-item/v1",
+      "expected_min_records": 1,
+      "sha256": "sha256:87cb90587e8c3cb52949692937238a57da052b4e5d483164124ea3b5921a3d49",
+      "origin_note": "Synthetic public assessment CSV fixture; not copied exam content."
+    },
+    {
+      "fixture_id": "aihub-math-sample",
+      "parser": "aihub_json",
+      "path": "source_samples/aihub_math_sample.json",
+      "source_id": "aihub_math_problem_solving",
+      "provider": "AI-Hub",
+      "source_url": "https://www.aihub.or.kr/aihubdata/data/view.do?aihubDataSe=data&dataSetSn=71859",
+      "license_tier": "login_or_agreement_required",
+      "content_scope": "public_sample",
+      "official_format_family": "aihub_math_json",
+      "sample_kind": "synthetic",
+      "record_schema": "paideia-assessment-item/v1",
+      "expected_min_records": 1,
+      "sha256": "sha256:189c69ed239b38bc280809ab9f19dc53eba439d135031b612cceacd5e1c2f8ed",
+      "origin_note": "Synthetic AI-Hub-like format fixture; not copied source data."
+    },
+    {
+      "fixture_id": "ebsi-exam-metadata-sample",
+      "parser": "ebsi_metadata_csv",
+      "path": "source_samples/ebsi_exam_metadata_sample.csv",
+      "source_id": "ebsi_national_exam_archives",
+      "provider": "EBSi / metropolitan and provincial education offices",
+      "source_url": "https://www.ebsi.co.kr/",
+      "license_tier": "public_reference_with_site_terms",
+      "content_scope": "metadata_only",
+      "official_format_family": "ebsi_exam_metadata_csv",
+      "sample_kind": "metadata_only",
+      "record_schema": "paideia-acquired-source/v1",
+      "expected_min_records": 1,
+      "sha256": "sha256:d43795408bc91245340c2da0561cb9635d7df5bdd53c259ef577fe03bf98efba",
+      "origin_note": "Synthetic metadata-only fixture; no exam text, answers, PDF, or HWP content."
+    }
+  ]
+}

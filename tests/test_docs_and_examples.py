@@ -14,9 +14,42 @@ def test_readme_exposes_korean_language_choice():
     assert "파이데이아 엔진" in korean
 
 
-def test_architecture_docs_and_basic_example_exist():
+def test_docs_and_examples_exist():
     assert (ROOT / "docs" / "architecture.md").exists()
     assert (ROOT / "docs" / "architecture.ko.md").exists()
     assert (ROOT / "docs" / "data_acquisition.md").exists()
     assert (ROOT / "docs" / "data_acquisition.ko.md").exists()
+    assert (ROOT / "docs" / "real_engine_development.md").exists()
+    assert (ROOT / "docs" / "real_engine_development.ko.md").exists()
+    assert (ROOT / "docs" / "master_development_plan.md").exists()
+    assert (ROOT / "docs" / "master_development_plan.ko.md").exists()
     assert (ROOT / "examples" / "basic_growth_cycle.py").exists()
+    assert (ROOT / "examples" / "data_and_curriculum_pipeline.py").exists()
+    assert (ROOT / "examples" / "assessment_and_cultivation_pipeline.py").exists()
+    assert (ROOT / "examples" / "stress_and_promotion_pipeline.py").exists()
+    assert (ROOT / "examples" / "governance_and_runtime_pipeline.py").exists()
+    assert (ROOT / "examples" / "configured_suite.json").exists()
+    assert (ROOT / "examples" / "source_specific_parsers.py").exists()
+    assert (ROOT / "examples" / "source_fixture_pack.json").exists()
+    assert (ROOT / "examples" / "source_samples" / "ncic_curriculum_sample.csv").exists()
+    assert (ROOT / "examples" / "source_samples" / "aihub_math_sample.json").exists()
+    assert (ROOT / "examples" / "source_samples" / "ebsi_exam_metadata_sample.csv").exists()
+
+
+def test_architecture_docs_expose_language_choice_and_phase5_terms():
+    architecture = (ROOT / "docs" / "architecture.md").read_text(encoding="utf-8")
+    korean = (ROOT / "docs" / "architecture.ko.md").read_text(encoding="utf-8")
+
+    assert "[한국어](architecture.ko.md)" in architecture
+    assert "[English](architecture.md)" in korean
+    assert "Artifact Manifest" in architecture
+    assert "위원회 판단 원장" in korean
+    assert "Config Runner" in architecture
+    assert "설정 기반 실행기" in korean
+
+
+def test_pyproject_exposes_cli_entrypoint():
+    pyproject = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
+
+    assert "[project.scripts]" in pyproject
+    assert 'paideia-engines = "paideia_engines.cli:main"' in pyproject

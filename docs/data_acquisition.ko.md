@@ -95,6 +95,50 @@ data/
 }
 ```
 
+## Phase 7 어댑터 계약
+
+구현된 경로는 다음 순서를 따릅니다.
+
+```text
+합법적으로 확보한 로컬 파일 -> 확보 자료 manifest -> 검증 리포트 -> 엔진 어댑터
+```
+
+- `validate_manifest(...)`와 `validate_acquired_sources(...)`는 source id, 로컬 경로, hash, 승인자, content scope, license note 필요 여부를 검증합니다.
+- `CurriculumMappingEngine.load_standards_file(...)`은 이미 확보한 공개 교육과정 JSON을 `CurriculumStandard`로 변환합니다.
+- `ItemBank.from_file(...)`은 이미 확보한 공개 또는 라이선스 문항 JSON을 `AssessmentItem`으로 변환합니다.
+- 설정 기반 suite는 교육과정 매핑 전에 `02_acquisition_validation.json`, 마지막에 `10_verification.json`을 남깁니다.
+
+제한 교과서나 디지털교과서 자료는 `metadata_only` 범위일 때만 license note 없이 통과할 수 있습니다. 본문 전체를 다루려면 유효한 license 또는 terms-review note가 필요하며, 없으면 차단됩니다.
+
+## Phase 8 출처별 파서
+
+현재 source-specific parser 계층은 로컬 CSV/JSON export를 지원합니다.
+
+- NCIC/data.go.kr 형식 교육과정 CSV를 `CurriculumStandard`로 변환
+- 공개 평가 문항 CSV를 `ItemBank`로 변환
+- AI-Hub식 수학 문제 JSON label을 `ItemBank`로 변환
+- 공개 시험 metadata CSV를 metadata-only 확보 자료 record로 변환
+
+parser 계층은 확보 자료 검증 이후에만 실행됩니다. Parser 파일은 `data.acquired_sources` 또는 `data.manifest_path`에 포함되어 hash 검증을 통과해야 하며, 설정한 parser/source 조합이 맞아야 사용할 수 있습니다.
+
+## Phase 9 출처 진단
+
+출처 진단은 릴리스 전에 공개 가능한 fixture pack을 검증합니다. 새 데이터를 확보하지 않고, 로컬 sample 파일을 검사하고, hash를 계산하고, 필수 field를 확인하고, 선택한 parser를 실행한 뒤 record 수를 보고합니다.
+
+```powershell
+python -m paideia_engines.cli diagnose-source --manifest examples/source_fixture_pack.json --output .paideia-runs/source-diagnostics.json
+```
+
+## Phase 11 Manifest diagnostics
+
+확보 자료 manifest diagnostics는 릴리스 전이나 더 큰 로컬 corpus를 엔진에 연결하기 전에 JSONL manifest 자체를 검증합니다. 리포트는 JSONL parsing, acquired-source schema, 중복 source/path record, 지원 content scope, hash와 license note 검증, auto-download 요청, 공개 릴리스에 부적합한 non-open full-content record를 확인합니다.
+
+```powershell
+python -m paideia_engines.cli diagnose-manifest --manifest examples/acquired_sources_manifest.jsonl --output .paideia-runs/manifest-diagnostics.json
+```
+
+`--allow-local-only-full-content`는 보스가 로컬 저장과 license evidence를 승인한 private local run에서만 사용합니다. 공개 GitHub release에는 이 옵션을 사용하지 않습니다.
+
 ## 금지 사항
 
 - 디지털교과서 뷰어에서 콘텐츠를 자동 추출하지 않습니다.

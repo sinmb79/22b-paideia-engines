@@ -1,0 +1,10 @@
+{
+  "schema": "paideia-example-runtime-artifact/v1",
+  "artifact_id": "math-evidence-sample",
+  "summary": "Synthetic local evidence artifact for runtime persistence validation.",
+  "checks": {
+    "source_is_public_sample": true,
+    "contains_private_data": false,
+    "contains_restricted_textbook_content": false
+  }
+}

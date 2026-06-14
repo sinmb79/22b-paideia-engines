@@ -1,0 +1,2 @@
+item_id,standard_id,gate_id,item_type,prompt,answer,distractors,explanation,rubric
+math-public-001,E-MATH-03-01,unit_check,multiple_choice,What is 245 + 130?,375,365|475,245 + 130 = 375.,"{""accuracy"": 80, ""explanation"": 20}"

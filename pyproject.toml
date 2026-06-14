@@ -1,6 +1,6 @@
 [project]
 name = "paideia-engines"
-version = "0.1.0"
+version = "0.2.0"
 description = "Reusable local-first engines for Paideia-style AI agent growth systems."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -10,6 +10,9 @@ authors = [
 ]
 keywords = ["ai-agents", "evaluation", "governance", "memory", "local-first"]
 dependencies = []
+
+[project.scripts]
+paideia-engines = "paideia_engines.cli:main"
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0"]

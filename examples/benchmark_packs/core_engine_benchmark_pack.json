@@ -1,0 +1,63 @@
+{
+  "schema": "paideia-benchmark-pack/v1",
+  "benchmark_id": "phase15-core-engine-benchmark",
+  "description": "Release benchmark gate for the reusable Paideia engine suite.",
+  "golden_engine_schemas": {
+    "data_acquisition": "paideia-data-acquisition-plan/v1",
+    "acquisition_validation": "paideia-acquisition-validation-report/v1",
+    "curriculum_mapping": "paideia-curriculum-learning-unit/v1",
+    "cultivation": "paideia-cultivation-roadmap/v1",
+    "assessment": "paideia-assessment-item-result/v1",
+    "stress": "paideia-stress-scenario-run/v1",
+    "promotion": "paideia-promotion-decision/v1",
+    "governance": "paideia-governance-review/v1",
+    "runtime": "paideia-runtime-run/v1",
+    "verification": "paideia-configured-suite-verification/v1"
+  },
+  "reports": {
+    "contract_validation": "contract-validation.json",
+    "adapter_certification": "adapter-certification.json",
+    "source_diagnostics": "source-diagnostics.json",
+    "manifest_diagnostics": "manifest-diagnostics.json",
+    "stress_pack_diagnostics": "stress-pack-diagnostics.json",
+    "smoke": "smoke.json",
+    "runtime_evidence_validation": "runtime-evidence-validation.json"
+  },
+  "thresholds": {
+    "min_engine_outputs": 10,
+    "min_contract_engines": 10,
+    "min_adapter_certifications": 4,
+    "min_source_fixtures": 4,
+    "min_manifest_records": 4,
+    "min_stress_scenarios": 6,
+    "min_smoke_engines": 9,
+    "min_runtime_artifacts": 1
+  },
+  "required_suite_checks": [
+    "result_schema_matches",
+    "execution_trace_matches",
+    "output_count_matches",
+    "all_engine_outputs_present_in_result",
+    "all_engine_output_files_exist",
+    "engine_output_files_match_result",
+    "engine_schemas_match",
+    "acquisition_validation_passed",
+    "assessment_passed",
+    "verification_passed",
+    "verification_checks_all_true",
+    "stress_no_promotion_decision",
+    "stress_signal_candidate_only",
+    "promotion_recorded",
+    "governance_allowed",
+    "governance_local_first",
+    "runtime_review_required",
+    "runtime_replayable"
+  ],
+  "required_mutation_expectations": [
+    "missing_engine_output_file",
+    "engine_schema_mismatch",
+    "stress_promotion_decision_present",
+    "governance_local_first_violation",
+    "runtime_not_replayable"
+  ]
+}
