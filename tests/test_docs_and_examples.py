@@ -26,3 +26,4 @@ def test_architecture_docs_and_basic_example_exist():
     assert (ROOT / "examples" / "basic_growth_cycle.py").exists()
     assert (ROOT / "examples" / "data_and_curriculum_pipeline.py").exists()
     assert (ROOT / "examples" / "assessment_and_cultivation_pipeline.py").exists()
+    assert (ROOT / "examples" / "stress_and_promotion_pipeline.py").exists()

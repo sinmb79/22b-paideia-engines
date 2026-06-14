@@ -2,9 +2,17 @@
 
 [한국어](real_engine_development.ko.md)
 
-The first real development step is the data acquisition engine plus the curriculum mapping engine. Every serious cultivation, assessment, stress, and promotion engine needs trustworthy data and grade-subject-achievement mapping first.
+This roadmap tracks the real development work needed to turn the Paideia engine suite from a scaffold into reusable engine assets.
 
-## Added in v0.2
+## Current Position
+
+The first development wave established the data acquisition and curriculum mapping foundations. Serious cultivation, assessment, stress, and promotion engines need trustworthy data and grade-subject-achievement mapping before they can become reliable.
+
+Phase 2 strengthened assessment and cultivation. Phase 3 now strengthens stress rehearsal and promotion so they can be used as separate assets instead of being hidden inside the orchestration layer.
+
+## Phase 1: Data And Curriculum
+
+Added packages:
 
 ```text
 src/paideia_engines/data_acquisition/
@@ -13,26 +21,23 @@ examples/data_and_curriculum_pipeline.py
 data/curriculum/sample_standards.json
 ```
 
-## Data Acquisition Engine
-
-Responsibilities:
+Capabilities:
 
 - License-gated source decisions
 - Engine-specific acquisition plans
 - Restricted textbook blocking
 - Acquired source hashing
 - JSONL manifest writing
-
-## Curriculum Mapping Engine
-
-Responsibilities:
-
-- Grade and subject learning units
-- Achievement standard mapping
-- Dataset coverage reports
+- Learning unit generation from achievement standards
 - Handoffs to cultivation, assessment, stress, and promotion engines
 
-## Phase 2 Progress
+Example:
+
+```powershell
+python examples\data_and_curriculum_pipeline.py
+```
+
+## Phase 2: Assessment And Cultivation
 
 Added:
 
@@ -57,16 +62,45 @@ Example:
 python examples\assessment_and_cultivation_pipeline.py
 ```
 
+## Phase 3: Stress And Promotion
+
+Added:
+
+```text
+src/paideia_engines/stress/scenario_bank.py
+examples/stress_and_promotion_pipeline.py
+```
+
+Capabilities:
+
+- Stress scenario bank mapped to curriculum standards
+- Scenario selection by standard and stressor type
+- Stress plan generation for a standard
+- Scenario execution with candidate-only promotion signals
+- Trap-risk detection that blocks memory promotion pending review
+- Versioned promotion ledger
+- Quarantine reconsideration after verified review
+- Promoted experience supersession without deleting history
+- Active memory routing that excludes quarantined and superseded entries
+
+Example:
+
+```powershell
+python examples\stress_and_promotion_pipeline.py
+```
+
 ## Next Engine Development Order
 
-1. Stress Engine v0.2
-2. Promotion Engine v0.2
-3. Governance Engine v0.2
-4. Runtime/Orchestration v0.2
+1. Governance Engine v0.2: policy enforcement, approval records, and committee decision trails.
+2. Runtime Engine v0.2: stronger traces, acceptance evidence, and replayable task records.
+3. Orchestration v0.2: combine the upgraded engines without hiding their independent contracts.
+4. Dataset adapters: legal, manifest-driven adapters for public curriculum and assessment data.
 
 ## Verification
 
 ```powershell
 python -m pytest tests -q
 python examples\data_and_curriculum_pipeline.py
+python examples\assessment_and_cultivation_pipeline.py
+python examples\stress_and_promotion_pipeline.py
 ```

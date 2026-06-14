@@ -18,6 +18,19 @@ AI agents become hard to trust when training, evaluation, memory, runtime execut
 - **Runtime Engine**: produces trace-first execution records and acceptance checklists.
 - **Orchestration Engine**: composes the engines into an end-to-end growth cycle.
 
+```mermaid
+flowchart LR
+    Data["Data acquisition"] --> Curriculum["Curriculum mapping"]
+    Curriculum --> Cultivation["Cultivation"]
+    Curriculum --> Assessment["Assessment"]
+    Assessment --> Stress["Stress scenarios"]
+    Stress --> Signal["Candidate-only signal"]
+    Signal --> Promotion["Versioned promotion ledger"]
+    Promotion --> Runtime["Reusable active memory"]
+    Governance["Governance"] --> Data
+    Governance --> Promotion
+```
+
 ## Install For Local Development
 
 ```powershell
@@ -43,10 +56,13 @@ cycle = suite.run_growth_cycle(
 print(cycle["promotion_decision"]["status"])
 ```
 
-Run the example:
+Run the examples:
 
 ```powershell
 python examples/basic_growth_cycle.py
+python examples/data_and_curriculum_pipeline.py
+python examples/assessment_and_cultivation_pipeline.py
+python examples/stress_and_promotion_pipeline.py
 ```
 
 ## Engine Independence
@@ -54,8 +70,8 @@ python examples/basic_growth_cycle.py
 Each engine has a class API and deterministic dictionary output. You can import only what you need:
 
 ```python
-from paideia_engines.promotion import PromotionEngine
 from paideia_engines.contracts import ReviewLabel
+from paideia_engines.promotion import PromotionEngine
 
 engine = PromotionEngine(owner="agent:analyst")
 decision = engine.record_experience(
@@ -64,6 +80,8 @@ decision = engine.record_experience(
     review=ReviewLabel(score=92, status="verified", reviewed_by="boss"),
 )
 ```
+
+Phase 3 adds a stress scenario bank and a versioned promotion ledger. Stress can emit a candidate-only signal, but it never creates a promotion decision. Promotion owns the auditable ledger, quarantine reconsideration, and supersession history.
 
 ## Documentation
 
@@ -82,7 +100,9 @@ decision = engine.record_experience(
 - External uploads blocked by default.
 - Private assets require boss review.
 - Runtime outputs require review before memory promotion.
+- Stress scenarios never write promoted memory directly.
 - Quarantined experiences are excluded from active memory routing.
+- Superseded promoted experiences remain in the ledger but are not active memory.
 
 ## License
 
