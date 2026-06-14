@@ -9,7 +9,9 @@ flowchart TD
   Config["Config JSON"] --> Runner["Config Runner"]
   CLI["CLI"] --> Runner
   Runner --> DA["Data Acquisition"]
-  DA --> CM["Curriculum Mapping"]
+  DA --> SP["Source Parsers"]
+  SP --> CM["Curriculum Mapping"]
+  SP --> AS["Assessment"]
   CM --> C["Cultivation"]
   C --> AS["Assessment"]
   AS --> S["Stress"]
@@ -45,6 +47,7 @@ Contracts are intentionally small so every engine can stay independent.
 | Engine | Owns | Does Not Own |
 | --- | --- | --- |
 | Data Acquisition | source decisions, license gates, acquisition manifests | curriculum design |
+| Source Parsers | local CSV/JSON normalization after validation | downloading, scraping, license decisions |
 | Curriculum Mapping | learning units and standard coverage | scoring or promotion |
 | Cultivation | blueprint, roadmaps, handoffs | scoring, promotion |
 | Assessment | item bank, rubric result, transcript | memory promotion |
@@ -56,4 +59,4 @@ Contracts are intentionally small so every engine can stay independent.
 
 ## Design Rule
 
-No engine should silently perform another engine's decision. Stress can produce a promotion candidate signal, but only Promotion can create a promotion decision. Runtime can record evidence, but it cannot make memory active. Governance can block or allow a run, but it does not generate model output. The Config Runner composes engines, writes outputs, and emits a verification summary; it does not rewrite the meaning of any engine result.
+No engine should silently perform another engine's decision. Source parsers can normalize a verified local file, but they cannot decide whether the file is legally usable. Stress can produce a promotion candidate signal, but only Promotion can create a promotion decision. Runtime can record evidence, but it cannot make memory active. Governance can block or allow a run, but it does not generate model output. The Config Runner composes engines, writes outputs, and emits a verification summary; it does not rewrite the meaning of any engine result.

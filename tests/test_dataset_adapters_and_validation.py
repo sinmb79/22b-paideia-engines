@@ -105,6 +105,8 @@ def test_acquisition_validation_allows_restricted_metadata_only_manifest(tmp_pat
     assert acquired["content_scope"] == "metadata_only"
     assert report["status"] == "passed"
     assert report["summary"]["validated"] == 1
+    assert report["validations"][0]["provider"] == "Textbook publishers / Education Copyright Support Center guidance"
+    assert report["validations"][0]["source_url"] == "https://copyright.keris.or.kr/wft/fntLaw"
     assert report["issues"] == []
 
 

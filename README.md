@@ -107,6 +107,7 @@ decision = engine.record_experience(
 - Phase 5: config-driven orchestration and CLI core
 - Phase 6: release hardening, per-engine docs, and public asset audit
 - Phase 7: acquired-source validation, public curriculum adapters, and public item-bank adapters
+- Phase 8: NCIC/data.go.kr, AI-Hub, and public exam metadata source parsers
 
 ## Documentation
 
@@ -128,6 +129,8 @@ decision = engine.record_experience(
 - [Public asset audit in Korean](docs/public_asset_audit.ko.md)
 - [Dataset adapter backlog](docs/dataset_adapter_backlog.md)
 - [Dataset adapter backlog in Korean](docs/dataset_adapter_backlog.ko.md)
+- [Source-specific parsers](docs/source_parsers.md)
+- [Source-specific parsers in Korean](docs/source_parsers.ko.md)
 - [Example data index](docs/example_data_index.md)
 - [Example data index in Korean](docs/example_data_index.ko.md)
 

@@ -110,6 +110,17 @@ data/
 
 제한 교과서나 디지털교과서 자료는 `metadata_only` 범위일 때만 license note 없이 통과할 수 있습니다. 본문 전체를 다루려면 유효한 license 또는 terms-review note가 필요하며, 없으면 차단됩니다.
 
+## Phase 8 출처별 파서
+
+현재 source-specific parser 계층은 로컬 CSV/JSON export를 지원합니다.
+
+- NCIC/data.go.kr 형식 교육과정 CSV를 `CurriculumStandard`로 변환
+- 공개 평가 문항 CSV를 `ItemBank`로 변환
+- AI-Hub식 수학 문제 JSON label을 `ItemBank`로 변환
+- 공개 시험 metadata CSV를 metadata-only 확보 자료 record로 변환
+
+parser 계층은 확보 자료 검증 이후에만 실행됩니다. Parser 파일은 `data.acquired_sources` 또는 `data.manifest_path`에 포함되어 hash 검증을 통과해야 하며, 설정한 parser/source 조합이 맞아야 사용할 수 있습니다.
+
 ## 금지 사항
 
 - 디지털교과서 뷰어에서 콘텐츠를 자동 추출하지 않습니다.

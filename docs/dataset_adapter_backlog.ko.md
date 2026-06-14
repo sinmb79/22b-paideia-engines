@@ -14,6 +14,16 @@
 
 구현된 어댑터는 이미 합법적으로 확보된 로컬 JSON 파일만 파싱합니다. 교과서를 다운로드하거나, 시험 아카이브를 scraping하거나, 제한 원본 파일을 저장소에 복사하지 않습니다.
 
+## Phase 8 구현
+
+- `parse_ncic_curriculum_csv(...)`
+- `parse_assessment_items_csv(...)`
+- `parse_aihub_math_items_json(...)`
+- `build_public_exam_metadata_manifest(...)`
+- Config runner parser 키: `ncic_csv`, `data_go_kr_csv`, `public_assessment_csv`, `aihub_json`, `aihub_csv`
+
+Phase 8 parser는 로컬 CSV/JSON export만 읽습니다. HWP/PDF 교과서를 parsing하거나 시험 페이지를 crawling하지 않습니다.
+
 ## 어댑터 우선순위
 
 1. **공개 교육과정 standards importer**
@@ -35,6 +45,11 @@
    - 입력: 엔진별 JSON output
    - 출력: release-quality validation report
    - 보호장치: `02_acquisition_validation.json`, `10_verification.json`, stress-to-promotion 직접 결정 없음 확인
+
+5. **공식 포맷별 parser 강화**
+   - 입력: 유효한 manifest 아래 확보한 실제 공개 출처 CSV/JSON export
+   - 출력: 정규화된 엔진 record와 parser diagnostics
+   - 보호장치: 명시적 license evidence가 있기 전에는 HWP/PDF와 제한 원본 parsing을 공개 저장소 밖에 둠
 
 ## 보류
 

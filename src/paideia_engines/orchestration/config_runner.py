@@ -12,6 +12,11 @@ from paideia_engines.contracts import ReviewLabel
 from paideia_engines.cultivation import CultivationEngine
 from paideia_engines.curriculum_mapping import CurriculumMappingEngine
 from paideia_engines.data_acquisition import DataAcquisitionEngine
+from paideia_engines.data_acquisition.source_parsers import (
+    parse_aihub_math_items_json,
+    parse_assessment_items_csv,
+    parse_ncic_curriculum_csv,
+)
 from paideia_engines.data_catalog import default_seed_catalog
 from paideia_engines.governance import GovernanceEngine
 from paideia_engines.promotion import PromotionEngine
@@ -95,26 +100,40 @@ def _resolve_config_path(path_value: Any, base_dir: str | Path | None) -> Path:
     return path.resolve()
 
 
-def _validated_local_paths(validation_report: dict[str, Any]) -> set[str]:
-    paths: set[str] = set()
-    for validation in validation_report.get("validations", []):
-        if not isinstance(validation, dict) or validation.get("status") != "passed":
-            continue
-        local_path = str(validation.get("local_path", "")).strip()
-        if local_path:
-            paths.add(str(Path(local_path).resolve()))
-    return paths
-
-
-def _require_validated_adapter_path(
+def _validated_adapter_record(
     path: Path,
     config_key: str,
     validation_report: dict[str, Any],
+) -> dict[str, Any]:
+    resolved = str(path.resolve())
+    for validation in validation_report.get("validations", []):
+        if not isinstance(validation, dict) or validation.get("status") != "passed":
+            continue
+        if str(Path(str(validation.get("local_path", ""))).resolve()) == resolved:
+            return validation
+    raise PermissionError(
+        f"config.{config_key} must point to a path that passed acquired-source validation."
+    )
+
+
+def _require_parser_source(
+    parser: str,
+    validation: dict[str, Any],
+    allowed_source_ids: set[str],
 ) -> None:
-    if str(path.resolve()) not in _validated_local_paths(validation_report):
-        raise PermissionError(
-            f"config.{config_key} must point to a path that passed acquired-source validation."
-        )
+    source_id = str(validation.get("source_id", ""))
+    if source_id not in allowed_source_ids:
+        allowed = ", ".join(sorted(allowed_source_ids))
+        raise PermissionError(f"parser {parser} requires one of: {allowed}.")
+
+
+def _validation_metadata(validation: dict[str, Any], *keys: str) -> dict[str, str]:
+    metadata: dict[str, str] = {}
+    for key in keys:
+        value = validation.get(key)
+        if value not in (None, ""):
+            metadata[key] = str(value)
+    return metadata
 
 
 def _build_item_bank(
@@ -128,8 +147,38 @@ def _build_item_bank(
     items_path = assessment_config.get("items_path")
     if items_path:
         resolved_path = _resolve_config_path(items_path, config_base_dir)
-        _require_validated_adapter_path(resolved_path, "assessment.items_path", acquisition_validation)
-        return ItemBank.from_file(resolved_path)
+        validation = _validated_adapter_record(
+            resolved_path,
+            "assessment.items_path",
+            acquisition_validation,
+        )
+        parser = str(assessment_config.get("parser", "paideia_json"))
+        if parser == "paideia_json":
+            _require_parser_source(
+                parser,
+                validation,
+                {"moe_csat_example_items", "aihub_math_problem_solving", "aihub_grade_subject_textbook_data"},
+            )
+            return ItemBank.from_file(resolved_path)
+        if parser == "aihub_json":
+            _require_parser_source(parser, validation, {"aihub_math_problem_solving"})
+            return parse_aihub_math_items_json(
+                resolved_path,
+                **_validation_metadata(validation, "source_id", "provider", "source_url", "license_tier"),
+            )
+        if parser == "aihub_csv":
+            _require_parser_source(parser, validation, {"aihub_math_problem_solving"})
+            return parse_assessment_items_csv(
+                resolved_path,
+                **_validation_metadata(validation, "source_id", "provider", "source_url", "license_tier"),
+            )
+        if parser == "public_assessment_csv":
+            _require_parser_source(parser, validation, {"moe_csat_example_items"})
+            return parse_assessment_items_csv(
+                resolved_path,
+                **_validation_metadata(validation, "source_id", "provider", "source_url", "license_tier"),
+            )
+        raise ValueError(f"Unknown assessment parser: {parser}")
 
     configured_items = assessment_config.get("items")
     if isinstance(configured_items, list) and configured_items:
@@ -162,11 +211,36 @@ def _load_standards(
     standards_path = curriculum_config.get("standards_path")
     if standards_path:
         resolved_path = _resolve_config_path(standards_path, config_base_dir)
-        _require_validated_adapter_path(resolved_path, "curriculum.standards_path", acquisition_validation)
-        return [
-            standard.to_dict()
-            for standard in CurriculumMappingEngine.load_standards_file(resolved_path)
-        ]
+        validation = _validated_adapter_record(
+            resolved_path,
+            "curriculum.standards_path",
+            acquisition_validation,
+        )
+        parser = str(curriculum_config.get("parser", "paideia_json"))
+        if parser == "paideia_json":
+            _require_parser_source(
+                parser,
+                validation,
+                {"ncic_curriculum_originals", "data_go_kr_ncic_curriculum"},
+            )
+            return [
+                standard.to_dict()
+                for standard in CurriculumMappingEngine.load_standards_file(resolved_path)
+            ]
+        if parser in {"ncic_csv", "data_go_kr_csv"}:
+            _require_parser_source(
+                parser,
+                validation,
+                {"ncic_curriculum_originals", "data_go_kr_ncic_curriculum"},
+            )
+            return [
+                standard.to_dict()
+                for standard in parse_ncic_curriculum_csv(
+                    resolved_path,
+                    **_validation_metadata(validation, "source_id", "provider", "source_url", "license_tier"),
+                )
+            ]
+        raise ValueError(f"Unknown curriculum parser: {parser}")
     return list(curriculum_config.get("standards") or _default_standards())
 
 

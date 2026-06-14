@@ -6,7 +6,7 @@
 
 ## 현재 위치
 
-현재 엔진 모음은 데이터 확보, 교육과정 매핑, 육성, 평가, 스트레스, 승급, 거버넌스, 런타임, 설정 기반 오케스트레이션까지 v0.2 core를 갖추었습니다. Phase 6에서는 릴리스 하드닝을 추가했고, Phase 7에서는 확보 자료 validation report, 공개 교육과정 JSON 어댑터, 공개 또는 라이선스 문항 bank 어댑터, 설정 기반 suite 확보 자료 검증을 추가했습니다. 다음 심화 작업은 실제 공개 교육과정/평가 포맷별 parser입니다.
+현재 엔진 모음은 데이터 확보, 교육과정 매핑, 육성, 평가, 스트레스, 승급, 거버넌스, 런타임, 설정 기반 오케스트레이션까지 v0.2 core를 갖추었습니다. Phase 6에서는 릴리스 하드닝을 추가했고, Phase 7에서는 확보 자료 validation report와 JSON 어댑터를 추가했습니다. Phase 8에서는 NCIC/data.go.kr 형식 CSV parsing, AI-Hub식 수학 JSON parsing, 공개 평가 CSV parsing, 공개 시험 metadata manifest를 추가했습니다. 다음 심화 작업은 parser diagnostics와 실제 포맷 fixture 확대입니다.
 
 ## Phase 1: 데이터와 교육과정
 
@@ -133,9 +133,28 @@ tests/test_dataset_adapters_and_validation.py
 - 공개 또는 라이선스 평가 문항 JSON import
 - 설정 기반 suite `acquisition_validation` 출력
 
+## Phase 8: 출처별 파서
+
+추가 파일:
+
+```text
+src/paideia_engines/data_acquisition/source_parsers.py
+examples/source_specific_parsers.py
+examples/source_samples/
+tests/test_source_specific_parsers.py
+```
+
+기능:
+
+- NCIC/data.go.kr 형식 교육과정 CSV parsing
+- 공개 평가 CSV parsing
+- AI-Hub식 수학 문제 JSON parsing
+- EBSi/공개 시험 metadata-only manifest 생성
+- Config runner parser/source 조합 검사
+
 ## 다음 개발 순서
 
-1. 공식 공개 교육과정/평가 포맷별 source-specific parser.
+1. 실제 공개 출처 export용 parser diagnostics와 fixture pack.
 2. 확보 자료 manifest와 configured suite output에 대한 더 강한 validation report.
 3. 과목별 평가를 위한 stress scenario pack 확대.
 4. 최종 검증이 계속 통과할 때 Ready PR/release 준비.

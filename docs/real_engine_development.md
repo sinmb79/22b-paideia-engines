@@ -6,7 +6,7 @@ This roadmap tracks the work needed to turn the Paideia engine suite from a scaf
 
 ## Current Position
 
-The suite now has v0.2 cores for data acquisition, curriculum mapping, cultivation, assessment, stress, promotion, governance, runtime, and config-driven orchestration. Phase 6 adds release hardening. Phase 7 adds acquired-source validation reports, public curriculum JSON adapters, public or licensed assessment item-bank adapters, and configured-suite acquisition validation. The next depth work is source-specific parsers for real public curriculum and assessment formats.
+The suite now has v0.2 cores for data acquisition, curriculum mapping, cultivation, assessment, stress, promotion, governance, runtime, and config-driven orchestration. Phase 6 adds release hardening. Phase 7 adds acquired-source validation reports and JSON adapters. Phase 8 adds NCIC/data.go.kr-style CSV parsing, AI-Hub-like math JSON parsing, public assessment CSV parsing, and public exam metadata manifests. The next depth work is parser diagnostics and broader real-format fixtures.
 
 ## Phase 1: Data And Curriculum
 
@@ -133,9 +133,28 @@ Capabilities:
 - Public or licensed assessment item JSON import
 - Configured-suite `acquisition_validation` output
 
+## Phase 8: Source-Specific Parsers
+
+Added:
+
+```text
+src/paideia_engines/data_acquisition/source_parsers.py
+examples/source_specific_parsers.py
+examples/source_samples/
+tests/test_source_specific_parsers.py
+```
+
+Capabilities:
+
+- NCIC/data.go.kr-style curriculum CSV parsing
+- Public assessment CSV parsing
+- AI-Hub-like math problem JSON parsing
+- EBSi/public exam metadata-only manifest building
+- Config runner parser/source pairing checks
+
 ## Next Development Order
 
-1. Source-specific parsers for official public curriculum and assessment formats.
+1. Parser diagnostics and fixture packs for real public-source exports.
 2. Stronger validation reports for acquired source manifests and configured suite outputs.
 3. Broader stress scenario packs for subject-specific evaluation.
 4. Ready PR/release preparation after final validation remains green.

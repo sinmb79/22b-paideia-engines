@@ -13,6 +13,7 @@ python examples\data_and_curriculum_pipeline.py
 python examples\assessment_and_cultivation_pipeline.py
 python examples\stress_and_promotion_pipeline.py
 python examples\governance_and_runtime_pipeline.py
+python examples\source_specific_parsers.py
 python -m paideia_engines.cli run-config --config examples\configured_suite.json --output .paideia-runs\result.json --output-dir .paideia-runs\engines
 python -m paideia_engines.cli smoke --engine all --output .paideia-runs\smoke.json
 python -m compileall src

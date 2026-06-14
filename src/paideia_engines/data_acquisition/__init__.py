@@ -252,7 +252,11 @@ class DataAcquisitionEngine:
             "status": status,
             "content_scope": str(acquired.get("content_scope", "public_content")).lower(),
             "local_path": str(path) if path is not None else str(acquired.get("local_path", "")),
+            "provider": record.provider if record else None,
+            "source_url": record.source_url if record else None,
             "license_tier": record.license_tier if record else None,
+            "acquisition_mode": record.acquisition_mode if record else None,
+            "engine_uses": list(record.engine_uses) if record else [],
             "issues": issues,
         }
 

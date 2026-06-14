@@ -1,0 +1,12 @@
+{
+  "data": [
+    {
+      "id": "aihub-math-sample-001",
+      "curriculum_code": "E-MATH-03-12",
+      "question": "Show how to add 245 and 130.",
+      "answer": "375",
+      "wrong_answers": ["365", "475"],
+      "solution": "Add hundreds, tens, and ones by place value."
+    }
+  ]
+}

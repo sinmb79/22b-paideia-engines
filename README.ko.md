@@ -107,6 +107,7 @@ decision = engine.record_experience(
 - Phase 5: 설정 기반 오케스트레이션과 CLI core
 - Phase 6: 릴리스 하드닝, 엔진별 문서, 공개 자산 감사
 - Phase 7: 확보 자료 검증, 공개 교육과정 어댑터, 공개 문항 bank 어댑터
+- Phase 8: NCIC/data.go.kr, AI-Hub, 공개 시험 metadata 출처별 parser
 
 ## 문서
 
@@ -128,6 +129,8 @@ decision = engine.record_experience(
 - [Public asset audit in English](docs/public_asset_audit.md)
 - [데이터셋 어댑터 백로그](docs/dataset_adapter_backlog.ko.md)
 - [Dataset adapter backlog in English](docs/dataset_adapter_backlog.md)
+- [출처별 파서](docs/source_parsers.ko.md)
+- [Source-specific parsers in English](docs/source_parsers.md)
 - [예제 데이터 인덱스](docs/example_data_index.ko.md)
 - [Example data index in English](docs/example_data_index.md)
 

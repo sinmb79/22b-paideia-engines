@@ -276,3 +276,142 @@ def test_config_file_resolves_relative_paths_from_config_location(tmp_path):
 
     assert result["outputs"]["curriculum_mapping"]["standards"][0]["standard_id"] == "E-MATH-03-08"
     assert result["outputs"]["verification"]["passed"] is True
+
+
+def test_config_runner_uses_ncic_csv_parser_after_acquisition_validation(tmp_path):
+    standards_path = tmp_path / "ncic.csv"
+    standards_path.write_text(
+        "성취기준코드,학교급,학년,교과,영역,성취기준\n"
+        "E-MATH-03-10,elementary,3,math,numbers_and_operations,Verify addition with place value.\n",
+        encoding="utf-8",
+    )
+    config = _sample_config(tmp_path)
+    config["data"]["acquired_sources"].append(
+        {
+            "schema": "paideia-acquired-source/v1",
+            "source_id": "ncic_curriculum_originals",
+            "status": "acquired",
+            "local_path": str(standards_path),
+            "hash": DataAcquisitionEngine.hash_path(standards_path),
+            "content_scope": "public_content",
+            "license_note_path": None,
+            "approved_by": "boss",
+        }
+    )
+    config["curriculum"]["standards"] = []
+    config["curriculum"]["standards_path"] = str(standards_path)
+    config["curriculum"]["parser"] = "ncic_csv"
+
+    result = run_configured_suite(config, output_dir=tmp_path / "outputs")
+
+    assert result["outputs"]["curriculum_mapping"]["standards"][0]["standard_id"] == "E-MATH-03-10"
+    assert result["outputs"]["curriculum_mapping"]["standards"][0]["source_id"] == "ncic_curriculum_originals"
+
+
+def test_config_runner_uses_aihub_json_parser_after_terms_note_validation(tmp_path):
+    items_path = tmp_path / "aihub.json"
+    items_path.write_text(
+        json.dumps(
+            {
+                "data": [
+                    {
+                        "id": "aihub-math-777",
+                        "curriculum_code": "E-MATH-03-01",
+                        "question": "Show how to add 245 and 130.",
+                        "answer": "375",
+                        "solution": "Use place value.",
+                    }
+                ]
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+    note_path = tmp_path / "aihub_terms.md"
+    note_path.write_text("Terms reviewed for local-only parser smoke.", encoding="utf-8")
+    config = _sample_config(tmp_path)
+    config["data"]["acquired_sources"].append(
+        {
+            "schema": "paideia-acquired-source/v1",
+            "source_id": "aihub_math_problem_solving",
+            "status": "acquired",
+            "local_path": str(items_path),
+            "hash": DataAcquisitionEngine.hash_path(items_path),
+            "content_scope": "public_content",
+            "license_note_path": str(note_path),
+            "approved_by": "boss",
+        }
+    )
+    config["assessment"] = {
+        "items_path": str(items_path),
+        "parser": "aihub_json",
+        "item_id": "aihub-math-777",
+        "answer": "375",
+        "explanation": "Use place value.",
+    }
+
+    result = run_configured_suite(config, output_dir=tmp_path / "outputs")
+
+    assert result["outputs"]["assessment"]["item_id"] == "aihub-math-777"
+    assert result["outputs"]["assessment"]["item_type"] == "solution_process"
+    assert result["outputs"]["verification"]["passed"] is True
+
+
+def test_config_runner_rejects_wrong_source_parser_pairing(tmp_path):
+    standards_path = tmp_path / "wrong-source.csv"
+    standards_path.write_text(
+        "성취기준코드,학교급,학년,교과,영역,성취기준\n"
+        "E-MATH-03-11,elementary,3,math,numbers_and_operations,Verify addition.\n",
+        encoding="utf-8",
+    )
+    config = _sample_config(tmp_path)
+    config["data"]["acquired_sources"].append(
+        {
+            "schema": "paideia-acquired-source/v1",
+            "source_id": "moe_csat_example_items",
+            "status": "acquired",
+            "local_path": str(standards_path),
+            "hash": DataAcquisitionEngine.hash_path(standards_path),
+            "content_scope": "public_content",
+            "license_note_path": None,
+            "approved_by": "boss",
+        }
+    )
+    config["curriculum"]["standards"] = []
+    config["curriculum"]["standards_path"] = str(standards_path)
+    config["curriculum"]["parser"] = "ncic_csv"
+
+    with pytest.raises(PermissionError, match="parser ncic_csv"):
+        run_configured_suite(config, output_dir=tmp_path / "outputs")
+
+
+def test_config_runner_preserves_validation_source_metadata_in_source_parser(tmp_path):
+    standards_path = tmp_path / "data-go-kr-ncic.csv"
+    standards_path.write_text(
+        "성취기준코드,학교급,학년,교과,영역,성취기준\n"
+        "E-MATH-03-12,elementary,3,math,numbers_and_operations,Verify addition with place value.\n",
+        encoding="utf-8",
+    )
+    config = _sample_config(tmp_path)
+    config["data"]["acquired_sources"].append(
+        {
+            "schema": "paideia-acquired-source/v1",
+            "source_id": "data_go_kr_ncic_curriculum",
+            "status": "acquired",
+            "local_path": str(standards_path),
+            "hash": DataAcquisitionEngine.hash_path(standards_path),
+            "content_scope": "public_content",
+            "license_note_path": None,
+            "approved_by": "boss",
+        }
+    )
+    config["curriculum"]["standards"] = []
+    config["curriculum"]["standards_path"] = str(standards_path)
+    config["curriculum"]["parser"] = "data_go_kr_csv"
+
+    result = run_configured_suite(config, output_dir=tmp_path / "outputs")
+
+    standard = result["outputs"]["curriculum_mapping"]["standards"][0]
+    assert standard["source_id"] == "data_go_kr_ncic_curriculum"
+    assert standard["provider"] == "Ministry of Education / data.go.kr"
+    assert standard["source_url"] == "https://www.data.go.kr/data/15060742/fileData.do"

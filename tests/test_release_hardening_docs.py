@@ -38,6 +38,8 @@ def test_release_hardening_docs_exist_and_are_linked():
         "docs/public_asset_audit.ko.md",
         "docs/dataset_adapter_backlog.md",
         "docs/dataset_adapter_backlog.ko.md",
+        "docs/source_parsers.md",
+        "docs/source_parsers.ko.md",
         "docs/example_data_index.md",
         "docs/example_data_index.ko.md",
     ]
@@ -48,8 +50,10 @@ def test_release_hardening_docs_exist_and_are_linked():
     korean = (ROOT / "README.ko.md").read_text(encoding="utf-8")
     assert "[Engine documentation](docs/engines/README.md)" in readme
     assert "[Release checklist](docs/release_checklist.md)" in readme
+    assert "[Source-specific parsers](docs/source_parsers.md)" in readme
     assert "[엔진 문서](docs/engines/README.ko.md)" in korean
     assert "[릴리스 체크리스트](docs/release_checklist.ko.md)" in korean
+    assert "[출처별 파서](docs/source_parsers.ko.md)" in korean
 
 
 def test_release_checklist_contains_required_validation_commands():

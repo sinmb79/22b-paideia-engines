@@ -37,6 +37,7 @@ The project is complete only when:
 | 5 | Orchestration and CLI | Implemented v0.2 core |
 | 6 | Documentation, release, examples | Implemented v0.2 release hardening |
 | 7 | Dataset adapters and validation reports | Implemented v0.2 core |
+| 8 | Source-specific parsers | Implemented v0.2 core |
 
 ## Phase 0. Foundation
 
@@ -170,6 +171,24 @@ Completion criteria:
 - Public or licensed assessment JSON can become `AssessmentItem` records.
 - Configured-suite verification includes acquisition validation.
 
+## Phase 8. Source-Specific Parsers
+
+Delivered:
+
+- NCIC/data.go.kr-style curriculum CSV parser
+- Public assessment CSV parser
+- AI-Hub-like math problem JSON parser
+- Public exam metadata CSV manifest builder
+- Config runner parser/source pairing checks
+- Source parser samples and example script
+
+Completion criteria:
+
+- Source-specific parsers run only on files that passed acquisition validation.
+- Parser/source mismatches are rejected.
+- AI-Hub-like data requires terms/license note validation before parser use.
+- EBSi/public exam data stays metadata-only and does not create assessment items from protected documents.
+
 ## Active Branch And PR
 
 ```text
@@ -182,6 +201,6 @@ https://github.com/sinmb79/22b-paideia-engines/pull/1
 Final release loop for this branch:
 
 1. Run full validation.
-2. Commit and push the Phase 7 dataset adapter and validation changes.
+2. Commit and push the latest dataset adapter/parser changes.
 3. Update the draft PR with the new validation evidence.
 4. Convert the PR to ready or cut a release only after the checklist remains green.

@@ -56,3 +56,14 @@ legal local file -> acquired source manifest -> validation report -> engine adap
 - Configured suite runs now write `02_acquisition_validation.json` before curriculum mapping and `10_verification.json` at the end.
 
 Restricted textbook or digital textbook content may pass only as `metadata_only` unless a license or terms-review note is present. Full-content ingestion without a valid note is blocked.
+
+## Phase 8 Source Parsers
+
+The source-specific parser layer currently supports local CSV/JSON exports:
+
+- NCIC/data.go.kr-style curriculum CSV to `CurriculumStandard`.
+- Public assessment item CSV to `ItemBank`.
+- AI-Hub-like math problem JSON labels to `ItemBank`.
+- Public exam metadata CSV to metadata-only acquired-source records.
+
+The parser layer is downstream of acquisition validation. Parser files must be listed in `data.acquired_sources` or `data.manifest_path`, pass hash validation, and match the configured parser/source pair before use.

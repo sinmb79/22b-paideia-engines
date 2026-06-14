@@ -37,6 +37,7 @@
 | 5 | 오케스트레이션과 CLI | v0.2 core 구현 |
 | 6 | 문서, 릴리스, 예제 | v0.2 릴리스 하드닝 구현 |
 | 7 | 데이터셋 어댑터와 검증 리포트 | v0.2 core 구현 |
+| 8 | 출처별 파서 | v0.2 core 구현 |
 
 ## Phase 0. Foundation
 
@@ -170,6 +171,24 @@ python -m paideia_engines.cli smoke --engine all --output .paideia-runs/smoke.js
 - 공개 또는 라이선스 평가 JSON은 `AssessmentItem` record로 변환된다.
 - 설정 기반 suite 검증에 확보 자료 검증이 포함된다.
 
+## Phase 8. 출처별 파서
+
+산출물:
+
+- NCIC/data.go.kr 형식 교육과정 CSV parser
+- 공개 평가 CSV parser
+- AI-Hub식 수학 문제 JSON parser
+- 공개 시험 metadata CSV manifest builder
+- Config runner parser/source 조합 검사
+- Source parser 샘플과 예제 script
+
+완료 기준:
+
+- 출처별 parser는 확보 자료 검증을 통과한 파일에만 실행된다.
+- parser/source 조합이 맞지 않으면 거부된다.
+- AI-Hub식 데이터는 terms/license note 검증 이후에만 parser를 사용할 수 있다.
+- EBSi/공개 시험 자료는 metadata-only로 유지하며 보호 문서에서 평가 문항을 생성하지 않는다.
+
 ## 현재 브랜치와 PR
 
 ```text
@@ -182,6 +201,6 @@ https://github.com/sinmb79/22b-paideia-engines/pull/1
 이 브랜치의 최종 릴리스 루프를 진행합니다.
 
 1. 전체 검증 실행
-2. Phase 7 데이터셋 어댑터와 검증 변경 커밋 및 푸시
+2. 최신 데이터셋 어댑터/parser 변경 커밋 및 푸시
 3. 검증 증거를 Draft PR에 반영
 4. 체크리스트가 계속 통과할 때만 PR ready 전환 또는 release 생성
