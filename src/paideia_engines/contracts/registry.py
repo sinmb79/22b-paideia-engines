@@ -301,7 +301,9 @@ def engine_contracts() -> list[EngineContract]:
             status="phase13_contract_frozen",
             public_api=[
                 "PaideiaEngineSuite",
+                "load_config",
                 "run_config_file",
+                "run_configured_suite",
                 "run_engine_smoke",
                 "validate_configured_suite_outputs",
                 "validate_configured_suite_result",
@@ -316,6 +318,7 @@ def engine_contracts() -> list[EngineContract]:
             examples=[
                 "examples/basic_growth_cycle.py",
                 "examples/configured_suite.json",
+                "examples/downstream_suite_recipe.py",
             ],
             docs=[
                 "src/paideia_engines/orchestration/README.md",

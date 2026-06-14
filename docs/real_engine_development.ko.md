@@ -6,7 +6,7 @@
 
 ## 현재 위치
 
-현재 엔진 모음은 데이터 확보, 교육과정 매핑, 육성, 평가, 스트레스, 승급, 거버넌스, 런타임, 설정 기반 오케스트레이션까지 v0.2 core를 갖추었습니다. Phase 6에서는 릴리스 하드닝을 추가했고, Phase 7에서는 확보 자료 validation report와 JSON 어댑터를 추가했습니다. Phase 8에서는 NCIC/data.go.kr 형식 CSV parsing, AI-Hub식 수학 JSON parsing, 공개 평가 CSV parsing, 공개 시험 metadata manifest를 추가했습니다. Phase 9에서는 parser diagnostics와 공개 안전 fixture pack을 추가했습니다. Phase 10에서는 configured-suite output validation을 추가했습니다. Phase 11에서는 acquired-source manifest diagnostics를 추가했습니다. Phase 12에서는 subject-specific stress pack을 추가했습니다. Phase 13에서는 공개 엔진 계약 레지스트리를 추가했습니다. Phase 14에서는 parser fixture를 valid acquired-source manifest record와 연결하는 adapter certification을 추가했습니다. Phase 15에서는 release evidence와 regression threshold를 확인하는 benchmark-pack validation을 추가했습니다. Phase 16에서는 persistent runtime evidence bundle과 artifact validation을 추가했습니다. Phase 17에서는 release-candidate packaging, link, encoding, sensitive pattern, 개인 로컬 경로, manifest boundary, public asset validation을 추가했습니다. 다음 심화 작업은 downstream reuse recipe입니다.
+현재 엔진 모음은 데이터 확보, 교육과정 매핑, 육성, 평가, 스트레스, 승급, 거버넌스, 런타임, 설정 기반 오케스트레이션까지 v0.2 core를 갖추었습니다. Phase 6에서는 릴리스 하드닝을 추가했고, Phase 7에서는 확보 자료 validation report와 JSON 어댑터를 추가했습니다. Phase 8에서는 NCIC/data.go.kr 형식 CSV parsing, AI-Hub식 수학 JSON parsing, 공개 평가 CSV parsing, 공개 시험 metadata manifest를 추가했습니다. Phase 9에서는 parser diagnostics와 공개 안전 fixture pack을 추가했습니다. Phase 10에서는 configured-suite output validation을 추가했습니다. Phase 11에서는 acquired-source manifest diagnostics를 추가했습니다. Phase 12에서는 subject-specific stress pack을 추가했습니다. Phase 13에서는 공개 엔진 계약 레지스트리를 추가했습니다. Phase 14에서는 parser fixture를 valid acquired-source manifest record와 연결하는 adapter certification을 추가했습니다. Phase 15에서는 release evidence와 regression threshold를 확인하는 benchmark-pack validation을 추가했습니다. Phase 16에서는 persistent runtime evidence bundle과 artifact validation을 추가했습니다. Phase 17에서는 release-candidate packaging, link, encoding, sensitive pattern, 개인 로컬 경로, manifest boundary, public asset validation을 추가했습니다. Phase 18에서는 single-engine import와 full-suite composition을 위한 downstream reuse recipe를 추가했습니다.
 
 ## Phase 1: 데이터와 교육과정
 
@@ -318,9 +318,29 @@ tests/test_release_candidate.py
 - Installed package target에서 console script와 module entrypoint wheel smoke
 - CLI 명령: `validate-release-candidate`
 
+## Phase 18: Downstream reuse recipes
+
+추가 파일:
+
+```text
+examples/downstream_single_engine_recipe.py
+examples/downstream_suite_recipe.py
+docs/downstream_reuse_recipes.md
+docs/downstream_reuse_recipes.ko.md
+tests/test_downstream_reuse_recipes.py
+```
+
+기능:
+
+- Downstream promotion gate를 위한 single-engine import recipe
+- 외부 local project를 위한 configured-suite composition recipe
+- Internal agent loop에서 reusable package contract로 이동하는 migration note
+- Downstream integration diagram이 포함된 영문/한국어 문서
+- 두 recipe 실행과 문서 링크를 검증하는 테스트
+
 ## 다음 개발 순서
 
-1. 다른 22B AI 프로젝트에서 바로 가져다 쓸 수 있는 downstream reuse recipe.
+1. 모든 gate가 계속 green일 때 최종 release check와 PR ready/release 판단.
 
 ## 검증
 
@@ -332,6 +352,8 @@ python examples\assessment_and_cultivation_pipeline.py
 python examples\stress_and_promotion_pipeline.py
 python examples\governance_and_runtime_pipeline.py
 python examples\source_specific_parsers.py
+python examples\downstream_single_engine_recipe.py
+python examples\downstream_suite_recipe.py
 python -m paideia_engines.cli validate-contracts --repo-root . --output .paideia-runs\contract-validation.json
 python -m paideia_engines.cli certify-adapters --fixtures examples\source_fixture_pack.json --manifest examples\acquired_sources_manifest.jsonl --output .paideia-runs\adapter-certification.json
 python -m paideia_engines.cli diagnose-source --manifest examples\source_fixture_pack.json --output .paideia-runs\source-diagnostics.json

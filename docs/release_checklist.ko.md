@@ -14,6 +14,8 @@ python examples\assessment_and_cultivation_pipeline.py
 python examples\stress_and_promotion_pipeline.py
 python examples\governance_and_runtime_pipeline.py
 python examples\source_specific_parsers.py
+python examples\downstream_single_engine_recipe.py
+python examples\downstream_suite_recipe.py
 python -m paideia_engines.cli validate-contracts --repo-root . --output .paideia-runs\contract-validation.json
 python -m paideia_engines.cli certify-adapters --fixtures examples\source_fixture_pack.json --manifest examples\acquired_sources_manifest.jsonl --output .paideia-runs\adapter-certification.json
 python -m paideia_engines.cli diagnose-source --manifest examples\source_fixture_pack.json --output .paideia-runs\source-diagnostics.json
@@ -48,6 +50,7 @@ gh pr view 1 --json number,title,url,isDraft,headRefName,baseRefName,state,commi
 - Runtime evidence bundle은 복사된 artifact file의 존재, size, hash, replay trace를 검증해야 합니다.
 - Benchmark validation은 golden schema, mutation expectation, release evidence threshold를 통과해야 합니다.
 - Release candidate validation은 link, UTF-8, replacement character, sensitive pattern, 개인 로컬 경로, acquired-source manifest, generated path, packaging metadata check를 통과해야 합니다.
+- Downstream reuse example은 single-engine import와 configured-suite composition이 모두 동작함을 보여야 합니다.
 - PR 본문에 검증 명령과 현재 draft/ready 상태가 적혀 있어야 합니다.
 
 ## 릴리스 판단

@@ -28,6 +28,8 @@ python examples\assessment_and_cultivation_pipeline.py
 python examples\stress_and_promotion_pipeline.py
 python examples\governance_and_runtime_pipeline.py
 python examples\source_specific_parsers.py
+python examples\downstream_single_engine_recipe.py
+python examples\downstream_suite_recipe.py
 python -m paideia_engines.cli validate-contracts --repo-root . --output .paideia-runs\contract-validation.json
 python -m paideia_engines.cli certify-adapters --fixtures examples\source_fixture_pack.json --manifest examples\acquired_sources_manifest.jsonl --output .paideia-runs\adapter-certification.json
 python -m paideia_engines.cli diagnose-source --manifest examples\source_fixture_pack.json --output .paideia-runs\source-diagnostics.json
@@ -93,6 +95,8 @@ python -m paideia_engines.cli validate-release-candidate `
 - `runtime-evidence-replay.json`: 저장된 bundle에서 로드한 replayable trace입니다.
 - `benchmark-validation.json`: golden schema, mutation expectation, release evidence threshold를 확인하는 benchmark report입니다.
 - `release-candidate-validation.json`: packaging metadata, link, UTF-8, replacement character, sensitive pattern, 개인 로컬 경로, acquired-source manifest, public asset boundary를 검증합니다.
+- `downstream_single_engine_recipe.py`: 엔진 하나를 downstream asset으로 import할 수 있음을 검증합니다.
+- `downstream_suite_recipe.py`: 다른 local project가 agent 내부 코드를 복사하지 않고 configured suite를 조합할 수 있음을 검증합니다.
 
 ## 공개 릴리스 경계
 

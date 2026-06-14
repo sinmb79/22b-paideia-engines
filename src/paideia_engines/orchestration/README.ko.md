@@ -16,6 +16,7 @@
 ## 공개 API
 
 - `PaideiaEngineSuite`
+- `load_config(path)`
 - `run_configured_suite(config, output_dir=None)`
 - `run_config_file(config_path, output_path=None, output_dir=None)`
 - `run_engine_smoke(engine="all")`

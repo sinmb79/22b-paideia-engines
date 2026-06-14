@@ -28,6 +28,8 @@ python examples\assessment_and_cultivation_pipeline.py
 python examples\stress_and_promotion_pipeline.py
 python examples\governance_and_runtime_pipeline.py
 python examples\source_specific_parsers.py
+python examples\downstream_single_engine_recipe.py
+python examples\downstream_suite_recipe.py
 python -m paideia_engines.cli validate-contracts --repo-root . --output .paideia-runs\contract-validation.json
 python -m paideia_engines.cli certify-adapters --fixtures examples\source_fixture_pack.json --manifest examples\acquired_sources_manifest.jsonl --output .paideia-runs\adapter-certification.json
 python -m paideia_engines.cli diagnose-source --manifest examples\source_fixture_pack.json --output .paideia-runs\source-diagnostics.json
@@ -93,6 +95,8 @@ python -m paideia_engines.cli validate-release-candidate `
 - `runtime-evidence-replay.json`: replayable trace loaded from the persisted bundle.
 - `benchmark-validation.json`: release benchmark report that checks golden schemas, mutation expectations, and evidence thresholds.
 - `release-candidate-validation.json`: packaging metadata, links, UTF-8, replacement-character, sensitive-pattern, personal-path, acquired-source manifest, and public-asset validation.
+- `downstream_single_engine_recipe.py`: verifies that one engine can be imported as a focused downstream asset.
+- `downstream_suite_recipe.py`: verifies that another local project can compose the configured suite without copying agent internals.
 
 ## Public Release Boundary
 

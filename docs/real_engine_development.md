@@ -6,7 +6,7 @@ This roadmap tracks the work needed to turn the Paideia engine suite from a scaf
 
 ## Current Position
 
-The suite now has v0.2 cores for data acquisition, curriculum mapping, cultivation, assessment, stress, promotion, governance, runtime, and config-driven orchestration. Phase 6 adds release hardening. Phase 7 adds acquired-source validation reports and JSON adapters. Phase 8 adds NCIC/data.go.kr-style CSV parsing, AI-Hub-like math JSON parsing, public assessment CSV parsing, and public exam metadata manifests. Phase 9 adds parser diagnostics and public-safe fixture packs. Phase 10 adds configured-suite output validation. Phase 11 adds acquired-source manifest diagnostics. Phase 12 adds subject-specific stress packs. Phase 13 adds the public engine contract registry. Phase 14 adds adapter certification that links parser fixtures to valid acquired-source manifest records. Phase 15 adds benchmark-pack validation for release evidence and regression thresholds. Phase 16 adds persistent runtime evidence bundles and artifact validation. Phase 17 adds release-candidate packaging, link, encoding, sensitive-pattern, personal-path, manifest-boundary, and public-asset validation. The next depth work is downstream reuse recipes.
+The suite now has v0.2 cores for data acquisition, curriculum mapping, cultivation, assessment, stress, promotion, governance, runtime, and config-driven orchestration. Phase 6 adds release hardening. Phase 7 adds acquired-source validation reports and JSON adapters. Phase 8 adds NCIC/data.go.kr-style CSV parsing, AI-Hub-like math JSON parsing, public assessment CSV parsing, and public exam metadata manifests. Phase 9 adds parser diagnostics and public-safe fixture packs. Phase 10 adds configured-suite output validation. Phase 11 adds acquired-source manifest diagnostics. Phase 12 adds subject-specific stress packs. Phase 13 adds the public engine contract registry. Phase 14 adds adapter certification that links parser fixtures to valid acquired-source manifest records. Phase 15 adds benchmark-pack validation for release evidence and regression thresholds. Phase 16 adds persistent runtime evidence bundles and artifact validation. Phase 17 adds release-candidate packaging, link, encoding, sensitive-pattern, personal-path, manifest-boundary, and public-asset validation. Phase 18 adds downstream reuse recipes for single-engine import and full-suite composition.
 
 ## Phase 1: Data And Curriculum
 
@@ -319,9 +319,29 @@ Capabilities:
 - Wheel build/install smoke from an installed package target through both console script and module entrypoint
 - CLI command: `validate-release-candidate`
 
+## Phase 18: Downstream Reuse Recipes
+
+Added:
+
+```text
+examples/downstream_single_engine_recipe.py
+examples/downstream_suite_recipe.py
+docs/downstream_reuse_recipes.md
+docs/downstream_reuse_recipes.ko.md
+tests/test_downstream_reuse_recipes.py
+```
+
+Capabilities:
+
+- Single-engine import recipe for downstream promotion gating
+- Configured-suite composition recipe for external local projects
+- Migration notes from internal agent loops to reusable package contracts
+- Bilingual docs with a downstream integration diagram
+- Tests proving both recipes run and docs are linked
+
 ## Next Development Order
 
-1. Downstream reuse recipes for other 22B AI projects.
+1. Final release checks and PR ready/release decision after every gate remains green.
 
 ## Verification
 
@@ -332,6 +352,9 @@ python examples\data_and_curriculum_pipeline.py
 python examples\assessment_and_cultivation_pipeline.py
 python examples\stress_and_promotion_pipeline.py
 python examples\governance_and_runtime_pipeline.py
+python examples\source_specific_parsers.py
+python examples\downstream_single_engine_recipe.py
+python examples\downstream_suite_recipe.py
 python -m paideia_engines.cli validate-contracts --repo-root . --output .paideia-runs\contract-validation.json
 python -m paideia_engines.cli certify-adapters --fixtures examples\source_fixture_pack.json --manifest examples\acquired_sources_manifest.jsonl --output .paideia-runs\adapter-certification.json
 python -m paideia_engines.cli diagnose-source --manifest examples\source_fixture_pack.json --output .paideia-runs\source-diagnostics.json

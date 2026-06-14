@@ -49,7 +49,7 @@ The project is complete only when:
 | 15 | Evaluation and benchmark pack | Implemented v0.2 core |
 | 16 | Persistent runtime and evidence store | Implemented v0.2 core |
 | 17 | Release candidate pipeline | Implemented v0.2 core |
-| 18 | Downstream reuse recipes | Planned |
+| 18 | Downstream reuse recipes | Implemented v0.2 core |
 
 ## Phase 0. Foundation
 
@@ -329,9 +329,10 @@ The remaining work must move as a coordinated program, not as isolated one-off p
    - Added CLI command: `validate-release-candidate`.
 
 4. **Phase 18: Downstream Reuse Recipes**
-   - Provide integration recipes for other 22B AI projects.
-   - Show how to import one engine alone and how to compose the full suite.
-   - Add migration notes from local agent internals to reusable package contracts.
+   - Delivered integration recipes for other 22B AI projects.
+   - Added single-engine import and full configured-suite composition examples.
+   - Added migration notes from local agent internals to reusable package contracts.
+   - Added bilingual downstream reuse documentation.
 
 ## Active Branch And PR
 
@@ -344,5 +345,5 @@ https://github.com/sinmb79/22b-paideia-engines/pull/1
 
 Next coordinated stages:
 
-1. Complete Phase 18 downstream reuse recipes.
+1. Run final release checks after Phase 18.
 2. Convert the PR to ready or cut a release only after every checklist and gate remains green.

@@ -49,7 +49,7 @@
 | 15 | evaluation and benchmark pack | v0.2 core 구현 |
 | 16 | persistent runtime and evidence store | v0.2 core 구현 |
 | 17 | release candidate pipeline | v0.2 core 구현 |
-| 18 | downstream reuse recipes | 계획 |
+| 18 | downstream reuse recipes | v0.2 core 구현 |
 
 ## Phase 0. Foundation
 
@@ -330,9 +330,10 @@ python -m paideia_engines.cli smoke --engine all --output .paideia-runs/smoke.js
    - GitHub release evidence를 준비합니다.
 
 4. **Phase 18: Downstream reuse recipes**
-   - 다른 22B AI project가 가져다 쓸 수 있는 integration recipe를 제공합니다.
-   - 엔진 하나만 import하는 예제와 full suite 조합 예제를 함께 제공합니다.
-   - local agent 내부 구현에서 reusable package contract로 이동하는 migration note를 추가합니다.
+   - 구현 완료: 다른 22B AI project가 가져다 쓸 수 있는 integration recipe.
+   - 엔진 하나만 import하는 예제와 full configured-suite 조합 예제를 함께 추가했습니다.
+   - local agent 내부 구현에서 reusable package contract로 이동하는 migration note를 추가했습니다.
+   - 영문/한국어 downstream reuse 문서를 추가했습니다.
 
 ## 현재 브랜치와 PR
 
@@ -345,5 +346,5 @@ https://github.com/sinmb79/22b-paideia-engines/pull/1
 
 다음 단계는 총괄 프로그램 순서대로 진행합니다.
 
-1. Phase 18 downstream reuse recipe 완료
+1. Phase 18 이후 최종 release check 실행
 2. 모든 checklist와 gate가 계속 green일 때만 PR ready 전환 또는 release 생성

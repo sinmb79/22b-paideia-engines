@@ -94,6 +94,7 @@ class PaideiaEngineSuite:
 
 
 from paideia_engines.orchestration.config_runner import (
+    load_config,
     run_config_file,
     run_configured_suite,
     run_engine_smoke,
@@ -106,6 +107,7 @@ from paideia_engines.orchestration.output_validator import (
 
 __all__ = [
     "PaideiaEngineSuite",
+    "load_config",
     "run_config_file",
     "run_configured_suite",
     "run_engine_smoke",

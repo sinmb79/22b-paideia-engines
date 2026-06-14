@@ -137,6 +137,7 @@ decision = engine.record_experience(
 - Phase 15: evaluation and benchmark pack
 - Phase 16: persistent runtime evidence store
 - Phase 17: release candidate pipeline
+- Phase 18: downstream reuse recipes
 
 ## 문서
 
@@ -164,6 +165,8 @@ decision = engine.record_experience(
 - [Source-specific parsers in English](docs/source_parsers.md)
 - [예제 데이터 인덱스](docs/example_data_index.ko.md)
 - [Example data index in English](docs/example_data_index.md)
+- [Downstream 재사용 레시피](docs/downstream_reuse_recipes.ko.md)
+- [Downstream reuse recipes in English](docs/downstream_reuse_recipes.md)
 
 ## 안전 기본값
 

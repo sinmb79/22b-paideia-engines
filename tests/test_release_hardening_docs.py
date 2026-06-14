@@ -45,6 +45,8 @@ def test_release_hardening_docs_exist_and_are_linked():
         "docs/source_parsers.ko.md",
         "docs/example_data_index.md",
         "docs/example_data_index.ko.md",
+        "docs/downstream_reuse_recipes.md",
+        "docs/downstream_reuse_recipes.ko.md",
     ]
     for relative_path in expected_docs:
         assert (ROOT / relative_path).exists(), f"Missing {relative_path}"
@@ -55,10 +57,12 @@ def test_release_hardening_docs_exist_and_are_linked():
     assert "[Engine contract registry](docs/engine_contracts.md)" in readme
     assert "[Release checklist](docs/release_checklist.md)" in readme
     assert "[Source-specific parsers](docs/source_parsers.md)" in readme
+    assert "[Downstream reuse recipes](docs/downstream_reuse_recipes.md)" in readme
     assert "[엔진 문서](docs/engines/README.ko.md)" in korean
     assert "[엔진 계약 레지스트리](docs/engine_contracts.ko.md)" in korean
     assert "[릴리스 체크리스트](docs/release_checklist.ko.md)" in korean
     assert "[출처별 파서](docs/source_parsers.ko.md)" in korean
+    assert "[Downstream 재사용 레시피](docs/downstream_reuse_recipes.ko.md)" in korean
 
 
 def test_release_checklist_contains_required_validation_commands():
@@ -80,6 +84,8 @@ def test_release_checklist_contains_required_validation_commands():
         "python -m paideia_engines.cli replay-runtime-evidence",
         "python -m paideia_engines.cli validate-benchmarks",
         "python -m paideia_engines.cli validate-release-candidate",
+        "python examples\\downstream_single_engine_recipe.py",
+        "python examples\\downstream_suite_recipe.py",
         "rg -n",
     ]
     for command in required_commands:

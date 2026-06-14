@@ -14,6 +14,8 @@ python examples\assessment_and_cultivation_pipeline.py
 python examples\stress_and_promotion_pipeline.py
 python examples\governance_and_runtime_pipeline.py
 python examples\source_specific_parsers.py
+python examples\downstream_single_engine_recipe.py
+python examples\downstream_suite_recipe.py
 python -m paideia_engines.cli validate-contracts --repo-root . --output .paideia-runs\contract-validation.json
 python -m paideia_engines.cli certify-adapters --fixtures examples\source_fixture_pack.json --manifest examples\acquired_sources_manifest.jsonl --output .paideia-runs\adapter-certification.json
 python -m paideia_engines.cli diagnose-source --manifest examples\source_fixture_pack.json --output .paideia-runs\source-diagnostics.json
@@ -48,6 +50,7 @@ gh pr view 1 --json number,title,url,isDraft,headRefName,baseRefName,state,commi
 - Runtime evidence bundles validate copied artifact file existence, size, hash, and replay trace.
 - Benchmark validation passes and enforces golden schemas, mutation expectations, and release evidence thresholds.
 - Release candidate validation passes link, UTF-8, replacement-character, sensitive-pattern, personal-path, acquired-source manifest, generated-path, and packaging metadata checks.
+- Downstream reuse examples run and prove both single-engine import and configured-suite composition.
 - PR body lists validation commands and current draft/ready status.
 
 ## Release Decision
