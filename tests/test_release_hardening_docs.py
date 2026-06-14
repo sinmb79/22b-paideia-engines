@@ -148,6 +148,13 @@ def test_engine_contracts_document_governance_snapshot_accessors():
         assert "policy snapshots" in text
 
 
+def test_engine_contracts_document_promotion_snapshot_accessors():
+    for relative_path in ["docs/engine_contracts.md", "docs/engine_contracts.ko.md"]:
+        text = (ROOT / relative_path).read_text(encoding="utf-8")
+        assert "Promotion ledgers and events use private stores" in text
+        assert "detached mutable snapshots" in text
+
+
 def test_runtime_evidence_docs_use_trace_schema_v2_runtime_filename():
     paths = [
         "docs/release_checklist.md",

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from copy import deepcopy
 import re
 import secrets
 from dataclasses import dataclass
@@ -45,7 +46,7 @@ class ExperienceRecord:
         return {
             "experience_id": self.experience_id,
             "source": self.source,
-            "event": dict(self.event),
+            "event": deepcopy(self.event),
             "review": _normalize_review(self.review),
             "review_status": "active",
         }
@@ -60,7 +61,7 @@ class PromotionEngine:
         self.owner = owner
         self.minimum_score = minimum_score
         self._counter = 0
-        self.ledger: dict[str, Any] = {
+        self._ledger: dict[str, Any] = {
             "schema": "paideia-promotion-ledger/v1",
             "owner": owner,
             "version": 0,
@@ -68,18 +69,26 @@ class PromotionEngine:
             "quarantined_experiences": [],
             "history": [],
         }
-        self.events: list[dict[str, Any]] = []
+        self._events: list[dict[str, Any]] = []
+
+    @property
+    def ledger(self) -> dict[str, Any]:
+        return deepcopy(self._ledger)
+
+    @property
+    def events(self) -> list[dict[str, Any]]:
+        return deepcopy(self._events)
 
     def _next_experience_id(self) -> str:
         self._counter += 1
         return f"{self.owner.replace(':', '_')}-exp-{self._counter:04d}"
 
     def _next_ledger_version(self) -> int:
-        self.ledger["version"] += 1
-        return int(self.ledger["version"])
+        self._ledger["version"] += 1
+        return int(self._ledger["version"])
 
     def _record_event(self, event: EngineEvent) -> None:
-        self.events.append(event.to_dict())
+        self._events.append(deepcopy(event.to_dict()))
 
     def _append_history(
         self,
@@ -104,7 +113,7 @@ class PromotionEngine:
             entry["supersedes"] = supersedes
         if notes:
             entry["notes"] = notes
-        self.ledger["history"].append(entry)
+        self._ledger["history"].append(deepcopy(entry))
 
     @staticmethod
     def _is_verified_and_high_quality(review: ReviewLabel, minimum_score: int) -> bool:
@@ -239,7 +248,7 @@ class PromotionEngine:
         if original_timestamp is not None and review_timestamp < original_timestamp:
             raise self._fresh_governance_error()
 
-        return dict(governance_review)
+        return deepcopy(governance_review)
 
     def record_experience(
         self,
@@ -267,7 +276,7 @@ class PromotionEngine:
             }
             promoted_entry = record.to_dict()
             promoted_entry.update({"version": ledger_version, "timestamp": timestamp, "decision": decision})
-            self.ledger["promoted_experiences"].append(promoted_entry)
+            self._ledger["promoted_experiences"].append(deepcopy(promoted_entry))
         else:
             decision = {
                 "experience_id": experience_id,
@@ -290,7 +299,7 @@ class PromotionEngine:
                     "decision": decision,
                 }
             )
-            self.ledger["quarantined_experiences"].append(quarantined_entry)
+            self._ledger["quarantined_experiences"].append(deepcopy(quarantined_entry))
 
         self._append_history(
             version=ledger_version,
@@ -309,12 +318,12 @@ class PromotionEngine:
                 output_refs=[decision["status"]],
             )
         )
-        return {
+        return deepcopy({
             "schema": "paideia-promotion-decision/v1",
             "owner": self.owner,
             "timestamp": timestamp,
             **decision,
-        }
+        })
 
     def reconsider_quarantined(
         self,
@@ -366,12 +375,12 @@ class PromotionEngine:
                 source="quarantine_reconsideration",
                 notes=notes,
             )
-            return {
+            return deepcopy({
                 "schema": "paideia-promotion-decision/v1",
                 "owner": self.owner,
                 "timestamp": _utc_now(),
                 **decision,
-            }
+            })
 
         original["review_status"] = "superseded"
         new_experience_id = self._next_experience_id()
@@ -391,7 +400,7 @@ class PromotionEngine:
         promoted_entry = {
             "experience_id": new_experience_id,
             "source": "quarantine_reconsideration",
-            "event": dict(original.get("event", {})),
+            "event": deepcopy(original.get("event", {})),
             "review": _normalize_review(review),
             "review_status": "active",
             "version": ledger_version,
@@ -399,7 +408,7 @@ class PromotionEngine:
             "notes": notes,
             "decision": decision,
         }
-        self.ledger["promoted_experiences"].append(promoted_entry)
+        self._ledger["promoted_experiences"].append(deepcopy(promoted_entry))
         self._append_history(
             version=ledger_version,
             action="reconsider_quarantined",
@@ -419,12 +428,12 @@ class PromotionEngine:
                 output_refs=["promoted"],
             )
         )
-        return {
+        return deepcopy({
             "schema": "paideia-promotion-decision/v1",
             "owner": self.owner,
             "timestamp": _utc_now(),
             **decision,
-        }
+        })
 
     def supersede_promoted(
         self,
@@ -457,14 +466,14 @@ class PromotionEngine:
         promoted_entry = {
             "experience_id": new_experience_id,
             "source": original.get("source", "promotion_supersession"),
-            "event": dict(event),
+            "event": deepcopy(event),
             "review": _normalize_review(review),
             "review_status": "active",
             "version": ledger_version,
             "supersedes": experience_id,
             "decision": decision,
         }
-        self.ledger["promoted_experiences"].append(promoted_entry)
+        self._ledger["promoted_experiences"].append(deepcopy(promoted_entry))
         self._append_history(
             version=ledger_version,
             action="supersede_promoted",
@@ -484,15 +493,15 @@ class PromotionEngine:
                 output_refs=["promoted"],
             )
         )
-        return {
+        return deepcopy({
             "schema": "paideia-promotion-decision/v1",
             "owner": self.owner,
             "timestamp": _utc_now(),
             **decision,
-        }
+        })
 
     def _find_entry(self, bucket: str, experience_id: str) -> dict[str, Any] | None:
-        for entry in self.ledger[bucket]:
+        for entry in self._ledger[bucket]:
             if entry.get("experience_id") == experience_id:
                 return entry
         return None
@@ -501,7 +510,7 @@ class PromotionEngine:
         selected = []
         query_tokens = self._extract_tokens(query)
 
-        for item in self.ledger["promoted_experiences"]:
+        for item in self._ledger["promoted_experiences"]:
             if item.get("review_status", "active") != "active":
                 continue
             if not query_tokens:
@@ -512,19 +521,19 @@ class PromotionEngine:
                 skills = self._extract_tokens(item.get("event", {}).get("skills", ""))
                 is_match = bool(query_tokens & (source | summary | skills))
             if is_match:
-                selected.append(item)
+                selected.append(deepcopy(item))
             if len(selected) >= max_entries:
                 break
 
-        return {
+        return deepcopy({
             "schema": "paideia-active-memory-route/v1",
             "owner": self.owner,
             "query": str(query),
             "selected": selected,
             "quarantined_experiences": "excluded",
-            "total_promoted": len(self.ledger["promoted_experiences"]),
+            "total_promoted": len(self._ledger["promoted_experiences"]),
             "matched": len(selected),
-        }
+        })
 
 
 __all__ = ["PromotionEngine", "ExperienceRecord"]
