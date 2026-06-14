@@ -121,6 +121,14 @@ data/
 
 parser 계층은 확보 자료 검증 이후에만 실행됩니다. Parser 파일은 `data.acquired_sources` 또는 `data.manifest_path`에 포함되어 hash 검증을 통과해야 하며, 설정한 parser/source 조합이 맞아야 사용할 수 있습니다.
 
+## Phase 9 출처 진단
+
+출처 진단은 릴리스 전에 공개 가능한 fixture pack을 검증합니다. 새 데이터를 확보하지 않고, 로컬 sample 파일을 검사하고, hash를 계산하고, 필수 field를 확인하고, 선택한 parser를 실행한 뒤 record 수를 보고합니다.
+
+```powershell
+python -m paideia_engines.cli diagnose-source --manifest examples/source_fixture_pack.json --output .paideia-runs/source-diagnostics.json
+```
+
 ## 금지 사항
 
 - 디지털교과서 뷰어에서 콘텐츠를 자동 추출하지 않습니다.

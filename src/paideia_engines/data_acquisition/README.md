@@ -17,7 +17,10 @@ The Data Acquisition Engine plans education data use without bypassing source li
 - `evaluate_source(source_id)`
 - `build_engine_plan(engine_name)`
 - `register_acquired_source(...)`
+- `diagnose_source_file(...)`
+- `diagnose_source_fixture_pack(...)`
 
 ## Safety Boundary
 
 This engine records metadata and local acquisition evidence. It does not download restricted textbooks automatically.
+Source diagnostics inspect public-safe local fixtures only; they do not acquire, scrape, or unlock source content.

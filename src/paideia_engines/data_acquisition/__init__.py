@@ -375,4 +375,10 @@ class DataAcquisitionEngine:
             issues.append(self._issue(source_id, "license_note_missing", "license note path is missing."))
 
 
-__all__ = ["DataAcquisitionEngine"]
+from paideia_engines.data_acquisition.source_diagnostics import (
+    diagnose_source_file,
+    diagnose_source_fixture_pack,
+)
+
+
+__all__ = ["DataAcquisitionEngine", "diagnose_source_file", "diagnose_source_fixture_pack"]

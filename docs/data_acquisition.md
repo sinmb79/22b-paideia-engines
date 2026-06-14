@@ -67,3 +67,11 @@ The source-specific parser layer currently supports local CSV/JSON exports:
 - Public exam metadata CSV to metadata-only acquired-source records.
 
 The parser layer is downstream of acquisition validation. Parser files must be listed in `data.acquired_sources` or `data.manifest_path`, pass hash validation, and match the configured parser/source pair before use.
+
+## Phase 9 Source Diagnostics
+
+Source diagnostics validate public-safe fixture packs before release. They do not acquire new data; they inspect local sample files, compute hashes, check required fields, run the selected parser, and report record counts.
+
+```powershell
+python -m paideia_engines.cli diagnose-source --manifest examples/source_fixture_pack.json --output .paideia-runs/source-diagnostics.json
+```

@@ -36,7 +36,12 @@ When the Config Runner invokes a parser, it carries the validated `source_id`, `
 
 ```powershell
 python examples/source_specific_parsers.py
+python -m paideia_engines.cli diagnose-source --manifest examples/source_fixture_pack.json --output .paideia-runs/source-diagnostics.json
 ```
+
+## Diagnostics
+
+Phase 9 adds parser diagnostics for public-safe fixture packs. A diagnostics report checks file existence, SHA-256 hash, supported parser, extension, required headers or JSON fields, parser completion, and minimum record count. The fixture pack stays metadata/sample-only and does not include restricted textbook or exam contents.
 
 ## Non-Goals
 

@@ -38,6 +38,7 @@ The project is complete only when:
 | 6 | Documentation, release, examples | Implemented v0.2 release hardening |
 | 7 | Dataset adapters and validation reports | Implemented v0.2 core |
 | 8 | Source-specific parsers | Implemented v0.2 core |
+| 9 | Source parser diagnostics and fixture packs | Implemented v0.2 core |
 
 ## Phase 0. Foundation
 
@@ -189,6 +190,23 @@ Completion criteria:
 - AI-Hub-like data requires terms/license note validation before parser use.
 - EBSi/public exam data stays metadata-only and does not create assessment items from protected documents.
 
+## Phase 9. Source Parser Diagnostics And Fixture Packs
+
+Delivered:
+
+- Source parser diagnostics report
+- Public-safe source fixture pack manifest
+- Required CSV header and JSON field checks
+- Parser completion and record-count checks
+- CLI command for fixture diagnostics
+
+Completion criteria:
+
+- Fixture packs use relative paths and public-safe sample or metadata-only content.
+- Diagnostics report file existence, hash, parser support, required fields, parser completion, and output record count.
+- Failed parser runs are reported as diagnostics issues instead of being hidden.
+- Release checklist includes the diagnostics CLI command.
+
 ## Active Branch And PR
 
 ```text
@@ -201,6 +219,6 @@ https://github.com/sinmb79/22b-paideia-engines/pull/1
 Final release loop for this branch:
 
 1. Run full validation.
-2. Commit and push the latest dataset adapter/parser changes.
+2. Commit and push the latest diagnostics and release-readiness changes.
 3. Update the draft PR with the new validation evidence.
 4. Convert the PR to ready or cut a release only after the checklist remains green.

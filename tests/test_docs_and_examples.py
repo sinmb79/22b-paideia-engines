@@ -30,6 +30,7 @@ def test_docs_and_examples_exist():
     assert (ROOT / "examples" / "governance_and_runtime_pipeline.py").exists()
     assert (ROOT / "examples" / "configured_suite.json").exists()
     assert (ROOT / "examples" / "source_specific_parsers.py").exists()
+    assert (ROOT / "examples" / "source_fixture_pack.json").exists()
     assert (ROOT / "examples" / "source_samples" / "ncic_curriculum_sample.csv").exists()
     assert (ROOT / "examples" / "source_samples" / "aihub_math_sample.json").exists()
     assert (ROOT / "examples" / "source_samples" / "ebsi_exam_metadata_sample.csv").exists()

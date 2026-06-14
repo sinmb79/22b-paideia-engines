@@ -64,6 +64,7 @@ def test_release_checklist_contains_required_validation_commands():
         "python -m compileall src",
         "python -m paideia_engines.cli run-config",
         "python -m paideia_engines.cli smoke",
+        "python -m paideia_engines.cli diagnose-source",
         "rg -n",
     ]
     for command in required_commands:

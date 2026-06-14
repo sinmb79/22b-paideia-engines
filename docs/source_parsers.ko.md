@@ -36,7 +36,12 @@ Config Runner가 parser를 호출할 때는 검증된 `source_id`, `provider`, `
 
 ```powershell
 python examples/source_specific_parsers.py
+python -m paideia_engines.cli diagnose-source --manifest examples/source_fixture_pack.json --output .paideia-runs/source-diagnostics.json
 ```
+
+## 진단 리포트
+
+Phase 9에서는 공개 가능한 fixture pack용 parser diagnostics를 추가합니다. 진단 리포트는 파일 존재, SHA-256 hash, 지원 parser, 확장자, 필수 header 또는 JSON field, parser 실행 완료, 최소 record 수를 확인합니다. fixture pack은 metadata/sample 전용이며 제한 교과서나 시험 본문을 포함하지 않습니다.
 
 ## 비목표
 

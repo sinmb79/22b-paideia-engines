@@ -11,6 +11,7 @@
 AI 에이전트가 훈련, 평가, 기억, 실행, 통제를 하나의 불투명한 루프 안에서 처리하면 신뢰하기 어렵습니다. 파이데이아 엔진은 책임을 분리합니다.
 
 - **데이터 확보 엔진**: 라이선스 gate를 기준으로 데이터 사용 계획을 만듭니다.
+- **출처 parser diagnostics**: 릴리스 전에 공개 안전 parser fixture pack을 검증합니다.
 - **교육과정 매핑 엔진**: 성취기준을 학습 단위로 매핑합니다.
 - **육성 엔진**: 훈련 청사진과 학습 로드맵을 만듭니다.
 - **평가 엔진**: 결정적 rubric과 transcript로 결과물을 평가합니다.
@@ -24,7 +25,8 @@ AI 에이전트가 훈련, 평가, 기억, 실행, 통제를 하나의 불투명
 flowchart LR
     Config["Config JSON"] --> Runner["설정 기반 실행기"]
     Runner --> Data["데이터 확보"]
-    Data --> Curriculum["교육과정 매핑"]
+    Data --> Parser["출처 parser diagnostics"]
+    Parser --> Curriculum["교육과정 매핑"]
     Curriculum --> Cultivation["육성"]
     Cultivation --> Assessment["평가"]
     Assessment --> Stress["스트레스 시나리오"]
@@ -108,6 +110,7 @@ decision = engine.record_experience(
 - Phase 6: 릴리스 하드닝, 엔진별 문서, 공개 자산 감사
 - Phase 7: 확보 자료 검증, 공개 교육과정 어댑터, 공개 문항 bank 어댑터
 - Phase 8: NCIC/data.go.kr, AI-Hub, 공개 시험 metadata 출처별 parser
+- Phase 9: parser diagnostics와 공개 안전 source fixture pack
 
 ## 문서
 

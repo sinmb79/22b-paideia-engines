@@ -24,6 +24,15 @@
 
 Phase 8 parser는 로컬 CSV/JSON export만 읽습니다. HWP/PDF 교과서를 parsing하거나 시험 페이지를 crawling하지 않습니다.
 
+## Phase 9 구현
+
+- `diagnose_source_file(...)`
+- `diagnose_source_fixture_pack(...)`
+- CLI 명령: `diagnose-source`
+- 공개 안전 fixture manifest: `examples/source_fixture_pack.json`
+
+Phase 9 diagnostics layer는 parser pack을 release-ready로 보기 전에 fixture 파일 존재, hash, parser 지원 여부, 필수 header 또는 JSON field, parser 실행 완료, 최소 record 수를 검증합니다.
+
 ## 어댑터 우선순위
 
 1. **공개 교육과정 standards importer**

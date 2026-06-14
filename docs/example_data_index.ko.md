@@ -10,6 +10,7 @@
 | `data/curriculum/sample_standards.json` | 작은 샘플 교육과정 standards | 포함 가능 |
 | `examples/configured_suite.json` | Phase 5 runner용 sample config | 포함 가능 |
 | `examples/public_item_sample.jsonl` | 확보 자료 검증 예제에 쓰는 저장소 소유의 작은 문항 샘플 | 포함 가능 |
+| `examples/source_fixture_pack.json` | 공개 안전 parser diagnostics fixture manifest | 포함 가능 |
 | `examples/source_samples/ncic_curriculum_sample.csv` | 작은 NCIC 형식 교육과정 parser 샘플 | 포함 가능 |
 | `examples/source_samples/aihub_math_sample.json` | 작은 AI-Hub 형식 parser 샘플 | 포함 가능 |
 | `examples/source_samples/ebsi_exam_metadata_sample.csv` | metadata-only 공개 시험 parser 샘플 | 포함 가능 |

@@ -11,6 +11,7 @@ This repository is designed so each engine can be used independently or combined
 AI agents become hard to trust when training, evaluation, memory, runtime execution, and governance are mixed into one opaque loop. Paideia Engines separates those responsibilities:
 
 - **Data Acquisition Engine**: plans data use with license gates.
+- **Source Parser Diagnostics**: validates public-safe parser fixture packs before release.
 - **Curriculum Mapping Engine**: maps standards into learning units.
 - **Cultivation Engine**: builds training blueprints and roadmaps.
 - **Assessment Engine**: scores outputs with deterministic rubrics and transcripts.
@@ -24,7 +25,8 @@ AI agents become hard to trust when training, evaluation, memory, runtime execut
 flowchart LR
     Config["Config JSON"] --> Runner["Config Runner"]
     Runner --> Data["Data acquisition"]
-    Data --> Curriculum["Curriculum mapping"]
+    Data --> Parser["Source parser diagnostics"]
+    Parser --> Curriculum["Curriculum mapping"]
     Curriculum --> Cultivation["Cultivation"]
     Cultivation --> Assessment["Assessment"]
     Assessment --> Stress["Stress scenarios"]
@@ -108,6 +110,7 @@ decision = engine.record_experience(
 - Phase 6: release hardening, per-engine docs, and public asset audit
 - Phase 7: acquired-source validation, public curriculum adapters, and public item-bank adapters
 - Phase 8: NCIC/data.go.kr, AI-Hub, and public exam metadata source parsers
+- Phase 9: parser diagnostics and public-safe source fixture packs
 
 ## Documentation
 

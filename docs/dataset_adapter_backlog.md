@@ -24,6 +24,15 @@ The implemented adapters parse already-acquired local JSON files. They do not do
 
 The Phase 8 parsers consume local CSV/JSON exports only. They intentionally do not parse HWP/PDF textbooks or crawl exam pages.
 
+## Implemented In Phase 9
+
+- `diagnose_source_file(...)`
+- `diagnose_source_fixture_pack(...)`
+- CLI command: `diagnose-source`
+- Public-safe fixture manifest: `examples/source_fixture_pack.json`
+
+The Phase 9 diagnostics layer verifies fixture file existence, hash, parser support, required headers or JSON fields, parser completion, and minimum record counts before a parser pack is treated as release-ready.
+
 ## Adapter Priorities
 
 1. **Public curriculum standards importer**

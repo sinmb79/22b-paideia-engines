@@ -102,3 +102,31 @@ def test_cli_smoke_runs_all_engines(tmp_path):
     assert {"cultivation", "assessment", "stress", "promotion", "governance", "runtime", "orchestration"} <= set(
         payload["results"]
     )
+
+
+def test_cli_diagnose_source_fixture_pack_writes_report(tmp_path):
+    output_path = tmp_path / "source-diagnostics.json"
+
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "paideia_engines.cli",
+            "diagnose-source",
+            "--manifest",
+            str(ROOT / "examples" / "source_fixture_pack.json"),
+            "--output",
+            str(output_path),
+        ],
+        cwd=ROOT,
+        env=_env(),
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+
+    payload = json.loads(output_path.read_text(encoding="utf-8"))
+    assert payload["schema"] == "paideia-source-fixture-pack-diagnostics/v1"
+    assert payload["status"] == "passed"
+    assert payload["summary"]["total"] == 3
+    assert "source_diagnostics" in completed.stdout

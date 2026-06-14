@@ -38,6 +38,7 @@
 | 6 | 문서, 릴리스, 예제 | v0.2 릴리스 하드닝 구현 |
 | 7 | 데이터셋 어댑터와 검증 리포트 | v0.2 core 구현 |
 | 8 | 출처별 파서 | v0.2 core 구현 |
+| 9 | 출처 parser diagnostics와 fixture pack | v0.2 core 구현 |
 
 ## Phase 0. Foundation
 
@@ -189,6 +190,23 @@ python -m paideia_engines.cli smoke --engine all --output .paideia-runs/smoke.js
 - AI-Hub식 데이터는 terms/license note 검증 이후에만 parser를 사용할 수 있다.
 - EBSi/공개 시험 자료는 metadata-only로 유지하며 보호 문서에서 평가 문항을 생성하지 않는다.
 
+## Phase 9. 출처 parser diagnostics와 fixture pack
+
+산출물:
+
+- Source parser diagnostics report
+- 공개 안전 source fixture pack manifest
+- 필수 CSV header와 JSON field 검사
+- Parser 실행 완료와 record 수 검사
+- Fixture diagnostics용 CLI 명령
+
+완료 기준:
+
+- Fixture pack은 상대 경로와 공개 안전 sample 또는 metadata-only content만 사용한다.
+- Diagnostics report가 파일 존재, hash, parser 지원 여부, 필수 field, parser 실행 완료, 출력 record 수를 보고한다.
+- Parser 실행 실패가 숨겨지지 않고 diagnostics issue로 기록된다.
+- Release checklist에 diagnostics CLI 명령이 포함된다.
+
 ## 현재 브랜치와 PR
 
 ```text
@@ -201,6 +219,6 @@ https://github.com/sinmb79/22b-paideia-engines/pull/1
 이 브랜치의 최종 릴리스 루프를 진행합니다.
 
 1. 전체 검증 실행
-2. 최신 데이터셋 어댑터/parser 변경 커밋 및 푸시
+2. 최신 diagnostics와 릴리스 준비 변경 커밋 및 푸시
 3. 검증 증거를 Draft PR에 반영
 4. 체크리스트가 계속 통과할 때만 PR ready 전환 또는 release 생성

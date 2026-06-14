@@ -6,7 +6,7 @@ This roadmap tracks the work needed to turn the Paideia engine suite from a scaf
 
 ## Current Position
 
-The suite now has v0.2 cores for data acquisition, curriculum mapping, cultivation, assessment, stress, promotion, governance, runtime, and config-driven orchestration. Phase 6 adds release hardening. Phase 7 adds acquired-source validation reports and JSON adapters. Phase 8 adds NCIC/data.go.kr-style CSV parsing, AI-Hub-like math JSON parsing, public assessment CSV parsing, and public exam metadata manifests. The next depth work is parser diagnostics and broader real-format fixtures.
+The suite now has v0.2 cores for data acquisition, curriculum mapping, cultivation, assessment, stress, promotion, governance, runtime, and config-driven orchestration. Phase 6 adds release hardening. Phase 7 adds acquired-source validation reports and JSON adapters. Phase 8 adds NCIC/data.go.kr-style CSV parsing, AI-Hub-like math JSON parsing, public assessment CSV parsing, and public exam metadata manifests. Phase 9 adds parser diagnostics and public-safe fixture packs. The next depth work is stronger suite output validation and subject-specific stress packs.
 
 ## Phase 1: Data And Curriculum
 
@@ -152,12 +152,28 @@ Capabilities:
 - EBSi/public exam metadata-only manifest building
 - Config runner parser/source pairing checks
 
+## Phase 9: Source Parser Diagnostics
+
+Added:
+
+```text
+src/paideia_engines/data_acquisition/source_diagnostics.py
+examples/source_fixture_pack.json
+tests/test_source_diagnostics.py
+```
+
+Capabilities:
+
+- Fixture-pack diagnostics report
+- File existence, hash, parser support, extension, and required-field checks
+- Parser completion and output record-count checks
+- CLI command: `diagnose-source`
+
 ## Next Development Order
 
-1. Parser diagnostics and fixture packs for real public-source exports.
-2. Stronger validation reports for acquired source manifests and configured suite outputs.
-3. Broader stress scenario packs for subject-specific evaluation.
-4. Ready PR/release preparation after final validation remains green.
+1. Stronger validation reports for acquired source manifests and configured suite outputs.
+2. Broader stress scenario packs for subject-specific evaluation.
+3. Ready PR/release preparation after final validation remains green.
 
 ## Verification
 
@@ -168,5 +184,6 @@ python examples\data_and_curriculum_pipeline.py
 python examples\assessment_and_cultivation_pipeline.py
 python examples\stress_and_promotion_pipeline.py
 python examples\governance_and_runtime_pipeline.py
+python -m paideia_engines.cli diagnose-source --manifest examples\source_fixture_pack.json --output .paideia-runs\source-diagnostics.json
 python -m paideia_engines.cli smoke --engine all --output .paideia-runs\smoke.json
 ```
