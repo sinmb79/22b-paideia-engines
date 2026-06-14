@@ -6,23 +6,26 @@ Paideia Engines is organized around engine boundaries rather than a single agent
 
 ```mermaid
 flowchart TD
-  A["Request"] --> O["Orchestration"]
-  O --> DA["Data Acquisition"]
+  Config["Config JSON"] --> Runner["Config Runner"]
+  CLI["CLI"] --> Runner
+  Runner --> DA["Data Acquisition"]
   DA --> CM["Curriculum Mapping"]
   CM --> C["Cultivation"]
   C --> AS["Assessment"]
   AS --> S["Stress"]
   S --> PS["Promotion Signal"]
   PS --> P["Promotion"]
-  O --> G["Governance"]
+  Runner --> G["Governance"]
   G --> R["Runtime"]
   R --> AM["Artifact Manifest"]
   R --> RT["Replayable Trace"]
   R --> P
+  R --> V["Verification"]
   P --> M["Ledger / Active Memory"]
   G --> B["Boss Approval Records"]
   G --> L["License Approval Records"]
   G --> CD["Committee Decision Ledger"]
+  V --> OUT["Per-engine JSON Outputs"]
 ```
 
 ## Contracts
@@ -49,8 +52,8 @@ Contracts are intentionally small so every engine can stay independent.
 | Promotion | versioned ledger, quarantine, active memory route | task execution |
 | Governance | policy evaluation, approval records, committee decisions | model output generation |
 | Runtime | run trace, artifact manifest, replay evidence, checklist | learning update |
-| Orchestration | composition | internal engine policy |
+| Orchestration | config runner, CLI composition, output paths, verification summary | internal engine policy |
 
 ## Design Rule
 
-No engine should silently perform another engine's decision. Stress can produce a promotion candidate signal, but only Promotion can create a promotion decision. Runtime can record evidence, but it cannot make memory active. Governance can block or allow a run, but it does not generate model output.
+No engine should silently perform another engine's decision. Stress can produce a promotion candidate signal, but only Promotion can create a promotion decision. Runtime can record evidence, but it cannot make memory active. Governance can block or allow a run, but it does not generate model output. The Config Runner composes engines, writes outputs, and emits a verification summary; it does not rewrite the meaning of any engine result.

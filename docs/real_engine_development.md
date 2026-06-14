@@ -2,17 +2,15 @@
 
 [한국어](real_engine_development.ko.md)
 
-This roadmap tracks the real development work needed to turn the Paideia engine suite from a scaffold into reusable engine assets.
+This roadmap tracks the work needed to turn the Paideia engine suite from a scaffold into reusable engine assets.
 
 ## Current Position
 
-The first development wave established the data acquisition and curriculum mapping foundations. Serious cultivation, assessment, stress, and promotion engines need trustworthy data and grade-subject-achievement mapping before they can become reliable.
-
-Phase 2 strengthened assessment and cultivation. Phase 3 now strengthens stress rehearsal and promotion so they can be used as separate assets instead of being hidden inside the orchestration layer.
+The suite now has v0.2 cores for data acquisition, curriculum mapping, cultivation, assessment, stress, promotion, governance, runtime, and config-driven orchestration. The next depth work is release hardening: per-engine READMEs, stronger dataset adapters, and public release checks.
 
 ## Phase 1: Data And Curriculum
 
-Added packages:
+Added:
 
 ```text
 src/paideia_engines/data_acquisition/
@@ -29,13 +27,6 @@ Capabilities:
 - Acquired source hashing
 - JSONL manifest writing
 - Learning unit generation from achievement standards
-- Handoffs to cultivation, assessment, stress, and promotion engines
-
-Example:
-
-```powershell
-python examples\data_and_curriculum_pipeline.py
-```
 
 ## Phase 2: Assessment And Cultivation
 
@@ -54,13 +45,6 @@ Capabilities:
 - Per-item rubric scoring
 - Review-label candidate output
 - Cultivation roadmap generation from learning units
-- Assessment gates embedded in the roadmap
-
-Example:
-
-```powershell
-python examples\assessment_and_cultivation_pipeline.py
-```
 
 ## Phase 3: Stress And Promotion
 
@@ -75,19 +59,11 @@ Capabilities:
 
 - Stress scenario bank mapped to curriculum standards
 - Scenario selection by standard and stressor type
-- Stress plan generation for a standard
-- Scenario execution with candidate-only promotion signals
-- Trap-risk detection that blocks memory promotion pending review
+- Candidate-only promotion signals
+- Trap-risk detection
 - Versioned promotion ledger
-- Quarantine reconsideration after verified review
+- Quarantine reconsideration
 - Promoted experience supersession without deleting history
-- Active memory routing that excludes quarantined and superseded entries
-
-Example:
-
-```powershell
-python examples\stress_and_promotion_pipeline.py
-```
 
 ## Phase 4: Governance And Runtime
 
@@ -99,34 +75,61 @@ examples/governance_and_runtime_pipeline.py
 
 Capabilities:
 
-- Policy rule evaluation for local-first action decisions
+- Policy rule evaluation
 - Boss and license approval records
 - Committee decision ledger
 - Hard external-upload blocking
 - Runtime run IDs
-- Runtime artifact manifests with hashable entries
+- Runtime artifact manifests
 - Replayable runtime traces
 - Acceptance checklist evidence for promotion review
+
+## Phase 5: Orchestration And CLI
+
+Added:
+
+```text
+src/paideia_engines/orchestration/config_runner.py
+src/paideia_engines/cli.py
+examples/configured_suite.json
+```
+
+Capabilities:
+
+- Config-driven suite runner
+- JSON config input and JSON result output
+- Per-engine JSON output files
+- End-to-end local growth pipeline
+- Engine-by-engine smoke command
+- Configured-suite verification output
+- Console entry point: `paideia-engines`
 
 Example:
 
 ```powershell
-python examples\governance_and_runtime_pipeline.py
+python -m paideia_engines.cli run-config `
+  --config examples/configured_suite.json `
+  --output .paideia-runs/result.json `
+  --output-dir .paideia-runs/engines
+
+python -m paideia_engines.cli smoke --engine all --output .paideia-runs/smoke.json
 ```
 
-## Next Engine Development Order
+## Next Development Order
 
-1. Orchestration v0.2: combine the upgraded engines without hiding their independent contracts.
-2. CLI v0.2: engine-by-engine smoke commands and JSON input/output.
-3. Dataset adapters: legal, manifest-driven adapters for public curriculum and assessment data.
-4. Release hardening: per-engine README files and release checklist.
+1. Phase 6 release hardening: per-engine README files and release checklist.
+2. Dataset adapters: legal, manifest-driven adapters for public curriculum and assessment data.
+3. Stronger validation reports for acquired source manifests and configured suite outputs.
+4. Ready PR/release preparation after final validation.
 
 ## Verification
 
 ```powershell
 python -m pytest tests -q
+python examples\basic_growth_cycle.py
 python examples\data_and_curriculum_pipeline.py
 python examples\assessment_and_cultivation_pipeline.py
 python examples\stress_and_promotion_pipeline.py
 python examples\governance_and_runtime_pipeline.py
+python -m paideia_engines.cli smoke --engine all --output .paideia-runs\smoke.json
 ```

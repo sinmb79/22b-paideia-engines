@@ -1,0 +1,38 @@
+{
+  "config_id": "phase5-local-growth-demo",
+  "learner": {
+    "learner_id": "agent:math",
+    "role": "math tutor",
+    "objectives": ["place value verification", "local-first evidence handling"],
+    "task": "prepare local math evidence summary"
+  },
+  "data": {
+    "storage_root": ".paideia-data",
+    "engine": "assessment"
+  },
+  "curriculum": {
+    "school_level": "elementary",
+    "grade": "3",
+    "subject": "math",
+    "standards": [
+      {
+        "standard_id": "E-MATH-03-01",
+        "school_level": "elementary",
+        "grade": "3",
+        "subject": "math",
+        "domain": "numbers_and_operations",
+        "achievement": "Add and subtract within 1000 using place value."
+      }
+    ]
+  },
+  "runtime": {
+    "engine_id": "runtime:phase5",
+    "tools": ["read_file", "summarize", "write_report"],
+    "artifacts": [
+      {
+        "path": "reports/math-evidence.json",
+        "kind": "evidence"
+      }
+    ]
+  }
+}

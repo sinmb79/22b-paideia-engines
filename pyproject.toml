@@ -11,6 +11,9 @@ authors = [
 keywords = ["ai-agents", "evaluation", "governance", "memory", "local-first"]
 dependencies = []
 
+[project.scripts]
+paideia-engines = "paideia_engines.cli:main"
+
 [project.optional-dependencies]
 dev = ["pytest>=8.0"]
 

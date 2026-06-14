@@ -93,4 +93,11 @@ class PaideiaEngineSuite:
         }
 
 
-__all__ = ["PaideiaEngineSuite"]
+from paideia_engines.orchestration.config_runner import (
+    run_config_file,
+    run_configured_suite,
+    run_engine_smoke,
+)
+
+
+__all__ = ["PaideiaEngineSuite", "run_config_file", "run_configured_suite", "run_engine_smoke"]

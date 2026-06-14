@@ -14,7 +14,7 @@ def test_readme_exposes_korean_language_choice():
     assert "파이데이아 엔진" in korean
 
 
-def test_architecture_docs_and_basic_example_exist():
+def test_docs_and_examples_exist():
     assert (ROOT / "docs" / "architecture.md").exists()
     assert (ROOT / "docs" / "architecture.ko.md").exists()
     assert (ROOT / "docs" / "data_acquisition.md").exists()
@@ -28,9 +28,10 @@ def test_architecture_docs_and_basic_example_exist():
     assert (ROOT / "examples" / "assessment_and_cultivation_pipeline.py").exists()
     assert (ROOT / "examples" / "stress_and_promotion_pipeline.py").exists()
     assert (ROOT / "examples" / "governance_and_runtime_pipeline.py").exists()
+    assert (ROOT / "examples" / "configured_suite.json").exists()
 
 
-def test_architecture_docs_expose_language_choice_and_phase4_terms():
+def test_architecture_docs_expose_language_choice_and_phase5_terms():
     architecture = (ROOT / "docs" / "architecture.md").read_text(encoding="utf-8")
     korean = (ROOT / "docs" / "architecture.ko.md").read_text(encoding="utf-8")
 
@@ -38,3 +39,12 @@ def test_architecture_docs_expose_language_choice_and_phase4_terms():
     assert "[English](architecture.md)" in korean
     assert "Artifact Manifest" in architecture
     assert "위원회 판단 원장" in korean
+    assert "Config Runner" in architecture
+    assert "설정 기반 실행기" in korean
+
+
+def test_pyproject_exposes_cli_entrypoint():
+    pyproject = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
+
+    assert "[project.scripts]" in pyproject
+    assert 'paideia-engines = "paideia_engines.cli:main"' in pyproject

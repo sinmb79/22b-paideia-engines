@@ -2,33 +2,38 @@
 
 [English](README.md)
 
-파이데이아 엔진은 AI 에이전트의 성장 시스템을 만들기 위한 로컬 우선 Python 엔진 모음입니다. 에이전트 자체도 중요한 결과물이지만, 그 안에 들어가는 육성, 평가, 스트레스 리허설, 승급, 거버넌스, 런타임, 오케스트레이션 엔진은 각각 독립적으로 재사용할 수 있는 핵심 자산입니다.
+파이데이아 엔진은 AI 에이전트의 성장 시스템을 만들기 위한 로컬 우선 Python 엔진 모음입니다. 에이전트 자체도 중요한 결과물이지만, 그 안에 들어가는 데이터 확보, 교육과정 매핑, 육성, 평가, 스트레스 리허설, 승급, 거버넌스, 런타임, 오케스트레이션 엔진은 각각 독립적으로 재사용할 수 있는 핵심 자산입니다.
 
-이 저장소는 각 엔진을 개별 제품처럼 개발하고, 필요할 때 `PaideiaEngineSuite`로 조합할 수 있도록 설계되었습니다.
+이 저장소는 각 엔진을 개별 제품처럼 개발하고, 필요할 때 설정 기반 실행기로 조합할 수 있도록 설계되었습니다.
 
 ## 왜 필요한가
 
 AI 에이전트가 훈련, 평가, 기억, 실행, 통제를 하나의 불투명한 루프 안에서 처리하면 신뢰하기 어렵습니다. 파이데이아 엔진은 책임을 분리합니다.
 
-- **육성 엔진**: 훈련 청사진과 교육과정 handoff를 만듭니다.
+- **데이터 확보 엔진**: 라이선스 gate를 기준으로 데이터 사용 계획을 만듭니다.
+- **교육과정 매핑 엔진**: 성취기준을 학습 단위로 매핑합니다.
+- **육성 엔진**: 훈련 청사진과 학습 로드맵을 만듭니다.
 - **평가 엔진**: 결정적 rubric과 transcript로 결과물을 평가합니다.
 - **스트레스 엔진**: 어려운 상황을 리허설하지만 기억을 직접 승급하지 않습니다.
 - **승급 엔진**: 검증된 고품질 경험만 승급하고 약한 경험은 격리합니다.
-- **거버넌스 엔진**: 로컬 우선 정책, 보스 검토 게이트, 외부 업로드 제한을 적용합니다.
-- **런타임 엔진**: trace와 acceptance checklist가 있는 실행 기록을 만듭니다.
-- **오케스트레이션 엔진**: 여러 엔진을 하나의 성장 사이클로 조합합니다.
+- **거버넌스 엔진**: 로컬 우선 정책, 보스 검토 gate, 외부 업로드 제한을 적용합니다.
+- **런타임 엔진**: trace와 artifact manifest가 있는 실행 기록을 만듭니다.
+- **오케스트레이션 엔진**: 여러 엔진을 설정 기반 로컬 성장 실행으로 조합합니다.
 
 ```mermaid
 flowchart LR
-    Data["데이터 확보"] --> Curriculum["교육과정 매핑"]
+    Config["Config JSON"] --> Runner["설정 기반 실행기"]
+    Runner --> Data["데이터 확보"]
+    Data --> Curriculum["교육과정 매핑"]
     Curriculum --> Cultivation["육성"]
-    Curriculum --> Assessment["평가"]
+    Cultivation --> Assessment["평가"]
     Assessment --> Stress["스트레스 시나리오"]
     Stress --> Signal["승급 후보 신호"]
     Signal --> Promotion["버전 원장 기반 승급"]
-    Promotion --> Runtime["재사용 가능한 활성 기억"]
-    Governance["거버넌스"] --> Data
-    Governance --> Promotion
+    Runner --> Governance["거버넌스"]
+    Governance --> Runtime["런타임 trace"]
+    Runtime --> Verification["검증"]
+    Verification --> Outputs["엔진별 JSON 출력"]
 ```
 
 ## 로컬 개발 설치
@@ -66,6 +71,17 @@ python examples/stress_and_promotion_pipeline.py
 python examples/governance_and_runtime_pipeline.py
 ```
 
+Phase 5 설정 기반 실행:
+
+```powershell
+python -m paideia_engines.cli run-config `
+  --config examples/configured_suite.json `
+  --output .paideia-runs/result.json `
+  --output-dir .paideia-runs/engines
+
+python -m paideia_engines.cli smoke --engine all --output .paideia-runs/smoke.json
+```
+
 ## 엔진의 독립성
 
 각 엔진은 class API와 결정적 dictionary 출력을 가집니다. 필요한 엔진만 골라 쓸 수 있습니다.
@@ -82,9 +98,13 @@ decision = engine.record_experience(
 )
 ```
 
-Phase 3에서는 스트레스 시나리오 뱅크와 버전 원장 기반 승급 엔진을 추가했습니다. 스트레스 엔진은 승급 후보 신호만 만들고, 실제 기억 승급 결정은 승급 엔진이 담당합니다. 승급 엔진은 격리 경험 재심사, promoted 경험 대체, 원장 이력을 보존합니다.
+## 현재 개발 상태
 
-Phase 4에서는 거버넌스 정책 평가기, 승인 원장, 위원회 판단 trail, 런타임 artifact manifest, 재실행 가능한 trace를 추가했습니다.
+- Phase 1: 데이터 확보와 교육과정 매핑 core
+- Phase 2: 평가와 육성 core
+- Phase 3: 스트레스와 승급 core
+- Phase 4: 거버넌스와 런타임 core
+- Phase 5: 설정 기반 오케스트레이션과 CLI core
 
 ## 문서
 
@@ -107,6 +127,8 @@ Phase 4에서는 거버넌스 정책 평가기, 승인 원장, 위원회 판단 
 - 격리된 경험은 활성 기억 라우팅에서 제외
 - 대체된 promoted 경험은 원장에 남기되 활성 기억에서는 제외
 - 런타임 trace와 artifact manifest는 검토 증거로 보존
+- CLI 출력은 JSON이므로 실행을 감사하고 재검토할 수 있음
+- 설정 기반 실행은 런타임 이후 `verification` JSON 출력까지 남김
 
 ## 라이선스
 

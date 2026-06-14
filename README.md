@@ -2,33 +2,38 @@
 
 [한국어](README.ko.md)
 
-Paideia Engines is a local-first Python engine suite for building AI agent growth systems. The agent itself is only one product. The engines inside it are reusable assets: cultivation, assessment, stress rehearsal, promotion, governance, runtime tracing, and orchestration.
+Paideia Engines is a local-first Python engine suite for building AI agent growth systems. The agent itself is only one product. The engines inside it are reusable assets: data acquisition, curriculum mapping, cultivation, assessment, stress rehearsal, promotion, governance, runtime tracing, and orchestration.
 
-This repository is designed so each engine can be used independently or combined through `PaideiaEngineSuite`.
+This repository is designed so each engine can be used independently or combined through a config-driven suite runner.
 
 ## Why This Exists
 
 AI agents become hard to trust when training, evaluation, memory, runtime execution, and governance are mixed into one opaque loop. Paideia Engines separates those responsibilities:
 
-- **Cultivation Engine**: builds training blueprints and curriculum handoffs.
+- **Data Acquisition Engine**: plans data use with license gates.
+- **Curriculum Mapping Engine**: maps standards into learning units.
+- **Cultivation Engine**: builds training blueprints and roadmaps.
 - **Assessment Engine**: scores outputs with deterministic rubrics and transcripts.
 - **Stress Engine**: runs resilience scenarios without directly promoting memory.
 - **Promotion Engine**: promotes only verified high-quality experiences and quarantines weak ones.
 - **Governance Engine**: enforces local-first safety, boss review gates, and upload restrictions.
-- **Runtime Engine**: produces trace-first execution records and acceptance checklists.
-- **Orchestration Engine**: composes the engines into an end-to-end growth cycle.
+- **Runtime Engine**: produces trace-first execution records and artifact manifests.
+- **Orchestration Engine**: composes the engines into configured local growth runs.
 
 ```mermaid
 flowchart LR
-    Data["Data acquisition"] --> Curriculum["Curriculum mapping"]
+    Config["Config JSON"] --> Runner["Config Runner"]
+    Runner --> Data["Data acquisition"]
+    Data --> Curriculum["Curriculum mapping"]
     Curriculum --> Cultivation["Cultivation"]
-    Curriculum --> Assessment["Assessment"]
+    Cultivation --> Assessment["Assessment"]
     Assessment --> Stress["Stress scenarios"]
     Stress --> Signal["Candidate-only signal"]
     Signal --> Promotion["Versioned promotion ledger"]
-    Promotion --> Runtime["Reusable active memory"]
-    Governance["Governance"] --> Data
-    Governance --> Promotion
+    Runner --> Governance["Governance"]
+    Governance --> Runtime["Runtime trace"]
+    Runtime --> Verification["Verification"]
+    Verification --> Outputs["Per-engine JSON outputs"]
 ```
 
 ## Install For Local Development
@@ -66,6 +71,17 @@ python examples/stress_and_promotion_pipeline.py
 python examples/governance_and_runtime_pipeline.py
 ```
 
+Run the Phase 5 config-driven suite:
+
+```powershell
+python -m paideia_engines.cli run-config `
+  --config examples/configured_suite.json `
+  --output .paideia-runs/result.json `
+  --output-dir .paideia-runs/engines
+
+python -m paideia_engines.cli smoke --engine all --output .paideia-runs/smoke.json
+```
+
 ## Engine Independence
 
 Each engine has a class API and deterministic dictionary output. You can import only what you need:
@@ -82,9 +98,13 @@ decision = engine.record_experience(
 )
 ```
 
-Phase 3 adds a stress scenario bank and a versioned promotion ledger. Stress can emit a candidate-only signal, but it never creates a promotion decision. Promotion owns the auditable ledger, quarantine reconsideration, and supersession history.
+## Current Development Status
 
-Phase 4 adds a governance policy evaluator, approval ledgers, committee decision trails, runtime artifact manifests, and replayable traces.
+- Phase 1: data acquisition and curriculum mapping core
+- Phase 2: assessment and cultivation core
+- Phase 3: stress and promotion core
+- Phase 4: governance and runtime core
+- Phase 5: config-driven orchestration and CLI core
 
 ## Documentation
 
@@ -107,6 +127,8 @@ Phase 4 adds a governance policy evaluator, approval ledgers, committee decision
 - Quarantined experiences are excluded from active memory routing.
 - Superseded promoted experiences remain in the ledger but are not active memory.
 - Runtime traces and artifact manifests are retained as review evidence.
+- CLI output is JSON so runs can be audited and replayed.
+- Configured runs write a `verification` JSON output after runtime.
 
 ## License
 

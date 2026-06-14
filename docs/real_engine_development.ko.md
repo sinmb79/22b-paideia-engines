@@ -6,13 +6,11 @@
 
 ## 현재 위치
 
-첫 개발 단계는 데이터 확보 엔진과 교육과정 매핑 엔진이었습니다. 육성, 평가, 스트레스, 승급 엔진은 모두 좋은 교육 데이터와 학년/과목/성취기준 매핑 위에서만 진짜 엔진이 될 수 있습니다.
-
-Phase 2에서는 평가와 육성을 강화했습니다. Phase 3에서는 스트레스 리허설과 승급 엔진을 강화해서, 오케스트레이션 안에 묻힌 기능이 아니라 각각 따로 사용할 수 있는 자산으로 만들었습니다.
+현재 엔진 모음은 데이터 확보, 교육과정 매핑, 육성, 평가, 스트레스, 승급, 거버넌스, 런타임, 설정 기반 오케스트레이션까지 v0.2 core를 갖추었습니다. 다음 심화 작업은 엔진별 README, 더 강한 dataset adapter, 공개 릴리스 검증입니다.
 
 ## Phase 1: 데이터와 교육과정
 
-추가된 패키지:
+추가된 파일:
 
 ```text
 src/paideia_engines/data_acquisition/
@@ -21,21 +19,14 @@ examples/data_and_curriculum_pipeline.py
 data/curriculum/sample_standards.json
 ```
 
-역할:
+기능:
 
-- 데이터 출처별 라이선스 판단
-- 엔진별 데이터 확보 계획 생성
-- 제한 자료 자동 수집 차단
+- 라이선스 gate 기반 출처 판단
+- 엔진별 데이터 확보 계획
+- 제한 교과서 차단
 - 확보 자료 해시 기록
-- `acquired_sources.jsonl` 매니페스트 작성
+- JSONL manifest 작성
 - 성취기준 기반 학습 단위 생성
-- 육성, 평가, 스트레스, 승급 엔진으로 handoff
-
-예제:
-
-```powershell
-python examples\data_and_curriculum_pipeline.py
-```
 
 ## Phase 2: 평가와 육성
 
@@ -46,21 +37,14 @@ src/paideia_engines/assessment/item_bank.py
 examples/assessment_and_cultivation_pipeline.py
 ```
 
-강화된 기능:
+기능:
 
 - 문항 bank
 - 평가 gate 생성
 - 객관식, 단답, 풀이과정 문항 모델
 - 문항별 rubric scoring
 - 승급 후보로 넘길 수 있는 review label 생성
-- 교육과정 learning unit 기반 육성 roadmap 생성
-- roadmap 안에 assessment gate 배치
-
-예제:
-
-```powershell
-python examples\assessment_and_cultivation_pipeline.py
-```
+- 학습 단위 기반 육성 roadmap 생성
 
 ## Phase 3: 스트레스와 승급
 
@@ -71,23 +55,15 @@ src/paideia_engines/stress/scenario_bank.py
 examples/stress_and_promotion_pipeline.py
 ```
 
-강화된 기능:
+기능:
 
 - 교육과정 성취기준에 매핑되는 스트레스 시나리오 bank
 - 성취기준과 stressor type 기준 시나리오 선택
-- 성취기준별 스트레스 계획 생성
-- 승급 결정이 아닌 승급 후보 신호만 내보내는 시나리오 실행
-- 함정 문항 위험 감지와 검토 대기 차단
-- 버전이 증가하는 승급 원장
-- 격리 경험의 검증 후 재심사
-- promoted 경험의 삭제 없는 대체
-- 격리 및 superseded 경험을 제외하는 활성 기억 라우팅
-
-예제:
-
-```powershell
-python examples\stress_and_promotion_pipeline.py
-```
+- 승급 후보 신호만 생성
+- 함정 위험 감지
+- 버전 승급 원장
+- 격리 경험 재심사
+- 기록 삭제 없는 promoted 경험 대체
 
 ## Phase 4: 거버넌스와 런타임
 
@@ -97,36 +73,63 @@ python examples\stress_and_promotion_pipeline.py
 examples/governance_and_runtime_pipeline.py
 ```
 
-강화된 기능:
+기능:
 
-- 로컬 우선 action 판단을 위한 policy rule evaluation
+- 정책 rule evaluation
 - 보스 승인 및 라이선스 승인 기록
 - 위원회 판단 원장
 - 외부 업로드 hard blocking
 - Runtime run ID
-- hashable entry를 가진 runtime artifact manifest
+- Runtime artifact manifest
 - 재실행 가능한 runtime trace
 - 승급 검토용 acceptance checklist evidence
+
+## Phase 5: 오케스트레이션과 CLI
+
+추가된 파일:
+
+```text
+src/paideia_engines/orchestration/config_runner.py
+src/paideia_engines/cli.py
+examples/configured_suite.json
+```
+
+기능:
+
+- 설정 기반 suite runner
+- JSON config 입력과 JSON result 출력
+- 엔진별 JSON output file
+- End-to-end local growth pipeline
+- 엔진별 smoke command
+- 설정 기반 suite verification output
+- 콘솔 진입점: `paideia-engines`
 
 예제:
 
 ```powershell
-python examples\governance_and_runtime_pipeline.py
+python -m paideia_engines.cli run-config `
+  --config examples/configured_suite.json `
+  --output .paideia-runs/result.json `
+  --output-dir .paideia-runs/engines
+
+python -m paideia_engines.cli smoke --engine all --output .paideia-runs/smoke.json
 ```
 
 ## 다음 개발 순서
 
-1. Orchestration v0.2: 업그레이드된 엔진들을 독립 계약을 숨기지 않는 방식으로 조합.
-2. CLI v0.2: engine-by-engine smoke command와 JSON input/output.
-3. Dataset adapters: 공개 교육과정/평가 데이터를 합법적으로 다루는 manifest 기반 adapter.
-4. Release hardening: 엔진별 README와 release checklist.
+1. Phase 6 release hardening: 엔진별 README와 release checklist.
+2. Dataset adapters: 공개 교육과정/평가 데이터를 합법적으로 다루는 manifest 기반 adapter.
+3. 확보 자료 manifest와 configured suite output에 대한 더 강한 validation report.
+4. 최종 검증 후 Ready PR/release 준비.
 
 ## 검증
 
 ```powershell
 python -m pytest tests -q
+python examples\basic_growth_cycle.py
 python examples\data_and_curriculum_pipeline.py
 python examples\assessment_and_cultivation_pipeline.py
 python examples\stress_and_promotion_pipeline.py
 python examples\governance_and_runtime_pipeline.py
+python -m paideia_engines.cli smoke --engine all --output .paideia-runs\smoke.json
 ```
