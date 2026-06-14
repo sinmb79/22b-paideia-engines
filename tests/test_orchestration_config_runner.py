@@ -116,6 +116,10 @@ def _make_production_config(tmp_path: Path) -> dict[str, object]:
         "scenario_id": "phase5-contradictory-evidence",
         "response": "I compare both sources, verify place value, and ask for review before memory promotion.",
     }
+    config["governance"] = {
+        "action": "run_local_task",
+        "context": {"contains_private_assets": False},
+    }
     return config
 
 
@@ -123,6 +127,7 @@ def test_configured_suite_runs_all_engines_and_writes_engine_outputs(tmp_path):
     result = run_configured_suite(_sample_config(tmp_path), output_dir=tmp_path / "outputs")
 
     assert result["schema"] == "paideia-configured-suite-run/v1"
+    assert result["trace_schema"] == "paideia-configured-suite-trace/v2"
     assert result["config_id"] == "phase5-demo"
     assert result["execution_trace"] == [
         "data_acquisition",
@@ -131,9 +136,9 @@ def test_configured_suite_runs_all_engines_and_writes_engine_outputs(tmp_path):
         "cultivation",
         "assessment",
         "stress",
-        "promotion",
         "governance",
         "runtime",
+        "promotion",
         "verification",
     ]
     assert result["outputs"]["runtime"]["schema"] == "paideia-runtime-run/v1"
@@ -142,6 +147,10 @@ def test_configured_suite_runs_all_engines_and_writes_engine_outputs(tmp_path):
     assert result["outputs"]["promotion"]["status"] == "promoted"
     assert result["outputs"]["verification"]["passed"] is True
     assert result["trace_metadata"]["output_count"] == len(result["output_paths"])
+    assert result["execution_trace"].index("promotion") > result["execution_trace"].index("governance")
+    assert result["execution_trace"].index("promotion") > result["execution_trace"].index("runtime")
+    assert result["outputs"]["promotion"]["event"]["runtime_run_id"] == result["outputs"]["runtime"]["run_id"]
+    assert result["outputs"]["promotion"]["event"]["governance_decision"] == result["outputs"]["governance"]["decision"]
 
     for path in result["output_paths"].values():
         assert Path(path).exists()
@@ -174,6 +183,22 @@ def test_production_config_rejects_missing_curriculum_standards(tmp_path):
     }
 
     with pytest.raises(ValueError, match="config.curriculum.standards"):
+        run_configured_suite(config, output_dir=tmp_path / "outputs")
+
+
+def test_production_config_rejects_missing_governance(tmp_path):
+    config = _make_production_config(tmp_path)
+    config.pop("governance")
+
+    with pytest.raises(ValueError, match="config.governance.action"):
+        run_configured_suite(config, output_dir=tmp_path / "outputs")
+
+
+def test_production_config_rejects_non_mapping_governance_context(tmp_path):
+    config = _make_production_config(tmp_path)
+    config["governance"]["context"] = "contains_private_assets=false"
+
+    with pytest.raises(TypeError, match="config.governance.context"):
         run_configured_suite(config, output_dir=tmp_path / "outputs")
 
 

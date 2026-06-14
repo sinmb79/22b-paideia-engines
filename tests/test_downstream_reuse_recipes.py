@@ -128,9 +128,9 @@ def test_downstream_suite_recipe_composes_full_engine_trace(installed_package):
         "cultivation",
         "assessment",
         "stress",
-        "promotion",
         "governance",
         "runtime",
+        "promotion",
         "verification",
     ]
 

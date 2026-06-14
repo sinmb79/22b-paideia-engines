@@ -32,9 +32,9 @@ EXECUTION_TRACE = [
     "cultivation",
     "assessment",
     "stress",
-    "promotion",
     "governance",
     "runtime",
+    "promotion",
     "verification",
 ]
 
@@ -52,6 +52,7 @@ SMOKE_ENGINES = [
 
 CONFIGURED_SUITE_SCHEMA = "paideia-configured-suite/v1"
 CONFIGURED_SUITE_RUN_SCHEMA = "paideia-configured-suite-run/v1"
+CONFIGURED_SUITE_TRACE_SCHEMA = "paideia-configured-suite-trace/v2"
 VALID_CONFIG_MODES = {"demo", "production"}
 PRODUCTION_REQUIRED_FIELDS = {
     "data": ("engine",),
@@ -60,6 +61,7 @@ PRODUCTION_REQUIRED_FIELDS = {
     "assessment": ("item_id", "items_path", "parser", "answer", "explanation"),
     "stress": ("scenario_id", "response"),
     "runtime": ("tools",),
+    "governance": ("action", "context"),
 }
 
 
@@ -134,6 +136,10 @@ def _validate_production_config(config: dict[str, Any]) -> None:
         curriculum_config.get("standards_path")
     ):
         raise ValueError("production config requires config.curriculum.standards or config.curriculum.standards_path.")
+
+    governance_config = _config_section(config, "governance")
+    if not isinstance(governance_config.get("context"), dict):
+        raise TypeError("production config.governance.context must be a mapping.")
 
 
 def _learner_config(config: dict[str, Any]) -> dict[str, Any]:
@@ -440,21 +446,6 @@ def run_configured_suite(
         ),
     )
 
-    promotion = PromotionEngine(owner=learner["learner_id"])
-    review_label = assessment_result["review_label"]
-    promotion_decision = promotion.record_experience(
-        source="configured_suite",
-        event={
-            "summary": "Configured suite run completed with assessment, governance, runtime, and stress evidence.",
-            "skills": ["configuration", "orchestration", "trace_review"],
-        },
-        review=ReviewLabel(
-            score=int(review_label["score"]),
-            status=str(review_label["status"]),
-            reviewed_by=str(review_label["reviewed_by"]),
-        ),
-    )
-
     governance = GovernanceEngine()
     governance_review = governance.review_action(
         str(governance_config.get("action", "run_local_task")),
@@ -468,6 +459,27 @@ def run_configured_suite(
         tools=[str(tool) for tool in runtime_config.get("tools", ["read_file", "summarize", "write_report"])],
         artifacts=[dict(item) for item in runtime_config.get("artifacts", [])],
     )
+
+    promotion = PromotionEngine(owner=learner["learner_id"])
+    review_label = assessment_result["review_label"]
+    promotion_event = {
+        "summary": "Configured suite run completed after assessment, stress, governance, and runtime evidence.",
+        "skills": ["configuration", "orchestration", "trace_review"],
+        "assessment_score": assessment_result["score"],
+        "stress_status": stress_run["status"],
+        "governance_decision": governance_review["decision"],
+        "runtime_run_id": runtime_run["run_id"],
+    }
+    promotion_decision = promotion.record_experience(
+        source="configured_suite",
+        event=promotion_event,
+        review=ReviewLabel(
+            score=int(review_label["score"]),
+            status=str(review_label["status"]),
+            reviewed_by=str(review_label["reviewed_by"]),
+        ),
+    )
+    promotion_decision["event"] = dict(promotion_event)
 
     verification = {
         "schema": "paideia-configured-suite-verification/v1",
@@ -502,6 +514,7 @@ def run_configured_suite(
 
     return {
         "schema": CONFIGURED_SUITE_RUN_SCHEMA,
+        "trace_schema": CONFIGURED_SUITE_TRACE_SCHEMA,
         "mode": mode,
         "config_id": str(config.get("config_id", "default")),
         "learner": learner,

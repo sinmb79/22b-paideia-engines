@@ -470,6 +470,9 @@ def test_cli_persist_validate_and_replay_runtime_evidence(tmp_path):
         capture_output=True,
         check=True,
     )
+    suite_result = json.loads(result_path.read_text(encoding="utf-8"))
+    runtime_output_path = suite_result["output_paths"]["runtime"]
+
     persist_completed = subprocess.run(
         [
             sys.executable,
@@ -477,7 +480,7 @@ def test_cli_persist_validate_and_replay_runtime_evidence(tmp_path):
             "paideia_engines.cli",
             "persist-runtime-evidence",
             "--runtime-output",
-            str(output_dir / "09_runtime.json"),
+            runtime_output_path,
             "--store-dir",
             str(store_dir),
             "--artifact-base-dir",

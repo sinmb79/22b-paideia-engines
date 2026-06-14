@@ -51,7 +51,14 @@ class PaideiaEngineSuite:
             gate_id="evidence_gate",
             submission={
                 "answer": "This answer cites evidence, marks uncertainty, and includes verification checks.",
-                "artifacts": ["trace.json"],
+                "artifacts": [
+                    {
+                        "path": "trace.json",
+                        "verified": True,
+                        "content_hash": "sha256:2d7f7a7f6dbe3c2b9404e7f6d01f4d4c0f5a2a98bb9b38897ba4a39f4e7f2f5d",
+                        "evidence_ref": "growth_cycle:trace",
+                    }
+                ],
             },
         )
         governance_review = self.governance.review_action(

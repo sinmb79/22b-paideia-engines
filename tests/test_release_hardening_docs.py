@@ -93,6 +93,22 @@ def test_release_checklist_contains_required_validation_commands():
     assert "<release-sensitive-patterns>" not in checklist
 
 
+def test_ci_workflow_runs_release_quality_gates():
+    workflow = ROOT / ".github" / "workflows" / "ci.yml"
+
+    assert workflow.exists(), "Missing GitHub Actions CI workflow."
+    text = workflow.read_text(encoding="utf-8")
+    for required in [
+        "python-version",
+        "setuptools",
+        "wheel",
+        "python -m compileall src",
+        "python -m pytest tests -q",
+        "paideia-engines validate-release-candidate",
+    ]:
+        assert required in text
+
+
 def test_public_asset_audit_declares_forbidden_asset_classes():
     audit = (ROOT / "docs" / "public_asset_audit.md").read_text(encoding="utf-8")
 

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from typing import Any
 
 from .item_bank import AssessmentItem, ItemBank
@@ -9,6 +10,7 @@ from .item_bank import AssessmentItem, ItemBank
 
 ALLOWED_RUBRIC_CRITERIA = {"accuracy", "explanation", "process", "clarity"}
 EVIDENCE_KEYWORDS = ("evidence", "uncertainty", "verify", "verification", "source", "trace", "check")
+SHA256_RE = re.compile(r"^sha256:[0-9a-f]{64}$")
 
 
 class AssessmentEngine:
@@ -29,10 +31,11 @@ class AssessmentEngine:
         answer = str(submission.get("answer", "")).strip().lower()
         artifacts = submission.get("artifacts") or []
         artifact_count = len(artifacts) if isinstance(artifacts, (list, tuple)) else 0
+        verified_artifact_count = self._verified_artifact_count(artifacts)
 
-        score = self._score(answer, artifact_count)
+        score = self._score(answer, verified_artifact_count)
         passed = score >= 80
-        feedback = self._feedback(answer, score, passed, artifact_count)
+        feedback = self._feedback(answer, score, passed, verified_artifact_count)
 
         return {
             "schema": self.schema,
@@ -42,6 +45,7 @@ class AssessmentEngine:
             "feedback": feedback,
             "evidence_weight": 0.5,
             "artifact_count": artifact_count,
+            "verified_artifact_count": verified_artifact_count,
         }
 
     def build_transcript(
@@ -128,6 +132,21 @@ class AssessmentEngine:
         if artifact_count == 0:
             score = min(score, 79)
         return max(0, min(100, score))
+
+    @staticmethod
+    def _verified_artifact_count(artifacts: Any) -> int:
+        if not isinstance(artifacts, (list, tuple)):
+            return 0
+        count = 0
+        for artifact in artifacts:
+            if not isinstance(artifact, dict):
+                continue
+            content_hash = str(artifact.get("content_hash", "")).strip()
+            evidence_ref = str(artifact.get("evidence_ref", "")).strip()
+            digest = content_hash.removeprefix("sha256:")
+            if artifact.get("verified") is True and SHA256_RE.fullmatch(content_hash) and set(digest) != {"0"} and evidence_ref:
+                count += 1
+        return count
 
     def _score_item_response(
         self,
