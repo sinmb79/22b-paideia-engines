@@ -109,8 +109,9 @@ class PromotionEngine:
         experience_id = self._next_experience_id()
         ledger_version = self._next_ledger_version()
         record = ExperienceRecord(experience_id=experience_id, source=source, event=event, review=review)
+        must_quarantine = quarantine_reason is not None
 
-        if self._is_verified_and_high_quality(review, self.minimum_score):
+        if not must_quarantine and self._is_verified_and_high_quality(review, self.minimum_score):
             decision = {
                 "experience_id": experience_id,
                 "status": "promoted",
@@ -172,12 +173,17 @@ class PromotionEngine:
         *,
         review: ReviewLabel,
         notes: str,
+        governance_decision: str | None = None,
     ) -> dict[str, Any]:
         original = self._find_entry("quarantined_experiences", experience_id)
         if original is None:
             raise KeyError(f"Unknown quarantined experience_id: {experience_id}")
         if original.get("review_status") == "superseded":
             raise ValueError(f"Quarantined experience is already superseded: {experience_id}")
+
+        original_reason = str(original.get("decision", {}).get("reason") or original.get("reason", ""))
+        if original_reason == "governance_blocked_promotion" and governance_decision != "allowed":
+            raise ValueError("Governance-blocked quarantine requires a fresh allowed governance decision.")
 
         if not self._is_verified_and_high_quality(review, self.minimum_score):
             ledger_version = self._next_ledger_version()
@@ -219,6 +225,8 @@ class PromotionEngine:
             "supersedes": experience_id,
             "notes": notes,
         }
+        if governance_decision is not None:
+            decision["governance_decision"] = governance_decision
         promoted_entry = {
             "experience_id": new_experience_id,
             "source": "quarantine_reconsideration",

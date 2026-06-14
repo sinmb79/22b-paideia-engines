@@ -114,6 +114,13 @@ def test_trust_boundary_docs_pin_promotion_and_artifact_gates():
             assert phrase in text, f"{relative_path} must document {phrase!r}"
 
 
+def test_engine_contracts_document_governance_quarantine_reconsideration_gate():
+    for relative_path in ["docs/engine_contracts.md", "docs/engine_contracts.ko.md"]:
+        text = (ROOT / relative_path).read_text(encoding="utf-8")
+        assert "force-quarantine" in text
+        assert "fresh allowed governance decision" in text
+
+
 def test_ci_workflow_runs_release_quality_gates():
     workflow = ROOT / ".github" / "workflows" / "ci.yml"
 
