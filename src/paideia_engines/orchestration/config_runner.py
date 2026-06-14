@@ -518,9 +518,9 @@ def run_configured_suite(
         "cultivation": roadmap,
         "assessment": assessment_result,
         "stress": stress_run,
-        "promotion": promotion_decision,
         "governance": governance_review,
         "runtime": runtime_run,
+        "promotion": promotion_decision,
         "verification": verification,
     }
     output_paths = _write_engine_outputs(output_dir, outputs)

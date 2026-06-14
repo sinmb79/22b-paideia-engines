@@ -61,6 +61,7 @@ The command fails if a required engine is missing from the registry, if contract
 
 - Orchestration outputs must declare trace schema v2 when promotion is sequenced after governance and runtime.
 - Promotion must preserve governance-blocked promotion quarantine as a contract: blocked governance cannot create active memory, only quarantined reviewable records.
+- `quarantine_reason` is a force-quarantine signal. A governance-blocked quarantine cannot be promoted during reconsideration without a fresh allowed governance decision.
 - Assessment may count a verified artifact for deterministic rubric scoring, but release-grade promotion must treat it as evidence only after runtime evidence validation proves file existence, byte hash, manifest hash, and replay trace.
 
 The registry lives in `src/paideia_engines/contracts/registry.py`.

@@ -149,6 +149,7 @@ def test_configured_suite_runs_all_engines_and_writes_engine_outputs(tmp_path):
     assert result["trace_metadata"]["output_count"] == len(result["output_paths"])
     assert result["execution_trace"].index("promotion") > result["execution_trace"].index("governance")
     assert result["execution_trace"].index("promotion") > result["execution_trace"].index("runtime")
+    assert list(result["outputs"]) == result["execution_trace"]
     assert result["outputs"]["promotion"]["event"]["runtime_run_id"] == result["outputs"]["runtime"]["run_id"]
     assert result["outputs"]["promotion"]["event"]["governance_decision"] == result["outputs"]["governance"]["decision"]
 

@@ -1,3 +1,5 @@
+import pytest
+
 from paideia_engines.contracts import ReviewLabel
 from paideia_engines.promotion import PromotionEngine
 
@@ -36,6 +38,49 @@ def test_promotion_engine_preserves_custom_quarantine_reason():
     assert decision["reason"] == "governance_blocked_promotion"
     assert decision["requires_boss_review"] is True
     assert engine.ledger["quarantined_experiences"][0]["decision"]["reason"] == "governance_blocked_promotion"
+
+
+def test_quarantine_reason_forces_quarantine_even_with_verified_review():
+    engine = PromotionEngine(owner="agent:math")
+
+    decision = engine.record_experience(
+        source="governance",
+        event={"summary": "Blocked by governance.", "skills": ["governance"], "blocked_by": "governance"},
+        review=ReviewLabel(score=100, status="verified", reviewed_by="committee"),
+        quarantine_reason="governance_blocked_promotion",
+    )
+
+    assert decision["status"] == "quarantined"
+    assert decision["reason"] == "governance_blocked_promotion"
+    assert decision["requires_boss_review"] is True
+    assert engine.ledger["promoted_experiences"] == []
+
+
+def test_governance_blocked_quarantine_requires_allowed_governance_for_reconsideration():
+    engine = PromotionEngine(owner="agent:math")
+    quarantined = engine.record_experience(
+        source="governance",
+        event={"summary": "Blocked by governance.", "skills": ["governance"], "blocked_by": "governance"},
+        review=ReviewLabel(score=100, status="verified", reviewed_by="committee"),
+        quarantine_reason="governance_blocked_promotion",
+    )
+
+    with pytest.raises(ValueError, match="fresh allowed governance decision"):
+        engine.reconsider_quarantined(
+            quarantined["experience_id"],
+            review=ReviewLabel(score=92, status="verified", reviewed_by="boss"),
+            notes="Quality issue resolved, but governance is still blocked.",
+        )
+
+    reconsidered = engine.reconsider_quarantined(
+        quarantined["experience_id"],
+        review=ReviewLabel(score=92, status="verified", reviewed_by="boss"),
+        notes="Fresh governance decision allows local-only promotion.",
+        governance_decision="allowed",
+    )
+
+    assert reconsidered["status"] == "promoted"
+    assert reconsidered["governance_decision"] == "allowed"
 
 
 def test_promotion_engine_reconsiders_quarantined_experience_after_review():
