@@ -6,7 +6,7 @@
 
 ## 현재 위치
 
-현재 엔진 모음은 데이터 확보, 교육과정 매핑, 육성, 평가, 스트레스, 승급, 거버넌스, 런타임, 설정 기반 오케스트레이션까지 v0.2 core를 갖추었습니다. 다음 심화 작업은 엔진별 README, 더 강한 dataset adapter, 공개 릴리스 검증입니다.
+현재 엔진 모음은 데이터 확보, 교육과정 매핑, 육성, 평가, 스트레스, 승급, 거버넌스, 런타임, 설정 기반 오케스트레이션까지 v0.2 core를 갖추었습니다. Phase 6에서는 엔진별 README, 초보자용 가이드, 공개 자산 감사, 릴리스 체크리스트를 추가했습니다. 다음 심화 작업은 실제 공개 교육과정/평가 출처를 위한 더 강한 dataset adapter와 validation report입니다.
 
 ## Phase 1: 데이터와 교육과정
 
@@ -117,10 +117,10 @@ python -m paideia_engines.cli smoke --engine all --output .paideia-runs/smoke.js
 
 ## 다음 개발 순서
 
-1. Phase 6 release hardening: 엔진별 README와 release checklist.
-2. Dataset adapters: 공개 교육과정/평가 데이터를 합법적으로 다루는 manifest 기반 adapter.
-3. 확보 자료 manifest와 configured suite output에 대한 더 강한 validation report.
-4. 최종 검증 후 Ready PR/release 준비.
+1. Dataset adapters: 공개 교육과정/평가 데이터를 합법적으로 다루는 manifest 기반 adapter.
+2. 확보 자료 manifest와 configured suite output에 대한 더 강한 validation report.
+3. 과목별 평가를 위한 stress scenario pack 확대.
+4. 최종 검증이 계속 통과할 때 Ready PR/release 준비.
 
 ## 검증
 

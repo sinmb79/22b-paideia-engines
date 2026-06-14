@@ -11,3 +11,6 @@ dist/
 .env
 .env.*
 runs/
+.paideia-runs/
+.paideia-data/
+.paideia-smoke/

@@ -34,7 +34,7 @@ The project is complete only when:
 | 3 | Stress and promotion | Implemented v0.2 core |
 | 4 | Governance and runtime | Implemented v0.2 core |
 | 5 | Orchestration and CLI | Implemented v0.2 core |
-| 6 | Documentation, release, examples | In progress |
+| 6 | Documentation, release, examples | Implemented v0.2 release hardening |
 
 ## Phase 0. Foundation
 
@@ -130,14 +130,16 @@ python -m paideia_engines.cli smoke --engine all --output .paideia-runs/smoke.js
 
 ## Phase 6. Documentation, Release, And Examples
 
-Planned deliverables:
+Delivered:
 
 - Beginner-facing bilingual guide
 - Per-engine README files
 - Example data index
 - Architecture diagrams
 - Release checklist
-- GitHub release or ready PR
+- Public asset audit
+- Dataset adapter backlog
+- GitHub PR update path
 
 Completion criteria:
 
@@ -155,11 +157,9 @@ https://github.com/sinmb79/22b-paideia-engines/pull/1
 
 ## Next Work
 
-Move to Phase 6 as a batch:
+Final release loop for this branch:
 
-1. Add per-engine README files.
-2. Add beginner-facing Korean and English release guide.
-3. Add release checklist and public asset audit.
-4. Add dataset adapter backlog and validation report docs.
-5. Run full validation.
-6. Commit, push, and update the draft PR.
+1. Run full validation.
+2. Commit and push the Phase 6 release-hardening changes.
+3. Update the draft PR with the new validation evidence.
+4. Convert the PR to ready or cut a release only after the checklist remains green.

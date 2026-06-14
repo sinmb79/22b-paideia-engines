@@ -105,17 +105,30 @@ decision = engine.record_experience(
 - Phase 3: stress and promotion core
 - Phase 4: governance and runtime core
 - Phase 5: config-driven orchestration and CLI core
+- Phase 6: release hardening, per-engine docs, and public asset audit
 
 ## Documentation
 
 - [Architecture](docs/architecture.md)
 - [Architecture in Korean](docs/architecture.ko.md)
+- [Engine documentation](docs/engines/README.md)
+- [Engine documentation in Korean](docs/engines/README.ko.md)
 - [Data acquisition plan](docs/data_acquisition.md)
 - [Data acquisition plan in Korean](docs/data_acquisition.ko.md)
 - [Real engine development roadmap](docs/real_engine_development.md)
 - [Real engine development roadmap in Korean](docs/real_engine_development.ko.md)
 - [Master development plan](docs/master_development_plan.md)
 - [Master development plan in Korean](docs/master_development_plan.ko.md)
+- [Release guide](docs/release_guide.md)
+- [Release guide in Korean](docs/release_guide.ko.md)
+- [Release checklist](docs/release_checklist.md)
+- [Release checklist in Korean](docs/release_checklist.ko.md)
+- [Public asset audit](docs/public_asset_audit.md)
+- [Public asset audit in Korean](docs/public_asset_audit.ko.md)
+- [Dataset adapter backlog](docs/dataset_adapter_backlog.md)
+- [Dataset adapter backlog in Korean](docs/dataset_adapter_backlog.ko.md)
+- [Example data index](docs/example_data_index.md)
+- [Example data index in Korean](docs/example_data_index.ko.md)
 
 ## Safety Defaults
 

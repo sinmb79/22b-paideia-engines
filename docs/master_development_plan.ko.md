@@ -34,7 +34,7 @@
 | 3 | 스트레스와 승급 | v0.2 core 구현 |
 | 4 | 거버넌스와 런타임 | v0.2 core 구현 |
 | 5 | 오케스트레이션과 CLI | v0.2 core 구현 |
-| 6 | 문서, 릴리스, 예제 | 진행 중 |
+| 6 | 문서, 릴리스, 예제 | v0.2 릴리스 하드닝 구현 |
 
 ## Phase 0. Foundation
 
@@ -130,14 +130,16 @@ python -m paideia_engines.cli smoke --engine all --output .paideia-runs/smoke.js
 
 ## Phase 6. 문서, 릴리스, 예제
 
-예정 산출물:
+산출물:
 
 - 초보자용 영문/한국어 guide
 - 엔진별 README
 - 예제 데이터 index
 - Architecture diagrams
 - Release checklist
-- GitHub release 또는 ready PR
+- Public asset audit
+- Dataset adapter backlog
+- GitHub PR 갱신 경로
 
 완료 기준:
 
@@ -155,11 +157,9 @@ https://github.com/sinmb79/22b-paideia-engines/pull/1
 
 ## 바로 다음 작업
 
-Phase 6을 묶음으로 진행합니다.
+이 브랜치의 최종 릴리스 루프를 진행합니다.
 
-1. 엔진별 README 추가
-2. 초보자용 한국어/영문 release guide 추가
-3. Release checklist와 public asset audit 추가
-4. Dataset adapter backlog와 validation report 문서 추가
-5. 전체 검증
-6. 커밋, 푸시, Draft PR 갱신
+1. 전체 검증 실행
+2. Phase 6 릴리스 하드닝 변경 커밋 및 푸시
+3. 검증 증거를 Draft PR에 반영
+4. 체크리스트가 계속 통과할 때만 PR ready 전환 또는 release 생성

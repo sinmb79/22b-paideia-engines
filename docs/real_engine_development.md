@@ -6,7 +6,7 @@ This roadmap tracks the work needed to turn the Paideia engine suite from a scaf
 
 ## Current Position
 
-The suite now has v0.2 cores for data acquisition, curriculum mapping, cultivation, assessment, stress, promotion, governance, runtime, and config-driven orchestration. The next depth work is release hardening: per-engine READMEs, stronger dataset adapters, and public release checks.
+The suite now has v0.2 cores for data acquisition, curriculum mapping, cultivation, assessment, stress, promotion, governance, runtime, and config-driven orchestration. Phase 6 adds release hardening: per-engine READMEs, beginner-facing guides, public asset checks, and release checklists. The next depth work is stronger dataset adapters and validation reports for real public curriculum and assessment sources.
 
 ## Phase 1: Data And Curriculum
 
@@ -117,10 +117,10 @@ python -m paideia_engines.cli smoke --engine all --output .paideia-runs/smoke.js
 
 ## Next Development Order
 
-1. Phase 6 release hardening: per-engine README files and release checklist.
-2. Dataset adapters: legal, manifest-driven adapters for public curriculum and assessment data.
-3. Stronger validation reports for acquired source manifests and configured suite outputs.
-4. Ready PR/release preparation after final validation.
+1. Dataset adapters: legal, manifest-driven adapters for public curriculum and assessment data.
+2. Stronger validation reports for acquired source manifests and configured suite outputs.
+3. Broader stress scenario packs for subject-specific evaluation.
+4. Ready PR/release preparation after final validation remains green.
 
 ## Verification
 

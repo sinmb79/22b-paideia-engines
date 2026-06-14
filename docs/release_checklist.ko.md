@@ -1,0 +1,34 @@
+# 릴리스 체크리스트
+
+[English](release_checklist.md)
+
+PR을 ready로 바꾸거나 GitHub release를 만들기 전에 이 체크리스트를 실행합니다.
+
+## 필수 명령
+
+```powershell
+python -m pytest tests -q
+python examples\basic_growth_cycle.py
+python examples\data_and_curriculum_pipeline.py
+python examples\assessment_and_cultivation_pipeline.py
+python examples\stress_and_promotion_pipeline.py
+python examples\governance_and_runtime_pipeline.py
+python -m paideia_engines.cli run-config --config examples\configured_suite.json --output .paideia-runs\result.json --output-dir .paideia-runs\engines
+python -m paideia_engines.cli smoke --engine all --output .paideia-runs\smoke.json
+python -m compileall src
+rg -n "<release-sensitive-patterns>" README.md README.ko.md docs src tests data examples -g "!**/__pycache__/**"
+git status --short --branch
+gh pr view 1 --json number,title,url,isDraft,headRefName,baseRefName,state,commits
+```
+
+## 필수 수동 확인
+
+- README에서 한국어 문서와 엔진 문서로 이동할 수 있어야 합니다.
+- 모든 엔진 패키지에 영문/한국어 README가 있어야 합니다.
+- `.paideia-runs/`, `.paideia-data/`, `.paideia-smoke/`, 로컬 생성 산출물이 staged 상태가 아니어야 합니다.
+- 공개 seed data는 metadata만 포함하고 제한 교과서 본문을 포함하지 않아야 합니다.
+- PR 본문에 검증 명령과 현재 draft/ready 상태가 적혀 있어야 합니다.
+
+## 릴리스 판단
+
+명령 결과와 [공개 자산 감사](public_asset_audit.ko.md)가 모두 깨끗할 때만 PR을 ready로 바꿀 수 있습니다.

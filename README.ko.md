@@ -105,17 +105,30 @@ decision = engine.record_experience(
 - Phase 3: 스트레스와 승급 core
 - Phase 4: 거버넌스와 런타임 core
 - Phase 5: 설정 기반 오케스트레이션과 CLI core
+- Phase 6: 릴리스 하드닝, 엔진별 문서, 공개 자산 감사
 
 ## 문서
 
 - [아키텍처](docs/architecture.ko.md)
 - [Architecture in English](docs/architecture.md)
+- [엔진 문서](docs/engines/README.ko.md)
+- [Engine documentation in English](docs/engines/README.md)
 - [데이터 확보 계획](docs/data_acquisition.ko.md)
 - [Data acquisition plan in English](docs/data_acquisition.md)
 - [진짜 엔진 개발 로드맵](docs/real_engine_development.ko.md)
 - [Real engine development roadmap in English](docs/real_engine_development.md)
 - [총괄 개발 마스터플랜](docs/master_development_plan.ko.md)
 - [Master development plan in English](docs/master_development_plan.md)
+- [릴리스 가이드](docs/release_guide.ko.md)
+- [Release guide in English](docs/release_guide.md)
+- [릴리스 체크리스트](docs/release_checklist.ko.md)
+- [Release checklist in English](docs/release_checklist.md)
+- [공개 자산 감사](docs/public_asset_audit.ko.md)
+- [Public asset audit in English](docs/public_asset_audit.md)
+- [데이터셋 어댑터 백로그](docs/dataset_adapter_backlog.ko.md)
+- [Dataset adapter backlog in English](docs/dataset_adapter_backlog.md)
+- [예제 데이터 인덱스](docs/example_data_index.ko.md)
+- [Example data index in English](docs/example_data_index.md)
 
 ## 안전 기본값
 
