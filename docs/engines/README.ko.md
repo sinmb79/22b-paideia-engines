@@ -15,6 +15,7 @@
 | 거버넌스 | [한국어](../../src/paideia_engines/governance/README.ko.md) | [README](../../src/paideia_engines/governance/README.md) |
 | 런타임 | [한국어](../../src/paideia_engines/runtime/README.ko.md) | [README](../../src/paideia_engines/runtime/README.md) |
 | 오케스트레이션 | [한국어](../../src/paideia_engines/orchestration/README.ko.md) | [README](../../src/paideia_engines/orchestration/README.md) |
+| 평가 | [한국어](../../src/paideia_engines/evaluation/README.ko.md) | [README](../../src/paideia_engines/evaluation/README.md) |
 
 ## 공개 경계
 

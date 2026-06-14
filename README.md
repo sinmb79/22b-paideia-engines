@@ -16,6 +16,7 @@ AI agents become hard to trust when training, evaluation, memory, runtime execut
 - **Adapter Certification**: proves parser fixtures link to valid acquired-source manifest records.
 - **Engine Contract Registry**: freezes public APIs, schemas, docs, examples, and safety boundaries.
 - **Suite Output Validator**: cross-checks configured-suite result JSON and per-engine outputs before release.
+- **Evaluation Engine**: validates benchmark packs against release evidence and regression thresholds.
 - **Curriculum Mapping Engine**: maps standards into learning units.
 - **Cultivation Engine**: builds training blueprints and roadmaps.
 - **Assessment Engine**: scores outputs with deterministic rubrics and transcripts.
@@ -42,6 +43,7 @@ flowchart LR
     Runtime --> Verification["Verification"]
     Verification --> Outputs["Per-engine JSON outputs"]
     Outputs --> Validator["Suite output validator"]
+    Validator --> Benchmark["Benchmark validation"]
 ```
 
 ## Install For Local Development
@@ -93,6 +95,13 @@ python -m paideia_engines.cli validate-suite-output `
   --output .paideia-runs/suite-output-validation.json
 
 python -m paideia_engines.cli smoke --engine all --output .paideia-runs/smoke.json
+
+python -m paideia_engines.cli validate-benchmarks `
+  --pack examples/benchmark_packs/core_engine_benchmark_pack.json `
+  --result .paideia-runs/result.json `
+  --output-dir .paideia-runs/engines `
+  --reports-dir .paideia-runs `
+  --output .paideia-runs/benchmark-validation.json
 ```
 
 ## Engine Independence
@@ -127,6 +136,7 @@ decision = engine.record_experience(
 - Phase 12: subject-specific stress scenario packs
 - Phase 13: engine contract registry and validation
 - Phase 14: official adapter certification matrix
+- Phase 15: evaluation and benchmark pack
 
 ## Documentation
 
@@ -170,6 +180,7 @@ decision = engine.record_experience(
 - Suite output validation checks per-engine files, schemas, and stress-to-promotion boundaries before release.
 - Manifest diagnostics block malformed, duplicate, unsafe, or non-public full-content source records before release.
 - Stress pack diagnostics keep subject scenarios curriculum-linked and promotion-boundary clean.
+- Benchmark validation checks golden schemas, mutation expectations, and release evidence thresholds.
 
 ## License
 

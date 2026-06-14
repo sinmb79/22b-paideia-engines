@@ -46,7 +46,7 @@
 | 12 | subject-specific stress scenario packs | v0.2 core 구현 |
 | 13 | engine contract registry and compatibility gate | v0.2 core 구현 |
 | 14 | official adapter certification matrix | v0.2 core 구현 |
-| 15 | evaluation and benchmark pack | 계획 |
+| 15 | evaluation and benchmark pack | v0.2 core 구현 |
 | 16 | persistent runtime and evidence store | 계획 |
 | 17 | release candidate pipeline | 계획 |
 | 18 | downstream reuse recipes | 계획 |
@@ -312,6 +312,7 @@ python -m paideia_engines.cli smoke --engine all --output .paideia-runs/smoke.js
 남은 작업은 개별 패치가 아니라 연결된 프로그램으로 진행합니다.
 
 1. **Phase 15: Evaluation and benchmark pack**
+   - 구현 완료: golden schema, benchmark evidence report, mutation expectation, release readiness threshold, `validate-benchmarks` CLI.
    - 모든 엔진별 golden fixture를 추가합니다.
    - schema, boundary, stress coverage, assessment quality, governance evidence에 대한 mutation/tamper test를 추가합니다.
    - release readiness를 위한 최소 coverage threshold를 정의합니다.
@@ -343,8 +344,7 @@ https://github.com/sinmb79/22b-paideia-engines/pull/1
 
 다음 단계는 총괄 프로그램 순서대로 진행합니다.
 
-1. Phase 15 benchmark/evaluation fixture 완료
-2. Phase 16 persistent runtime evidence 완료
-3. Phase 17 release candidate pipeline 완료
-4. Phase 18 downstream reuse recipe 완료
-5. 모든 checklist와 gate가 계속 green일 때만 PR ready 전환 또는 release 생성
+1. Phase 16 persistent runtime evidence 완료
+2. Phase 17 release candidate pipeline 완료
+3. Phase 18 downstream reuse recipe 완료
+4. 모든 checklist와 gate가 계속 green일 때만 PR ready 전환 또는 release 생성

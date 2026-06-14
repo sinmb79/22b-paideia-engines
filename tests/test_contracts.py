@@ -74,12 +74,13 @@ def test_engine_contract_registry_lists_every_reusable_engine():
         "governance",
         "runtime",
         "orchestration",
+        "evaluation",
     }
     for contract in contracts:
         assert contract.public_api
         assert contract.output_schemas
         assert contract.safety_boundaries
-        assert contract.status == "phase13_contract_frozen"
+        assert contract.status in {"phase13_contract_frozen", "phase15_benchmark_gate"}
 
 
 def test_engine_contract_registry_validation_passes_current_repo():
@@ -87,7 +88,7 @@ def test_engine_contract_registry_validation_passes_current_repo():
 
     assert report["schema"] == "paideia-engine-contract-validation/v1"
     assert report["status"] == "passed"
-    assert report["summary"]["engine_count"] == 9
+    assert report["summary"]["engine_count"] == 10
     assert report["summary"]["failed"] == 0
     assert report["issues"] == []
 

@@ -14,6 +14,7 @@ AI 에이전트가 훈련, 평가, 기억, 실행, 통제를 하나의 불투명
 - **Manifest diagnostics**: 릴리스 또는 로컬 corpus 연결 전에 acquired-source JSONL manifest를 검증합니다.
 - **출처 parser diagnostics**: 릴리스 전에 공개 안전 parser fixture pack을 검증합니다.
 - **Suite output validator**: 릴리스 전에 configured-suite result JSON과 엔진별 출력을 교차 검증합니다.
+- **평가 엔진**: benchmark pack으로 릴리스 증거와 회귀 임계값을 검증합니다.
 - **교육과정 매핑 엔진**: 성취기준을 학습 단위로 매핑합니다.
 - **육성 엔진**: 훈련 청사진과 학습 로드맵을 만듭니다.
 - **평가 엔진**: 결정적 rubric과 transcript로 결과물을 평가합니다.
@@ -40,6 +41,7 @@ flowchart LR
     Runtime --> Verification["검증"]
     Verification --> Outputs["엔진별 JSON 출력"]
     Outputs --> Validator["Suite output validator"]
+    Validator --> Benchmark["Benchmark validation"]
 ```
 
 ## 로컬 개발 설치
@@ -91,6 +93,13 @@ python -m paideia_engines.cli validate-suite-output `
   --output .paideia-runs/suite-output-validation.json
 
 python -m paideia_engines.cli smoke --engine all --output .paideia-runs/smoke.json
+
+python -m paideia_engines.cli validate-benchmarks `
+  --pack examples/benchmark_packs/core_engine_benchmark_pack.json `
+  --result .paideia-runs/result.json `
+  --output-dir .paideia-runs/engines `
+  --reports-dir .paideia-runs `
+  --output .paideia-runs/benchmark-validation.json
 ```
 
 ## 엔진의 독립성
@@ -125,6 +134,7 @@ decision = engine.record_experience(
 - Phase 12: subject-specific stress scenario packs
 - Phase 13: engine contract registry and validation
 - Phase 14: official adapter certification matrix
+- Phase 15: evaluation and benchmark pack
 
 ## 문서
 
@@ -168,6 +178,7 @@ decision = engine.record_experience(
 - Suite output validation은 릴리스 전에 엔진별 파일, schema, stress-to-promotion 경계를 검증함
 - Manifest diagnostics는 릴리스 전에 malformed, duplicate, unsafe, non-public full-content source record를 차단함
 - Stress pack diagnostics는 과목별 scenario가 curriculum-linked이고 promotion-boundary clean 상태인지 검증함
+- Benchmark validation은 golden schema, mutation expectation, release evidence threshold를 검증함
 
 ## 라이선스
 

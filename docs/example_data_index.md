@@ -12,6 +12,7 @@ This repository includes only safe sample data and source metadata.
 | `examples/acquired_sources_manifest.jsonl` | Public-safe acquired-source manifest diagnostics sample | Allowed |
 | `examples/public_item_sample.jsonl` | Tiny repository-owned item sample used by acquisition validation examples | Allowed |
 | `examples/source_fixture_pack.json` | Public-safe parser diagnostics fixture manifest | Allowed |
+| `examples/benchmark_packs/core_engine_benchmark_pack.json` | Public-safe benchmark pack for release evidence validation | Allowed |
 | `examples/stress_packs/core_subject_stress_pack.json` | Public-safe subject stress scenario pack | Allowed |
 | `examples/source_samples/ncic_curriculum_sample.csv` | Tiny NCIC-style curriculum parser sample | Allowed |
 | `examples/source_samples/public_assessment_sample.csv` | Tiny public assessment CSV parser sample | Allowed |

@@ -13,6 +13,7 @@ ENGINE_DOC_DIRS = [
     ROOT / "src" / "paideia_engines" / "governance",
     ROOT / "src" / "paideia_engines" / "runtime",
     ROOT / "src" / "paideia_engines" / "orchestration",
+    ROOT / "src" / "paideia_engines" / "evaluation",
 ]
 
 
@@ -74,6 +75,7 @@ def test_release_checklist_contains_required_validation_commands():
         "python -m paideia_engines.cli diagnose-source",
         "python -m paideia_engines.cli diagnose-manifest",
         "python -m paideia_engines.cli diagnose-stress-pack",
+        "python -m paideia_engines.cli validate-benchmarks",
         "rg -n",
     ]
     for command in required_commands:

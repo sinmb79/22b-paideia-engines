@@ -46,7 +46,7 @@ The project is complete only when:
 | 12 | Subject-specific stress scenario packs | Implemented v0.2 core |
 | 13 | Engine contract registry and compatibility gate | Implemented v0.2 core |
 | 14 | Official adapter certification matrix | Implemented v0.2 core |
-| 15 | Evaluation and benchmark pack | Planned |
+| 15 | Evaluation and benchmark pack | Implemented v0.2 core |
 | 16 | Persistent runtime and evidence store | Planned |
 | 17 | Release candidate pipeline | Planned |
 | 18 | Downstream reuse recipes | Planned |
@@ -312,9 +312,10 @@ Completion criteria:
 The remaining work must move as a coordinated program, not as isolated one-off patches:
 
 1. **Phase 15: Evaluation And Benchmark Pack**
-   - Add golden fixtures for every engine.
-   - Add mutation/tamper tests for schemas, boundaries, stress coverage, assessment quality, and governance evidence.
-   - Define minimum coverage thresholds for release readiness.
+   - Delivered golden schema fixtures for configured-suite engine outputs.
+   - Added benchmark validation for contract, adapter, source, manifest, stress-pack, smoke, and suite-output reports.
+   - Added mutation/tamper expectations and minimum release thresholds.
+   - CLI command: `validate-benchmarks`.
 
 2. **Phase 16: Persistent Runtime And Evidence Store**
    - Persist run bundles that can be replayed after the Python process exits.
@@ -343,8 +344,7 @@ https://github.com/sinmb79/22b-paideia-engines/pull/1
 
 Next coordinated stages:
 
-1. Complete Phase 15 benchmark and evaluation fixtures.
-2. Complete Phase 16 persistent runtime evidence.
-3. Complete Phase 17 release candidate pipeline.
-4. Complete Phase 18 downstream reuse recipes.
-5. Convert the PR to ready or cut a release only after every checklist and gate remains green.
+1. Complete Phase 16 persistent runtime evidence.
+2. Complete Phase 17 release candidate pipeline.
+3. Complete Phase 18 downstream reuse recipes.
+4. Convert the PR to ready or cut a release only after every checklist and gate remains green.

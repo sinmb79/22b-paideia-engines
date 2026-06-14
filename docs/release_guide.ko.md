@@ -33,6 +33,7 @@ python -m paideia_engines.cli certify-adapters --fixtures examples\source_fixtur
 python -m paideia_engines.cli diagnose-source --manifest examples\source_fixture_pack.json --output .paideia-runs\source-diagnostics.json
 python -m paideia_engines.cli diagnose-manifest --manifest examples\acquired_sources_manifest.jsonl --output .paideia-runs\manifest-diagnostics.json
 python -m paideia_engines.cli diagnose-stress-pack --pack examples\stress_packs\core_subject_stress_pack.json --output .paideia-runs\stress-pack-diagnostics.json
+python -m paideia_engines.cli validate-benchmarks --pack examples\benchmark_packs\core_engine_benchmark_pack.json --result .paideia-runs\result.json --output-dir .paideia-runs\engines --reports-dir .paideia-runs --output .paideia-runs\benchmark-validation.json
 ```
 
 ## CLI 실행
@@ -49,6 +50,13 @@ python -m paideia_engines.cli validate-suite-output `
   --output .paideia-runs\suite-output-validation.json
 
 python -m paideia_engines.cli smoke --engine all --output .paideia-runs\smoke.json
+
+python -m paideia_engines.cli validate-benchmarks `
+  --pack examples\benchmark_packs\core_engine_benchmark_pack.json `
+  --result .paideia-runs\result.json `
+  --output-dir .paideia-runs\engines `
+  --reports-dir .paideia-runs `
+  --output .paideia-runs\benchmark-validation.json
 ```
 
 ## 출력 의미

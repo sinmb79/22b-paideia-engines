@@ -6,7 +6,7 @@ This roadmap tracks the work needed to turn the Paideia engine suite from a scaf
 
 ## Current Position
 
-The suite now has v0.2 cores for data acquisition, curriculum mapping, cultivation, assessment, stress, promotion, governance, runtime, and config-driven orchestration. Phase 6 adds release hardening. Phase 7 adds acquired-source validation reports and JSON adapters. Phase 8 adds NCIC/data.go.kr-style CSV parsing, AI-Hub-like math JSON parsing, public assessment CSV parsing, and public exam metadata manifests. Phase 9 adds parser diagnostics and public-safe fixture packs. Phase 10 adds configured-suite output validation. Phase 11 adds acquired-source manifest diagnostics. Phase 12 adds subject-specific stress packs. Phase 13 adds the public engine contract registry. Phase 14 adds adapter certification that links parser fixtures to valid acquired-source manifest records. The next depth work is evaluation and benchmark fixtures.
+The suite now has v0.2 cores for data acquisition, curriculum mapping, cultivation, assessment, stress, promotion, governance, runtime, and config-driven orchestration. Phase 6 adds release hardening. Phase 7 adds acquired-source validation reports and JSON adapters. Phase 8 adds NCIC/data.go.kr-style CSV parsing, AI-Hub-like math JSON parsing, public assessment CSV parsing, and public exam metadata manifests. Phase 9 adds parser diagnostics and public-safe fixture packs. Phase 10 adds configured-suite output validation. Phase 11 adds acquired-source manifest diagnostics. Phase 12 adds subject-specific stress packs. Phase 13 adds the public engine contract registry. Phase 14 adds adapter certification that links parser fixtures to valid acquired-source manifest records. Phase 15 adds benchmark-pack validation for release evidence and regression thresholds. The next depth work is persistent runtime evidence.
 
 ## Phase 1: Data And Curriculum
 
@@ -259,12 +259,30 @@ Capabilities:
 - Public-safe sample policy for synthetic, metadata-only, and open-public fixture exports
 - Public assessment CSV fixture coverage alongside NCIC/data.go.kr, AI-Hub-like, and EBSi metadata fixtures
 
+## Phase 15: Evaluation And Benchmark Pack
+
+Added:
+
+```text
+src/paideia_engines/evaluation/benchmark_pack.py
+examples/benchmark_packs/core_engine_benchmark_pack.json
+tests/test_benchmark_pack.py
+```
+
+Capabilities:
+
+- Benchmark pack schema and report validation
+- Golden configured-suite engine schema checks
+- Mutation/tamper expectation declarations
+- Release evidence validation for contract, adapter, source fixture, manifest, stress pack, smoke, and suite-output reports
+- Minimum release-readiness thresholds
+- CLI command: `validate-benchmarks`
+
 ## Next Development Order
 
-1. Evaluation and benchmark pack for engine-by-engine regression testing.
-2. Persistent runtime and evidence store for replayable run bundles.
-3. Release candidate pipeline with wheel install smoke, CLI matrix, link/encoding checks, and concrete sensitive scans.
-4. Downstream reuse recipes for other 22B AI projects.
+1. Persistent runtime and evidence store for replayable run bundles.
+2. Release candidate pipeline with wheel install smoke, CLI matrix, link/encoding checks, and concrete sensitive scans.
+3. Downstream reuse recipes for other 22B AI projects.
 
 ## Verification
 
@@ -283,4 +301,5 @@ python -m paideia_engines.cli diagnose-stress-pack --pack examples\stress_packs\
 python -m paideia_engines.cli run-config --config examples\configured_suite.json --output .paideia-runs\result.json --output-dir .paideia-runs\engines
 python -m paideia_engines.cli validate-suite-output --output-dir .paideia-runs\engines --result .paideia-runs\result.json --output .paideia-runs\suite-output-validation.json
 python -m paideia_engines.cli smoke --engine all --output .paideia-runs\smoke.json
+python -m paideia_engines.cli validate-benchmarks --pack examples\benchmark_packs\core_engine_benchmark_pack.json --result .paideia-runs\result.json --output-dir .paideia-runs\engines --reports-dir .paideia-runs --output .paideia-runs\benchmark-validation.json
 ```

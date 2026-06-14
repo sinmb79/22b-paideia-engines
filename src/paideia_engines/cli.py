@@ -10,6 +10,7 @@ from paideia_engines.contracts import validate_engine_contract_registry
 from paideia_engines.data_acquisition.adapter_certification import certify_adapters
 from paideia_engines.data_acquisition.manifest_diagnostics import diagnose_acquired_source_manifest
 from paideia_engines.data_acquisition.source_diagnostics import diagnose_source_fixture_pack
+from paideia_engines.evaluation import validate_benchmark_pack
 from paideia_engines.orchestration.config_runner import run_config_file, run_engine_smoke, write_json
 from paideia_engines.orchestration.output_validator import (
     validate_configured_suite_outputs,
@@ -79,6 +80,16 @@ def build_parser() -> argparse.ArgumentParser:
     validate_suite.add_argument("--output-dir", required=True, help="Directory containing numbered engine outputs.")
     validate_suite.add_argument("--result", help="Optional full configured-suite result JSON for cross-checking.")
     validate_suite.add_argument("--output", required=True, help="Path to write the validation report JSON.")
+
+    validate_benchmarks = subcommands.add_parser(
+        "validate-benchmarks",
+        help="Validate a benchmark pack against release evidence reports.",
+    )
+    validate_benchmarks.add_argument("--pack", required=True, help="Path to a benchmark pack JSON file.")
+    validate_benchmarks.add_argument("--result", required=True, help="Configured-suite result JSON path.")
+    validate_benchmarks.add_argument("--output-dir", required=True, help="Directory containing per-engine outputs.")
+    validate_benchmarks.add_argument("--reports-dir", required=True, help="Directory containing evidence reports.")
+    validate_benchmarks.add_argument("--output", required=True, help="Path to write the benchmark report JSON.")
 
     return parser
 
@@ -187,6 +198,26 @@ def main(argv: Sequence[str] | None = None) -> int:
                 {
                     "wrote": output_path,
                     "suite_output_validation": result["summary"],
+                    "status": result["status"],
+                },
+                ensure_ascii=False,
+            )
+        )
+        return 0 if result["status"] == "passed" else 1
+
+    if args.command == "validate-benchmarks":
+        result = validate_benchmark_pack(
+            args.pack,
+            result=args.result,
+            output_dir=args.output_dir,
+            reports_dir=args.reports_dir,
+        )
+        output_path = write_json(args.output, result)
+        print(
+            json.dumps(
+                {
+                    "wrote": output_path,
+                    "benchmark_validation": result["summary"],
                     "status": result["status"],
                 },
                 ensure_ascii=False,

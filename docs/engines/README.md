@@ -15,6 +15,7 @@ Each Paideia engine is documented in its package folder so it can be used as an 
 | Governance | [README](../../src/paideia_engines/governance/README.md) | [한국어](../../src/paideia_engines/governance/README.ko.md) |
 | Runtime | [README](../../src/paideia_engines/runtime/README.md) | [한국어](../../src/paideia_engines/runtime/README.ko.md) |
 | Orchestration | [README](../../src/paideia_engines/orchestration/README.md) | [한국어](../../src/paideia_engines/orchestration/README.ko.md) |
+| Evaluation | [README](../../src/paideia_engines/evaluation/README.md) | [한국어](../../src/paideia_engines/evaluation/README.ko.md) |
 
 ## Release Boundary
 

@@ -21,6 +21,7 @@ REQUIRED_ENGINE_NAMES = {
     "governance",
     "runtime",
     "orchestration",
+    "evaluation",
 }
 
 
@@ -310,6 +311,27 @@ def engine_contracts() -> list[EngineContract]:
                 "suite output validation reads local JSON without rerunning engines",
             ],
             compatibility="Config fields are additive before 1.0; removed fields require a schema bump.",
+        ),
+        EngineContract(
+            name="evaluation",
+            package="paideia_engines.evaluation",
+            version="0.2",
+            status="phase15_benchmark_gate",
+            public_api=["validate_benchmark_pack"],
+            input_schemas=["paideia-benchmark-pack/v1"],
+            output_schemas=["paideia-benchmark-report/v1"],
+            cli_commands=["validate-benchmarks"],
+            examples=["examples/benchmark_packs/core_engine_benchmark_pack.json"],
+            docs=[
+                "src/paideia_engines/evaluation/README.md",
+                "src/paideia_engines/evaluation/README.ko.md",
+            ],
+            safety_boundaries=[
+                "benchmark validation reads existing local evidence reports",
+                "benchmark packs declare mutation expectations without storing private data",
+                "release readiness fails closed when suite outputs or evidence reports are missing",
+            ],
+            compatibility="Benchmark thresholds and checks are additive before 1.0; removed checks require a migration note.",
         ),
     ]
 

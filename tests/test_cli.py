@@ -4,7 +4,15 @@ from pathlib import Path
 import subprocess
 import sys
 
+from paideia_engines.contracts import validate_engine_contract_registry
 from paideia_engines.data_acquisition import DataAcquisitionEngine
+from paideia_engines.data_acquisition import (
+    certify_adapters,
+    diagnose_acquired_source_manifest,
+    diagnose_source_fixture_pack,
+)
+from paideia_engines.orchestration.config_runner import run_config_file, run_engine_smoke
+from paideia_engines.stress import diagnose_stress_scenario_pack
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -43,6 +51,40 @@ def _config(tmp_path: Path) -> dict[str, object]:
             ],
         },
     }
+
+
+def _write_json(path: Path, payload: dict[str, object]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True), encoding="utf-8")
+
+
+def _build_benchmark_evidence(tmp_path: Path) -> tuple[Path, Path, Path]:
+    result_path = tmp_path / "result.json"
+    output_dir = tmp_path / "engines"
+    reports_dir = tmp_path / "reports"
+    run_config_file(ROOT / "examples" / "configured_suite.json", output_path=result_path, output_dir=output_dir)
+    _write_json(reports_dir / "contract-validation.json", validate_engine_contract_registry(ROOT))
+    _write_json(
+        reports_dir / "adapter-certification.json",
+        certify_adapters(
+            ROOT / "examples" / "source_fixture_pack.json",
+            ROOT / "examples" / "acquired_sources_manifest.jsonl",
+        ),
+    )
+    _write_json(
+        reports_dir / "source-diagnostics.json",
+        diagnose_source_fixture_pack(ROOT / "examples" / "source_fixture_pack.json"),
+    )
+    _write_json(
+        reports_dir / "manifest-diagnostics.json",
+        diagnose_acquired_source_manifest(ROOT / "examples" / "acquired_sources_manifest.jsonl"),
+    )
+    _write_json(
+        reports_dir / "stress-pack-diagnostics.json",
+        diagnose_stress_scenario_pack(ROOT / "examples" / "stress_packs" / "core_subject_stress_pack.json"),
+    )
+    _write_json(reports_dir / "smoke.json", run_engine_smoke("all"))
+    return result_path, output_dir, reports_dir
 
 
 def test_cli_run_config_writes_json_output(tmp_path):
@@ -317,6 +359,41 @@ def test_cli_validate_contracts_writes_report(tmp_path):
     payload = json.loads(output_path.read_text(encoding="utf-8"))
     assert payload["schema"] == "paideia-engine-contract-validation/v1"
     assert payload["status"] == "passed"
-    assert payload["summary"]["engine_count"] == 9
+    assert payload["summary"]["engine_count"] == 10
     assert payload["summary"]["failed"] == 0
     assert "contract_validation" in completed.stdout
+
+
+def test_cli_validate_benchmarks_writes_report(tmp_path):
+    result_path, output_dir, reports_dir = _build_benchmark_evidence(tmp_path)
+    output_path = tmp_path / "benchmark-validation.json"
+
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "paideia_engines.cli",
+            "validate-benchmarks",
+            "--pack",
+            str(ROOT / "examples" / "benchmark_packs" / "core_engine_benchmark_pack.json"),
+            "--result",
+            str(result_path),
+            "--output-dir",
+            str(output_dir),
+            "--reports-dir",
+            str(reports_dir),
+            "--output",
+            str(output_path),
+        ],
+        cwd=ROOT,
+        env=_env(),
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+
+    payload = json.loads(output_path.read_text(encoding="utf-8"))
+    assert payload["schema"] == "paideia-benchmark-report/v1"
+    assert payload["status"] == "passed"
+    assert payload["summary"]["failed"] == 0
+    assert "benchmark_validation" in completed.stdout
