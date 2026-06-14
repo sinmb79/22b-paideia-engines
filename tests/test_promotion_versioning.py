@@ -25,6 +25,153 @@ def test_promotion_engine_versions_ledger_after_each_decision():
     assert [entry["version"] for entry in engine.ledger["history"]] == [1, 2]
 
 
+def test_promotion_ledger_accessor_returns_snapshot_not_internal_store():
+    engine = PromotionEngine(owner="agent:math")
+    engine.record_experience(
+        source="assessment",
+        event={"summary": "Passed place-value item.", "skills": ["place_value"]},
+        review=ReviewLabel(score=91, status="verified", reviewed_by="boss"),
+    )
+
+    ledger = engine.ledger
+    ledger["promoted_experiences"][0]["review_status"] = "tampered"
+
+    assert engine.ledger["promoted_experiences"][0]["review_status"] == "active"
+
+
+def test_promotion_events_accessor_returns_snapshot_not_internal_store():
+    engine = PromotionEngine(owner="agent:math")
+    engine.record_experience(
+        source="assessment",
+        event={"summary": "Passed place-value item.", "skills": ["place_value"]},
+        review=ReviewLabel(score=91, status="verified", reviewed_by="boss"),
+    )
+
+    events = engine.events
+    events[0]["event_type"] = "tampered"
+
+    assert engine.events[0]["event_type"] == "experience.recorded"
+
+
+@pytest.mark.parametrize("attribute", ["ledger", "events"])
+def test_promotion_snapshot_accessors_are_read_only(attribute):
+    engine = PromotionEngine(owner="agent:math")
+
+    with pytest.raises(AttributeError):
+        setattr(engine, attribute, {})
+
+
+def test_record_experience_returns_snapshot_not_ledger_alias():
+    engine = PromotionEngine(owner="agent:math")
+
+    decision = engine.record_experience(
+        source="assessment",
+        event={"summary": "Passed place-value item.", "skills": ["place_value"]},
+        review=ReviewLabel(score=91, status="verified", reviewed_by="boss"),
+    )
+    decision["review"]["score"] = 1
+
+    assert engine.ledger["promoted_experiences"][0]["decision"]["review"]["score"] == 91
+
+
+def test_reconsider_quarantined_returns_snapshot_not_ledger_alias():
+    engine = PromotionEngine(owner="agent:math")
+    quarantined = engine.record_experience(
+        source="stress",
+        event={"summary": "Initially weak stress response.", "skills": ["stress_rehearsal"]},
+        review=ReviewLabel(score=62, status="needs_review", reviewed_by="committee"),
+    )
+
+    reconsidered = engine.reconsider_quarantined(
+        quarantined["experience_id"],
+        review=ReviewLabel(score=88, status="verified", reviewed_by="boss"),
+        notes="Learner corrected the misconception with evidence.",
+    )
+    reconsidered["review"]["score"] = 1
+
+    assert engine.ledger["promoted_experiences"][0]["decision"]["review"]["score"] == 88
+
+
+def test_governance_reconsideration_returns_snapshot_not_ledger_alias():
+    engine = PromotionEngine(owner="agent:math")
+    quarantined = engine.record_experience(
+        source="governance",
+        event={"summary": "Blocked by governance.", "skills": ["governance"], "blocked_by": "governance"},
+        review=ReviewLabel(score=100, status="verified", reviewed_by="committee"),
+        quarantine_reason="governance_blocked_promotion",
+    )
+    governance = GovernanceEngine()
+    quarantine_ref = quarantined["quarantine_ref"]
+    governance.record_approval(
+        approval_type="boss_approval",
+        subject_id=quarantined["experience_id"],
+        approved_by="boss",
+        scope={
+            "action": "memory_promotion",
+            "source_id": quarantined["experience_id"],
+            "allowed_use": "active_memory",
+            "quarantine_ref": quarantine_ref,
+        },
+    )
+    allowed_review = governance.review_action(
+        "memory_promotion",
+        context={
+            "source_id": quarantined["experience_id"],
+            "intended_use": "active_memory",
+            "quarantine_ref": quarantine_ref,
+        },
+    )
+
+    reconsidered = engine.reconsider_quarantined(
+        quarantined["experience_id"],
+        review=ReviewLabel(score=92, status="verified", reviewed_by="boss"),
+        notes="Fresh governance decision allows local-only promotion.",
+        governance_review=allowed_review,
+        governance_approval_ledger=governance.approval_ledger,
+    )
+    reconsidered["governance_review"]["policy_evaluation"]["context"]["source_id"] = "tampered"
+
+    assert (
+        engine.ledger["promoted_experiences"][0]["decision"]["governance_review"]["policy_evaluation"]["context"][
+            "source_id"
+        ]
+        == quarantined["experience_id"]
+    )
+
+
+def test_supersede_promoted_returns_snapshot_not_ledger_alias():
+    engine = PromotionEngine(owner="agent:math")
+    promoted = engine.record_experience(
+        source="assessment",
+        event={"summary": "Old method for place value.", "skills": ["place_value"]},
+        review=ReviewLabel(score=90, status="verified", reviewed_by="boss"),
+    )
+
+    replacement = engine.supersede_promoted(
+        promoted["experience_id"],
+        event={"summary": "Improved method with clearer verification.", "skills": ["place_value", "verification"]},
+        review=ReviewLabel(score=95, status="verified", reviewed_by="boss"),
+        reason="clearer verified method",
+    )
+    replacement["review"]["score"] = 1
+
+    assert engine.ledger["promoted_experiences"][1]["decision"]["review"]["score"] == 95
+
+
+def test_route_active_memory_returns_snapshot_not_ledger_alias():
+    engine = PromotionEngine(owner="agent:math")
+    engine.record_experience(
+        source="assessment",
+        event={"summary": "Passed place-value item.", "skills": ["place_value"]},
+        review=ReviewLabel(score=91, status="verified", reviewed_by="boss"),
+    )
+
+    route = engine.route_active_memory("place value")
+    route["selected"][0]["event"]["summary"] = "tampered"
+
+    assert engine.ledger["promoted_experiences"][0]["event"]["summary"] == "Passed place-value item."
+
+
 def test_promotion_engine_preserves_custom_quarantine_reason():
     engine = PromotionEngine(owner="agent:math")
 

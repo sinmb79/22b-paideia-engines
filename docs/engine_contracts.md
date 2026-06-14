@@ -65,6 +65,7 @@ The command fails if a required engine is missing from the registry, if contract
 - `quarantine_ref` is intentionally non-deterministic because it acts as a local capability token for a single governance-blocked quarantine reconsideration. Replay-stable ledgers should compare the surrounding ledger fields and evidence bundle, not expect this token to repeat for identical inputs.
 - Governance APIs return snapshots: returned approval, review, and committee decision payloads must not share mutable objects with the internal ledger/trail entries.
 - Governance ledgers and reviews use private stores with read-only snapshot accessors, and governance board/evaluation outputs must use policy snapshots instead of exposing mutable internal policy objects.
+- Promotion ledgers and events use private stores with read-only accessors that return detached mutable snapshots. Mutating returned promotion decisions, memory routes, ledger snapshots, or event snapshots must never mutate engine internal state.
 - Assessment may count a verified artifact for deterministic rubric scoring, but release-grade promotion must treat it as evidence only after runtime evidence validation proves file existence, byte hash, manifest hash, and replay trace.
 
 The registry lives in `src/paideia_engines/contracts/registry.py`.

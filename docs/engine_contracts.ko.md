@@ -65,6 +65,7 @@ python -m paideia_engines.cli validate-contracts `
 - `quarantine_ref`는 intentionally non-deterministic 값입니다. 이 값은 하나의 governance-blocked quarantine 재심사에만 쓰이는 local capability token 역할을 하므로, replay-stable ledger는 같은 입력에서 이 토큰이 반복되기를 기대하지 말고 주변 ledger field와 evidence bundle을 비교해야 합니다.
 - Governance APIs return snapshots: 반환된 approval, review, committee decision payload는 내부 ledger/trail entry와 mutable object를 공유하면 안 됩니다.
 - Governance ledgers and reviews use private stores with read-only snapshot accessors 규칙을 따릅니다. governance board/evaluation output도 mutable internal policy object를 노출하지 않고 policy snapshots를 사용해야 합니다.
+- Promotion ledgers and events use private stores 규칙을 따릅니다. public accessor는 read-only이며 detached mutable snapshots를 반환하므로, 반환된 promotion decision, memory route, ledger snapshot, event snapshot을 수정해도 엔진 내부 상태가 바뀌면 안 됩니다.
 - 평가 엔진은 결정적 rubric scoring을 위해 verified artifact를 셀 수 있지만, release-grade promotion은 runtime evidence validation이 파일 존재, byte hash, manifest hash, replay trace를 증명한 뒤에만 이를 증거로 신뢰해야 합니다.
 
 레지스트리는 `src/paideia_engines/contracts/registry.py`에 있습니다.
