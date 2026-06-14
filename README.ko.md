@@ -106,6 +106,7 @@ decision = engine.record_experience(
 - Phase 4: 거버넌스와 런타임 core
 - Phase 5: 설정 기반 오케스트레이션과 CLI core
 - Phase 6: 릴리스 하드닝, 엔진별 문서, 공개 자산 감사
+- Phase 7: 확보 자료 검증, 공개 교육과정 어댑터, 공개 문항 bank 어댑터
 
 ## 문서
 
@@ -141,7 +142,7 @@ decision = engine.record_experience(
 - 대체된 promoted 경험은 원장에 남기되 활성 기억에서는 제외
 - 런타임 trace와 artifact manifest는 검토 증거로 보존
 - CLI 출력은 JSON이므로 실행을 감사하고 재검토할 수 있음
-- 설정 기반 실행은 런타임 이후 `verification` JSON 출력까지 남김
+- 설정 기반 실행은 `acquisition_validation`과 `verification` JSON 출력을 남김
 
 ## 라이선스
 

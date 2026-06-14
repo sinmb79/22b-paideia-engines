@@ -15,6 +15,13 @@ class DataAcquisitionEngine:
 
     plan_schema = "paideia-data-acquisition-plan/v1"
     acquired_schema = "paideia-acquired-source/v1"
+    validation_schema = "paideia-acquisition-validation-report/v1"
+    source_validation_schema = "paideia-acquired-source-validation/v1"
+    license_note_required_tiers = {
+        "restricted_publisher_license",
+        "login_or_agreement_required",
+        "public_reference_with_site_terms",
+    }
 
     def __init__(self, records: Iterable[DatasetRecord], *, storage_root: str | Path) -> None:
         self.storage_root = Path(storage_root).resolve()
@@ -80,6 +87,7 @@ class DataAcquisitionEngine:
         approved_by: str,
         license_note_path: str | Path | None = None,
         manifest_path: str | Path | None = None,
+        content_scope: str = "public_content",
     ) -> dict[str, Any]:
         record = self.get_source(source_id)
         path = Path(local_path).resolve()
@@ -89,11 +97,11 @@ class DataAcquisitionEngine:
             raise ValueError("approved_by is required.")
 
         license_note = Path(license_note_path).resolve() if license_note_path else None
-        needs_license_note = record.license_tier in {
-            "restricted_publisher_license",
-            "login_or_agreement_required",
-            "public_reference_with_site_terms",
-        }
+        normalized_scope = content_scope.strip().lower() or "public_content"
+        needs_license_note = (
+            record.license_tier in self.license_note_required_tiers
+            and normalized_scope != "metadata_only"
+        )
         if needs_license_note and (license_note is None or not license_note.exists()):
             raise PermissionError(
                 f"{source_id} requires a license or terms-review note before acquisition."
@@ -112,6 +120,7 @@ class DataAcquisitionEngine:
             "hash": self.hash_path(path),
             "license_note_path": str(license_note) if license_note else None,
             "approved_by": approved_by,
+            "content_scope": normalized_scope,
             "engine_uses": list(record.engine_uses),
         }
         if manifest_path is not None:
@@ -119,7 +128,137 @@ class DataAcquisitionEngine:
         return acquired
 
     @staticmethod
-    def hash_path(path: Path) -> str:
+    def load_manifest(manifest_path: str | Path) -> list[dict[str, Any]]:
+        path = Path(manifest_path)
+        records: list[dict[str, Any]] = []
+        with path.open("r", encoding="utf-8") as file:
+            for line_number, line in enumerate(file, start=1):
+                stripped = line.strip()
+                if not stripped:
+                    continue
+                try:
+                    item = json.loads(stripped)
+                except json.JSONDecodeError as exc:
+                    raise ValueError(f"Invalid JSONL manifest line {line_number}: {path}") from exc
+                if not isinstance(item, dict):
+                    raise TypeError(f"Manifest line {line_number} must be a mapping.")
+                records.append(item)
+        return records
+
+    def validate_manifest(self, manifest_path: str | Path) -> dict[str, Any]:
+        path = Path(manifest_path)
+        records = self.load_manifest(path)
+        report = self.validate_acquired_sources(records, base_dir=path.parent)
+        report["manifest_path"] = str(path.resolve())
+        return report
+
+    def validate_acquired_sources(
+        self,
+        records: Iterable[dict[str, Any]],
+        *,
+        base_dir: str | Path | None = None,
+    ) -> dict[str, Any]:
+        records_list = list(records)
+        if not records_list:
+            return {
+                "schema": self.validation_schema,
+                "status": "review_required",
+                "summary": {
+                    "validated": 0,
+                    "passed": 0,
+                    "review_required": 1,
+                    "blocked": 0,
+                },
+                "issues": [
+                    self._issue(
+                        "unknown_source",
+                        "no_sources_to_validate",
+                        "At least one acquired source is required for validation.",
+                    )
+                ],
+                "validations": [],
+            }
+
+        validations = [
+            self.validate_acquired_source(record, base_dir=base_dir)
+            for record in records_list
+        ]
+        issues = [
+            issue
+            for validation in validations
+            for issue in validation["issues"]
+        ]
+        blocked = sum(1 for validation in validations if validation["status"] == "blocked")
+        review_required = sum(
+            1 for validation in validations if validation["status"] == "review_required"
+        )
+        passed = sum(1 for validation in validations if validation["status"] == "passed")
+        status = "blocked" if blocked else "review_required" if review_required else "passed"
+        return {
+            "schema": self.validation_schema,
+            "status": status,
+            "summary": {
+                "validated": len(validations),
+                "passed": passed,
+                "review_required": review_required,
+                "blocked": blocked,
+            },
+            "issues": issues,
+            "validations": validations,
+        }
+
+    def validate_acquired_source(
+        self,
+        acquired: dict[str, Any],
+        *,
+        base_dir: str | Path | None = None,
+    ) -> dict[str, Any]:
+        if not isinstance(acquired, dict):
+            raise TypeError("acquired source must be a mapping.")
+
+        source_id = str(acquired.get("source_id", "")).strip()
+        issues: list[dict[str, Any]] = []
+        record: DatasetRecord | None = None
+        if source_id:
+            try:
+                record = self.get_source(source_id)
+            except KeyError:
+                issues.append(self._issue(source_id, "unknown_source", "Source id is not in the catalog."))
+        else:
+            issues.append(self._issue("unknown_source", "source_id_required", "source_id is required."))
+
+        path = self._validate_local_path(acquired, source_id, issues, base_dir=base_dir)
+        self._validate_status(acquired, source_id, issues)
+        self._validate_hash(acquired, path, source_id, issues)
+        self._validate_approval(acquired, source_id, issues)
+        self._validate_license_note(acquired, record, source_id, issues, base_dir=base_dir)
+
+        blocked_codes = {
+            "unknown_source",
+            "source_id_required",
+            "status_not_acquired",
+            "local_path_required",
+            "local_path_missing",
+            "hash_required",
+            "hash_mismatch",
+            "approved_by_required",
+            "license_note_required",
+            "license_note_missing",
+        }
+        status = "blocked" if any(issue["code"] in blocked_codes for issue in issues) else "passed"
+        return {
+            "schema": self.source_validation_schema,
+            "source_id": source_id or "unknown_source",
+            "status": status,
+            "content_scope": str(acquired.get("content_scope", "public_content")).lower(),
+            "local_path": str(path) if path is not None else str(acquired.get("local_path", "")),
+            "license_tier": record.license_tier if record else None,
+            "issues": issues,
+        }
+
+    @staticmethod
+    def hash_path(path: str | Path) -> str:
+        path = Path(path)
         if path.is_file():
             digest = hashlib.sha256(path.read_bytes()).hexdigest()
             return f"sha256:{digest}"
@@ -139,6 +278,97 @@ class DataAcquisitionEngine:
         path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("a", encoding="utf-8", newline="\n") as file:
             file.write(json.dumps(acquired, ensure_ascii=False, sort_keys=True) + "\n")
+
+    @staticmethod
+    def _issue(source_id: str, code: str, message: str) -> dict[str, str]:
+        return {
+            "source_id": source_id or "unknown_source",
+            "code": code,
+            "message": message,
+        }
+
+    def _validate_local_path(
+        self,
+        acquired: dict[str, Any],
+        source_id: str,
+        issues: list[dict[str, Any]],
+        *,
+        base_dir: str | Path | None = None,
+    ) -> Path | None:
+        raw_path = str(acquired.get("local_path", "")).strip()
+        if not raw_path:
+            issues.append(self._issue(source_id, "local_path_required", "local_path is required."))
+            return None
+        path = Path(raw_path)
+        if base_dir is not None and not path.is_absolute():
+            path = Path(base_dir) / path
+        if not path.exists():
+            issues.append(self._issue(source_id, "local_path_missing", "local_path does not exist."))
+            return None
+        return path.resolve()
+
+    def _validate_status(
+        self,
+        acquired: dict[str, Any],
+        source_id: str,
+        issues: list[dict[str, Any]],
+    ) -> None:
+        status = str(acquired.get("status", "")).strip().lower()
+        if status != "acquired":
+            issues.append(self._issue(source_id, "status_not_acquired", "status must be acquired."))
+
+    def _validate_hash(
+        self,
+        acquired: dict[str, Any],
+        path: Path | None,
+        source_id: str,
+        issues: list[dict[str, Any]],
+    ) -> None:
+        expected_hash = str(acquired.get("hash", "")).strip()
+        if not expected_hash:
+            issues.append(self._issue(source_id, "hash_required", "hash is required."))
+            return
+        if path is None:
+            return
+        actual_hash = self.hash_path(path)
+        if actual_hash != expected_hash:
+            issues.append(self._issue(source_id, "hash_mismatch", "hash does not match local_path."))
+
+    def _validate_approval(
+        self,
+        acquired: dict[str, Any],
+        source_id: str,
+        issues: list[dict[str, Any]],
+    ) -> None:
+        approved_by = str(acquired.get("approved_by", "")).strip()
+        if not approved_by:
+            issues.append(self._issue(source_id, "approved_by_required", "approved_by is required."))
+
+    def _validate_license_note(
+        self,
+        acquired: dict[str, Any],
+        record: DatasetRecord | None,
+        source_id: str,
+        issues: list[dict[str, Any]],
+        *,
+        base_dir: str | Path | None = None,
+    ) -> None:
+        if record is None:
+            return
+        content_scope = str(acquired.get("content_scope", "public_content")).lower()
+        if record.license_tier not in self.license_note_required_tiers or content_scope == "metadata_only":
+            return
+        raw_note = str(acquired.get("license_note_path") or "").strip()
+        if not raw_note:
+            issues.append(
+                self._issue(source_id, "license_note_required", "license_note_path is required.")
+            )
+            return
+        note_path = Path(raw_note)
+        if base_dir is not None and not note_path.is_absolute():
+            note_path = Path(base_dir) / note_path
+        if not note_path.exists():
+            issues.append(self._issue(source_id, "license_note_missing", "license note path is missing."))
 
 
 __all__ = ["DataAcquisitionEngine"]

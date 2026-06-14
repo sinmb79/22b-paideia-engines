@@ -12,6 +12,7 @@ The project is complete only when:
 
 - Every engine has an independent API, contract, tests, examples, and documentation.
 - Data acquisition records source, license, hash, approver, and local path.
+- Acquired-source validation blocks invalid hashes, missing approvers, missing license notes, and unsafe full-content restricted sources.
 - Curriculum mapping builds learning units from grade, subject, domain, and achievement standards.
 - Cultivation creates learning roadmaps from curriculum units and licensed data sources.
 - Assessment supports item banks, answers, distractors, explanations, written-response scoring, and solution-process rubrics.
@@ -35,6 +36,7 @@ The project is complete only when:
 | 4 | Governance and runtime | Implemented v0.2 core |
 | 5 | Orchestration and CLI | Implemented v0.2 core |
 | 6 | Documentation, release, examples | Implemented v0.2 release hardening |
+| 7 | Dataset adapters and validation reports | Implemented v0.2 core |
 
 ## Phase 0. Foundation
 
@@ -148,6 +150,26 @@ Completion criteria:
 - Public release excludes restricted textbooks, private voice data, credentials, and personal assets.
 - Release checklist proves tests, examples, compile checks, CLI checks, and sensitive-string scans.
 
+## Phase 7. Dataset Adapters And Validation Reports
+
+Delivered:
+
+- Acquired-source manifest loader
+- Acquired-source validation report
+- Hash, local path, approver, and license-note checks
+- `metadata_only` safe path for restricted textbook metadata
+- Public curriculum standards JSON adapter
+- Public or licensed assessment item-bank JSON adapter
+- Configured-suite `acquisition_validation` output
+
+Completion criteria:
+
+- Restricted full-content textbook sources are blocked without a valid license or terms-review note.
+- Restricted metadata-only records can be tracked without copying protected source content.
+- Public curriculum JSON can become `CurriculumStandard` records.
+- Public or licensed assessment JSON can become `AssessmentItem` records.
+- Configured-suite verification includes acquisition validation.
+
 ## Active Branch And PR
 
 ```text
@@ -160,6 +182,6 @@ https://github.com/sinmb79/22b-paideia-engines/pull/1
 Final release loop for this branch:
 
 1. Run full validation.
-2. Commit and push the Phase 6 release-hardening changes.
+2. Commit and push the Phase 7 dataset adapter and validation changes.
 3. Update the draft PR with the new validation evidence.
 4. Convert the PR to ready or cut a release only after the checklist remains green.

@@ -22,6 +22,7 @@ from paideia_engines.stress.scenario_bank import StressScenario, StressScenarioB
 
 EXECUTION_TRACE = [
     "data_acquisition",
+    "acquisition_validation",
     "curriculum_mapping",
     "cultivation",
     "assessment",
@@ -87,11 +88,52 @@ def _learner_config(config: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def _build_item_bank(config: dict[str, Any], standards: list[dict[str, Any]]) -> ItemBank:
+def _resolve_config_path(path_value: Any, base_dir: str | Path | None) -> Path:
+    path = Path(str(path_value))
+    if base_dir is not None and not path.is_absolute():
+        path = Path(base_dir) / path
+    return path.resolve()
+
+
+def _validated_local_paths(validation_report: dict[str, Any]) -> set[str]:
+    paths: set[str] = set()
+    for validation in validation_report.get("validations", []):
+        if not isinstance(validation, dict) or validation.get("status") != "passed":
+            continue
+        local_path = str(validation.get("local_path", "")).strip()
+        if local_path:
+            paths.add(str(Path(local_path).resolve()))
+    return paths
+
+
+def _require_validated_adapter_path(
+    path: Path,
+    config_key: str,
+    validation_report: dict[str, Any],
+) -> None:
+    if str(path.resolve()) not in _validated_local_paths(validation_report):
+        raise PermissionError(
+            f"config.{config_key} must point to a path that passed acquired-source validation."
+        )
+
+
+def _build_item_bank(
+    config: dict[str, Any],
+    standards: list[dict[str, Any]],
+    *,
+    config_base_dir: str | Path | None,
+    acquisition_validation: dict[str, Any],
+) -> ItemBank:
     assessment_config = _config_section(config, "assessment")
+    items_path = assessment_config.get("items_path")
+    if items_path:
+        resolved_path = _resolve_config_path(items_path, config_base_dir)
+        _require_validated_adapter_path(resolved_path, "assessment.items_path", acquisition_validation)
+        return ItemBank.from_file(resolved_path)
+
     configured_items = assessment_config.get("items")
     if isinstance(configured_items, list) and configured_items:
-        return ItemBank([AssessmentItem(**dict(item)) for item in configured_items])
+        return ItemBank([ItemBank._item_from_mapping(dict(item)) for item in configured_items])
 
     standard_id = str(standards[0].get("standard_id", "E-MATH-03-01")) if standards else "E-MATH-03-01"
     return ItemBank(
@@ -109,6 +151,53 @@ def _build_item_bank(config: dict[str, Any], standards: list[dict[str, Any]]) ->
             )
         ]
     )
+
+
+def _load_standards(
+    curriculum_config: dict[str, Any],
+    *,
+    config_base_dir: str | Path | None,
+    acquisition_validation: dict[str, Any],
+) -> list[dict[str, Any]]:
+    standards_path = curriculum_config.get("standards_path")
+    if standards_path:
+        resolved_path = _resolve_config_path(standards_path, config_base_dir)
+        _require_validated_adapter_path(resolved_path, "curriculum.standards_path", acquisition_validation)
+        return [
+            standard.to_dict()
+            for standard in CurriculumMappingEngine.load_standards_file(resolved_path)
+        ]
+    return list(curriculum_config.get("standards") or _default_standards())
+
+
+def _validate_configured_sources(
+    data_engine: DataAcquisitionEngine,
+    data_config: dict[str, Any],
+    *,
+    config_base_dir: str | Path | None,
+) -> dict[str, Any]:
+    manifest_path = data_config.get("manifest_path")
+    if manifest_path:
+        return data_engine.validate_manifest(_resolve_config_path(manifest_path, config_base_dir))
+
+    acquired_sources = data_config.get("acquired_sources", [])
+    if acquired_sources is None:
+        acquired_sources = []
+    if not isinstance(acquired_sources, list):
+        raise TypeError("config.data.acquired_sources must be a list.")
+    normalized_sources: list[dict[str, Any]] = []
+    for item in acquired_sources:
+        if not isinstance(item, dict):
+            raise TypeError("config.data.acquired_sources items must be mappings.")
+        record = dict(item)
+        if record.get("local_path"):
+            record["local_path"] = str(_resolve_config_path(record["local_path"], config_base_dir))
+        if record.get("license_note_path"):
+            record["license_note_path"] = str(
+                _resolve_config_path(record["license_note_path"], config_base_dir)
+            )
+        normalized_sources.append(record)
+    return data_engine.validate_acquired_sources(normalized_sources)
 
 
 def _build_stress_bank(config: dict[str, Any], standards: list[dict[str, Any]]) -> StressScenarioBank:
@@ -150,6 +239,7 @@ def run_configured_suite(
     config: dict[str, Any],
     *,
     output_dir: str | Path | None = None,
+    config_base_dir: str | Path | None = None,
 ) -> dict[str, Any]:
     learner = _learner_config(config)
     data_config = _config_section(config, "data")
@@ -161,8 +251,17 @@ def run_configured_suite(
     storage_root = data_config.get("storage_root", ".paideia-data")
     data_engine = DataAcquisitionEngine(default_seed_catalog(), storage_root=storage_root)
     data_plan = data_engine.build_engine_plan(str(data_config.get("engine", "assessment")))
+    acquisition_validation = _validate_configured_sources(
+        data_engine,
+        data_config,
+        config_base_dir=config_base_dir,
+    )
 
-    standards = list(curriculum_config.get("standards") or _default_standards())
+    standards = _load_standards(
+        curriculum_config,
+        config_base_dir=config_base_dir,
+        acquisition_validation=acquisition_validation,
+    )
     curriculum = CurriculumMappingEngine(standards)
     learning_unit = curriculum.build_learning_unit(
         school_level=str(curriculum_config.get("school_level", "elementary")),
@@ -170,7 +269,12 @@ def run_configured_suite(
         subject=str(curriculum_config.get("subject", "math")),
     )
 
-    item_bank = _build_item_bank(config, standards)
+    item_bank = _build_item_bank(
+        config,
+        standards,
+        config_base_dir=config_base_dir,
+        acquisition_validation=acquisition_validation,
+    )
     cultivation = CultivationEngine()
     roadmap = cultivation.build_learning_roadmap(
         learning_unit=learning_unit,
@@ -236,6 +340,7 @@ def run_configured_suite(
         "schema": "paideia-configured-suite-verification/v1",
         "checks": {
             "assessment_passed": bool(assessment_result["passed"]),
+            "acquisition_validation_passed": acquisition_validation["status"] == "passed",
             "stress_no_promotion_decision": "promotion_decision" not in stress_run,
             "promotion_recorded": promotion_decision["status"] in {"promoted", "quarantined"},
             "governance_allowed": governance_review["decision"] == "allowed",
@@ -250,6 +355,7 @@ def run_configured_suite(
 
     outputs: dict[str, Any] = {
         "data_acquisition": data_plan,
+        "acquisition_validation": acquisition_validation,
         "curriculum_mapping": learning_unit,
         "cultivation": roadmap,
         "assessment": assessment_result,
@@ -283,8 +389,13 @@ def run_config_file(
     output_path: str | Path | None = None,
     output_dir: str | Path | None = None,
 ) -> dict[str, Any]:
-    config = load_config(config_path)
-    result = run_configured_suite(config, output_dir=output_dir)
+    resolved_config_path = Path(config_path).resolve()
+    config = load_config(resolved_config_path)
+    result = run_configured_suite(
+        config,
+        output_dir=output_dir,
+        config_base_dir=resolved_config_path.parent,
+    )
     if output_path is not None:
         result["result_path"] = str(Path(output_path).resolve())
         write_json(output_path, result)

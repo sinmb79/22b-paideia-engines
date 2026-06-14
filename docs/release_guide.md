@@ -44,7 +44,8 @@ python -m paideia_engines.cli smoke --engine all --output .paideia-runs\smoke.js
 
 - `result.json`: full configured-suite result.
 - `.paideia-runs/engines/*.json`: per-engine outputs.
-- `09_verification.json`: final verification summary for the configured run.
+- `02_acquisition_validation.json`: acquired-source validation report.
+- `10_verification.json`: final verification summary for the configured run.
 - `smoke.json`: engine-by-engine smoke result.
 
 ## Public Release Boundary

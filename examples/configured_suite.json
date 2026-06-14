@@ -8,7 +8,19 @@
   },
   "data": {
     "storage_root": ".paideia-data",
-    "engine": "assessment"
+    "engine": "assessment",
+    "acquired_sources": [
+      {
+        "schema": "paideia-acquired-source/v1",
+        "source_id": "moe_csat_example_items",
+        "status": "acquired",
+        "local_path": "public_item_sample.jsonl",
+        "hash": "sha256:15d92f3e3f47c5809c5c3e6ebc767f3b05f5fe86e182d6928aa800504700f59f",
+        "content_scope": "public_content",
+        "license_note_path": null,
+        "approved_by": "example"
+      }
+    ]
   },
   "curriculum": {
     "school_level": "elementary",

@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import json
 from dataclasses import asdict, dataclass
+from pathlib import Path
 from typing import Any, Iterable
 
 
@@ -14,6 +16,12 @@ class CurriculumStandard:
     subject: str
     domain: str
     achievement: str
+    source_id: str | None = None
+    provider: str | None = None
+    source_url: str | None = None
+    imported_from: str | None = None
+    license_tier: str | None = None
+    standard_version: str | None = None
 
     @classmethod
     def from_mapping(cls, value: dict[str, Any]) -> "CurriculumStandard":
@@ -28,10 +36,16 @@ class CurriculumStandard:
             subject=str(value["subject"]).lower(),
             domain=str(value["domain"]),
             achievement=str(value["achievement"]),
+            source_id=_optional_str(value.get("source_id")),
+            provider=_optional_str(value.get("provider")),
+            source_url=_optional_str(value.get("source_url")),
+            imported_from=_optional_str(value.get("imported_from")),
+            license_tier=_optional_str(value.get("license_tier")),
+            standard_version=_optional_str(value.get("standard_version")),
         )
 
     def to_dict(self) -> dict[str, str]:
-        return asdict(self)
+        return {key: value for key, value in asdict(self).items() if value is not None}
 
 
 class CurriculumMappingEngine:
@@ -45,6 +59,54 @@ class CurriculumMappingEngine:
             item if isinstance(item, CurriculumStandard) else CurriculumStandard.from_mapping(item)
             for item in standards
         ]
+
+    @classmethod
+    def load_standards_file(cls, path: str | Path) -> list[CurriculumStandard]:
+        """Load standards from a local JSON adapter payload.
+
+        The adapter intentionally parses already-acquired local files. It does
+        not download or copy source content into the repository.
+        """
+
+        source_path = Path(path)
+        with source_path.open("r", encoding="utf-8") as file:
+            payload = json.load(file)
+        if isinstance(payload, list):
+            raw_standards = payload
+            metadata: dict[str, Any] = {}
+        elif isinstance(payload, dict):
+            raw_standards = payload.get("standards")
+            metadata = {
+                key: payload.get(key)
+                for key in (
+                    "source_id",
+                    "provider",
+                    "source_url",
+                    "license_tier",
+                    "standard_version",
+                )
+                if payload.get(key) is not None
+            }
+        else:
+            raise TypeError("Curriculum standards payload must be a mapping or list.")
+
+        if not isinstance(raw_standards, list):
+            raise ValueError("Curriculum standards payload requires a standards list.")
+
+        standards: list[CurriculumStandard] = []
+        for index, item in enumerate(raw_standards, start=1):
+            if not isinstance(item, dict):
+                raise TypeError(f"standards[{index}] must be a mapping.")
+            merged = {
+                **metadata,
+                **item,
+                "imported_from": item.get("imported_from", str(source_path.resolve())),
+            }
+            try:
+                standards.append(CurriculumStandard.from_mapping(merged))
+            except ValueError as exc:
+                raise ValueError(f"Invalid curriculum standard at standards[{index}]: {exc}") from exc
+        return standards
 
     def build_learning_unit(self, *, school_level: str, grade: str, subject: str) -> dict[str, Any]:
         normalized_level = school_level.lower()
@@ -110,6 +172,13 @@ class CurriculumMappingEngine:
         subject_match = "all" in subjects or standard.subject in subjects
         grade_match = not grades or "all" in grades or standard.grade in grades
         return level_match and subject_match and grade_match
+
+
+def _optional_str(value: Any) -> str | None:
+    if value is None:
+        return None
+    text = str(value).strip()
+    return text or None
 
 
 __all__ = ["CurriculumMappingEngine", "CurriculumStandard"]

@@ -41,3 +41,18 @@ data/
 ## Rule
 
 No engine should train on a source unless the source has a manifest record with provider, URL, license tier, acquisition mode, and intended engine usage.
+
+## Phase 7 Adapter Contract
+
+The implemented adapter path is:
+
+```text
+legal local file -> acquired source manifest -> validation report -> engine adapter
+```
+
+- `validate_manifest(...)` and `validate_acquired_sources(...)` verify source id, local path, hash, approver, content scope, and license-note requirements.
+- `CurriculumMappingEngine.load_standards_file(...)` imports already-acquired public curriculum JSON into `CurriculumStandard` records.
+- `ItemBank.from_file(...)` imports already-acquired public or licensed item-bank JSON into `AssessmentItem` records.
+- Configured suite runs now write `02_acquisition_validation.json` before curriculum mapping and `10_verification.json` at the end.
+
+Restricted textbook or digital textbook content may pass only as `metadata_only` unless a license or terms-review note is present. Full-content ingestion without a valid note is blocked.

@@ -6,7 +6,7 @@ This roadmap tracks the work needed to turn the Paideia engine suite from a scaf
 
 ## Current Position
 
-The suite now has v0.2 cores for data acquisition, curriculum mapping, cultivation, assessment, stress, promotion, governance, runtime, and config-driven orchestration. Phase 6 adds release hardening: per-engine READMEs, beginner-facing guides, public asset checks, and release checklists. The next depth work is stronger dataset adapters and validation reports for real public curriculum and assessment sources.
+The suite now has v0.2 cores for data acquisition, curriculum mapping, cultivation, assessment, stress, promotion, governance, runtime, and config-driven orchestration. Phase 6 adds release hardening. Phase 7 adds acquired-source validation reports, public curriculum JSON adapters, public or licensed assessment item-bank adapters, and configured-suite acquisition validation. The next depth work is source-specific parsers for real public curriculum and assessment formats.
 
 ## Phase 1: Data And Curriculum
 
@@ -115,9 +115,27 @@ python -m paideia_engines.cli run-config `
 python -m paideia_engines.cli smoke --engine all --output .paideia-runs/smoke.json
 ```
 
+## Phase 7: Dataset Adapters And Validation
+
+Added:
+
+```text
+tests/test_dataset_adapters_and_validation.py
+```
+
+Capabilities:
+
+- Acquired-source manifest loading
+- Hash, local path, approver, and license-note validation
+- Restricted full-content source blocking
+- Restricted metadata-only manifest path
+- Public curriculum standards JSON import
+- Public or licensed assessment item JSON import
+- Configured-suite `acquisition_validation` output
+
 ## Next Development Order
 
-1. Dataset adapters: legal, manifest-driven adapters for public curriculum and assessment data.
+1. Source-specific parsers for official public curriculum and assessment formats.
 2. Stronger validation reports for acquired source manifests and configured suite outputs.
 3. Broader stress scenario packs for subject-specific evaluation.
 4. Ready PR/release preparation after final validation remains green.

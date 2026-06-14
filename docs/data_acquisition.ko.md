@@ -95,6 +95,21 @@ data/
 }
 ```
 
+## Phase 7 어댑터 계약
+
+구현된 경로는 다음 순서를 따릅니다.
+
+```text
+합법적으로 확보한 로컬 파일 -> 확보 자료 manifest -> 검증 리포트 -> 엔진 어댑터
+```
+
+- `validate_manifest(...)`와 `validate_acquired_sources(...)`는 source id, 로컬 경로, hash, 승인자, content scope, license note 필요 여부를 검증합니다.
+- `CurriculumMappingEngine.load_standards_file(...)`은 이미 확보한 공개 교육과정 JSON을 `CurriculumStandard`로 변환합니다.
+- `ItemBank.from_file(...)`은 이미 확보한 공개 또는 라이선스 문항 JSON을 `AssessmentItem`으로 변환합니다.
+- 설정 기반 suite는 교육과정 매핑 전에 `02_acquisition_validation.json`, 마지막에 `10_verification.json`을 남깁니다.
+
+제한 교과서나 디지털교과서 자료는 `metadata_only` 범위일 때만 license note 없이 통과할 수 있습니다. 본문 전체를 다루려면 유효한 license 또는 terms-review note가 필요하며, 없으면 차단됩니다.
+
 ## 금지 사항
 
 - 디지털교과서 뷰어에서 콘텐츠를 자동 추출하지 않습니다.

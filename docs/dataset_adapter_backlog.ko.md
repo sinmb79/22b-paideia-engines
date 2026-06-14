@@ -4,6 +4,16 @@
 
 현재 저장소는 metadata와 예제를 포함하며, 전체 교과서나 시험지 데이터셋을 포함하지 않습니다. 데이터셋 어댑터는 합법적이고, manifest 기반이며, 로컬 우선이어야 합니다.
 
+## Phase 7 구현
+
+- `DataAcquisitionEngine.validate_acquired_sources(...)`
+- `DataAcquisitionEngine.validate_manifest(...)`
+- `CurriculumMappingEngine.load_standards_file(...)`
+- `ItemBank.from_file(...)`
+- 설정 기반 suite `acquisition_validation` 출력
+
+구현된 어댑터는 이미 합법적으로 확보된 로컬 JSON 파일만 파싱합니다. 교과서를 다운로드하거나, 시험 아카이브를 scraping하거나, 제한 원본 파일을 저장소에 복사하지 않습니다.
+
 ## 어댑터 우선순위
 
 1. **공개 교육과정 standards importer**
@@ -24,7 +34,7 @@
 4. **설정 기반 suite output validator**
    - 입력: 엔진별 JSON output
    - 출력: release-quality validation report
-   - 보호장치: `09_verification.json`과 stress-to-promotion 직접 결정 없음 확인
+   - 보호장치: `02_acquisition_validation.json`, `10_verification.json`, stress-to-promotion 직접 결정 없음 확인
 
 ## 보류
 

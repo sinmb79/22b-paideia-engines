@@ -6,7 +6,7 @@
 
 ## 현재 위치
 
-현재 엔진 모음은 데이터 확보, 교육과정 매핑, 육성, 평가, 스트레스, 승급, 거버넌스, 런타임, 설정 기반 오케스트레이션까지 v0.2 core를 갖추었습니다. Phase 6에서는 엔진별 README, 초보자용 가이드, 공개 자산 감사, 릴리스 체크리스트를 추가했습니다. 다음 심화 작업은 실제 공개 교육과정/평가 출처를 위한 더 강한 dataset adapter와 validation report입니다.
+현재 엔진 모음은 데이터 확보, 교육과정 매핑, 육성, 평가, 스트레스, 승급, 거버넌스, 런타임, 설정 기반 오케스트레이션까지 v0.2 core를 갖추었습니다. Phase 6에서는 릴리스 하드닝을 추가했고, Phase 7에서는 확보 자료 validation report, 공개 교육과정 JSON 어댑터, 공개 또는 라이선스 문항 bank 어댑터, 설정 기반 suite 확보 자료 검증을 추가했습니다. 다음 심화 작업은 실제 공개 교육과정/평가 포맷별 parser입니다.
 
 ## Phase 1: 데이터와 교육과정
 
@@ -115,9 +115,27 @@ python -m paideia_engines.cli run-config `
 python -m paideia_engines.cli smoke --engine all --output .paideia-runs/smoke.json
 ```
 
+## Phase 7: 데이터셋 어댑터와 검증
+
+추가 파일:
+
+```text
+tests/test_dataset_adapters_and_validation.py
+```
+
+기능:
+
+- 확보 자료 manifest loading
+- hash, 로컬 경로, 승인자, license note 검증
+- 제한 원문 자료 차단
+- 제한 자료 metadata-only manifest 경로
+- 공개 교육과정 standards JSON import
+- 공개 또는 라이선스 평가 문항 JSON import
+- 설정 기반 suite `acquisition_validation` 출력
+
 ## 다음 개발 순서
 
-1. Dataset adapters: 공개 교육과정/평가 데이터를 합법적으로 다루는 manifest 기반 adapter.
+1. 공식 공개 교육과정/평가 포맷별 source-specific parser.
 2. 확보 자료 manifest와 configured suite output에 대한 더 강한 validation report.
 3. 과목별 평가를 위한 stress scenario pack 확대.
 4. 최종 검증이 계속 통과할 때 Ready PR/release 준비.

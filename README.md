@@ -106,6 +106,7 @@ decision = engine.record_experience(
 - Phase 4: governance and runtime core
 - Phase 5: config-driven orchestration and CLI core
 - Phase 6: release hardening, per-engine docs, and public asset audit
+- Phase 7: acquired-source validation, public curriculum adapters, and public item-bank adapters
 
 ## Documentation
 
@@ -141,7 +142,7 @@ decision = engine.record_experience(
 - Superseded promoted experiences remain in the ledger but are not active memory.
 - Runtime traces and artifact manifests are retained as review evidence.
 - CLI output is JSON so runs can be audited and replayed.
-- Configured runs write a `verification` JSON output after runtime.
+- Configured runs write `acquisition_validation` and `verification` JSON outputs.
 
 ## License
 

@@ -12,6 +12,7 @@
 
 - 모든 엔진이 독립 API, 계약, 테스트, 예제, 문서를 가진다.
 - 데이터 확보는 출처, 라이선스, 해시, 승인자, 로컬 경로를 기록한다.
+- 확보 자료 검증은 hash 불일치, 승인자 누락, license note 누락, 안전하지 않은 제한 원문 자료를 차단한다.
 - 교육과정 매핑은 학년, 과목, 영역, 성취기준으로 학습 단위를 만든다.
 - 육성은 교육과정 단위와 허가된 데이터 출처로 학습 로드맵을 만든다.
 - 평가는 문항 bank, 정답, 오답, 해설, 서술형 채점, 풀이과정 rubric을 처리한다.
@@ -35,6 +36,7 @@
 | 4 | 거버넌스와 런타임 | v0.2 core 구현 |
 | 5 | 오케스트레이션과 CLI | v0.2 core 구현 |
 | 6 | 문서, 릴리스, 예제 | v0.2 릴리스 하드닝 구현 |
+| 7 | 데이터셋 어댑터와 검증 리포트 | v0.2 core 구현 |
 
 ## Phase 0. Foundation
 
@@ -148,6 +150,26 @@ python -m paideia_engines.cli smoke --engine all --output .paideia-runs/smoke.js
 - 공개 릴리스에는 제한 교과서, 개인 음성, credential, 개인 자산이 포함되지 않는다.
 - Release checklist가 테스트, 예제, 컴파일, CLI, 민감 문자열 검사를 증명한다.
 
+## Phase 7. 데이터셋 어댑터와 검증 리포트
+
+산출물:
+
+- 확보 자료 manifest loader
+- 확보 자료 validation report
+- hash, 로컬 경로, 승인자, license note 검사
+- 제한 교과서 metadata를 위한 `metadata_only` 안전 경로
+- 공개 교육과정 standards JSON 어댑터
+- 공개 또는 라이선스 문항 bank JSON 어댑터
+- 설정 기반 suite `acquisition_validation` 출력
+
+완료 기준:
+
+- 제한 교과서 본문 전체 자료는 유효한 license 또는 terms-review note 없이는 차단된다.
+- 제한 자료도 metadata-only 기록은 보호 원본을 복사하지 않고 추적할 수 있다.
+- 공개 교육과정 JSON은 `CurriculumStandard` record로 변환된다.
+- 공개 또는 라이선스 평가 JSON은 `AssessmentItem` record로 변환된다.
+- 설정 기반 suite 검증에 확보 자료 검증이 포함된다.
+
 ## 현재 브랜치와 PR
 
 ```text
@@ -160,6 +182,6 @@ https://github.com/sinmb79/22b-paideia-engines/pull/1
 이 브랜치의 최종 릴리스 루프를 진행합니다.
 
 1. 전체 검증 실행
-2. Phase 6 릴리스 하드닝 변경 커밋 및 푸시
+2. Phase 7 데이터셋 어댑터와 검증 변경 커밋 및 푸시
 3. 검증 증거를 Draft PR에 반영
 4. 체크리스트가 계속 통과할 때만 PR ready 전환 또는 release 생성
