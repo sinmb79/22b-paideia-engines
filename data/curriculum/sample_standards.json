@@ -1,0 +1,26 @@
+[
+  {
+    "standard_id": "E-MATH-03-01",
+    "school_level": "elementary",
+    "grade": "3",
+    "subject": "math",
+    "domain": "numbers_and_operations",
+    "achievement": "Add and subtract within 1000 using place value."
+  },
+  {
+    "standard_id": "E-MATH-03-02",
+    "school_level": "elementary",
+    "grade": "3",
+    "subject": "math",
+    "domain": "fractions",
+    "achievement": "Understand fractions as equal parts of a whole."
+  },
+  {
+    "standard_id": "M-SCI-01-01",
+    "school_level": "middle",
+    "grade": "1",
+    "subject": "science",
+    "domain": "matter",
+    "achievement": "Classify substances by observable properties."
+  }
+]

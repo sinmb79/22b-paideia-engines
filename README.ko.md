@@ -71,6 +71,8 @@ decision = engine.record_experience(
 - [Architecture in English](docs/architecture.md)
 - [데이터 확보 계획](docs/data_acquisition.ko.md)
 - [Data acquisition plan in English](docs/data_acquisition.md)
+- [진짜 엔진 개발 로드맵](docs/real_engine_development.ko.md)
+- [Real engine development roadmap in English](docs/real_engine_development.md)
 
 ## 안전 기본값
 

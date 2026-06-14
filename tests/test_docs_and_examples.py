@@ -19,4 +19,7 @@ def test_architecture_docs_and_basic_example_exist():
     assert (ROOT / "docs" / "architecture.ko.md").exists()
     assert (ROOT / "docs" / "data_acquisition.md").exists()
     assert (ROOT / "docs" / "data_acquisition.ko.md").exists()
+    assert (ROOT / "docs" / "real_engine_development.md").exists()
+    assert (ROOT / "docs" / "real_engine_development.ko.md").exists()
     assert (ROOT / "examples" / "basic_growth_cycle.py").exists()
+    assert (ROOT / "examples" / "data_and_curriculum_pipeline.py").exists()
