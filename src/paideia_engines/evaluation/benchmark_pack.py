@@ -107,9 +107,18 @@ def validate_benchmark_pack(
         issues.append(_issue("error", "benchmark_id_missing", "Benchmark pack requires a benchmark_id."))
 
     golden_engine_schemas = payload.get("golden_engine_schemas", {})
-    checks["golden_engine_schemas_match"] = golden_engine_schemas == EXPECTED_ENGINE_SCHEMAS
+    golden_schema_order_matches = (
+        isinstance(golden_engine_schemas, dict)
+        and list(golden_engine_schemas) == list(EXPECTED_ENGINE_SCHEMAS)
+    )
+    checks["golden_engine_schemas_match"] = (
+        golden_engine_schemas == EXPECTED_ENGINE_SCHEMAS and golden_schema_order_matches
+    )
     measurements["golden_engine_schema_count"] = (
         len(golden_engine_schemas) if isinstance(golden_engine_schemas, dict) else 0
+    )
+    measurements["golden_engine_schema_order"] = (
+        list(golden_engine_schemas) if isinstance(golden_engine_schemas, dict) else []
     )
     if not checks["golden_engine_schemas_match"]:
         issues.append(
@@ -118,7 +127,9 @@ def validate_benchmark_pack(
                 "golden_engine_schemas_mismatch",
                 "Benchmark pack golden schemas must match the configured-suite engine schemas.",
                 expected=EXPECTED_ENGINE_SCHEMAS,
+                expected_order=list(EXPECTED_ENGINE_SCHEMAS),
                 actual=golden_engine_schemas,
+                actual_order=list(golden_engine_schemas) if isinstance(golden_engine_schemas, dict) else [],
             )
         )
 

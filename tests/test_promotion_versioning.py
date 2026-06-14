@@ -1,6 +1,7 @@
 import pytest
 
 from paideia_engines.contracts import ReviewLabel
+from paideia_engines.governance import GovernanceEngine
 from paideia_engines.promotion import PromotionEngine
 
 
@@ -53,6 +54,7 @@ def test_quarantine_reason_forces_quarantine_even_with_verified_review():
     assert decision["status"] == "quarantined"
     assert decision["reason"] == "governance_blocked_promotion"
     assert decision["requires_boss_review"] is True
+    assert decision["quarantine_ref"].startswith("quarantine-ref-")
     assert engine.ledger["promoted_experiences"] == []
 
 
@@ -72,15 +74,298 @@ def test_governance_blocked_quarantine_requires_allowed_governance_for_reconside
             notes="Quality issue resolved, but governance is still blocked.",
         )
 
+    with pytest.raises(ValueError, match="governance review payload"):
+        engine.reconsider_quarantined(
+            quarantined["experience_id"],
+            review=ReviewLabel(score=92, status="verified", reviewed_by="boss"),
+            notes="A forged string is not a governance review.",
+            governance_decision="allowed",
+    )
+
+    governance = GovernanceEngine()
+    quarantine_ref = quarantined["quarantine_ref"]
+    governance.record_approval(
+        approval_type="boss_approval",
+        subject_id=quarantined["experience_id"],
+        approved_by="boss",
+        scope={
+            "action": "memory_promotion",
+            "source_id": quarantined["experience_id"],
+            "allowed_use": "active_memory",
+            "quarantine_ref": quarantine_ref,
+        },
+    )
+    allowed_review = governance.review_action(
+        "memory_promotion",
+        context={
+            "source_id": quarantined["experience_id"],
+            "intended_use": "active_memory",
+            "quarantine_ref": quarantine_ref,
+        },
+    )
     reconsidered = engine.reconsider_quarantined(
         quarantined["experience_id"],
         review=ReviewLabel(score=92, status="verified", reviewed_by="boss"),
         notes="Fresh governance decision allows local-only promotion.",
-        governance_decision="allowed",
+        governance_review=allowed_review,
+        governance_approval_ledger=governance.approval_ledger,
     )
 
     assert reconsidered["status"] == "promoted"
-    assert reconsidered["governance_decision"] == "allowed"
+    assert reconsidered["governance_review"]["decision"] == "allowed"
+    assert reconsidered["governance_review"]["policy_evaluation"]["missing_approvals"] == []
+
+
+def test_governance_blocked_quarantine_rejects_wrong_governance_review_scope():
+    engine = PromotionEngine(owner="agent:math")
+    quarantined = engine.record_experience(
+        source="governance",
+        event={"summary": "Blocked by governance.", "skills": ["governance"], "blocked_by": "governance"},
+        review=ReviewLabel(score=100, status="verified", reviewed_by="committee"),
+        quarantine_reason="governance_blocked_promotion",
+    )
+    governance = GovernanceEngine()
+    quarantine_ref = quarantined["quarantine_ref"]
+    governance.record_approval(
+        approval_type="boss_approval",
+        subject_id="other-experience",
+        approved_by="boss",
+        scope={
+            "action": "memory_promotion",
+            "source_id": "other-experience",
+            "allowed_use": "active_memory",
+            "quarantine_ref": quarantine_ref,
+        },
+    )
+    wrong_scope_review = governance.review_action(
+        "memory_promotion",
+        context={
+            "source_id": "other-experience",
+            "intended_use": "active_memory",
+            "quarantine_ref": quarantine_ref,
+        },
+    )
+
+    with pytest.raises(ValueError, match="fresh allowed governance decision"):
+        engine.reconsider_quarantined(
+            quarantined["experience_id"],
+            review=ReviewLabel(score=92, status="verified", reviewed_by="boss"),
+            notes="Review belongs to a different quarantined record.",
+            governance_review=wrong_scope_review,
+            governance_approval_ledger=governance.approval_ledger,
+        )
+
+
+def test_governance_blocked_quarantine_rejects_governance_review_with_wrong_approval_subject():
+    engine = PromotionEngine(owner="agent:math")
+    quarantined = engine.record_experience(
+        source="governance",
+        event={"summary": "Blocked by governance.", "skills": ["governance"], "blocked_by": "governance"},
+        review=ReviewLabel(score=100, status="verified", reviewed_by="committee"),
+        quarantine_reason="governance_blocked_promotion",
+    )
+    governance = GovernanceEngine()
+    quarantine_ref = quarantined["quarantine_ref"]
+    governance.record_approval(
+        approval_type="boss_approval",
+        subject_id="other-experience",
+        approved_by="boss",
+        scope={
+            "action": "memory_promotion",
+            "source_id": quarantined["experience_id"],
+            "allowed_use": "active_memory",
+            "quarantine_ref": quarantine_ref,
+        },
+    )
+    wrong_subject_review = governance.review_action(
+        "memory_promotion",
+        context={
+            "source_id": quarantined["experience_id"],
+            "intended_use": "active_memory",
+            "quarantine_ref": quarantine_ref,
+        },
+    )
+
+    with pytest.raises(ValueError, match="fresh allowed governance decision"):
+        engine.reconsider_quarantined(
+            quarantined["experience_id"],
+            review=ReviewLabel(score=92, status="verified", reviewed_by="boss"),
+            notes="Review has an approval for a different subject.",
+            governance_review=wrong_subject_review,
+            governance_approval_ledger=governance.approval_ledger,
+        )
+
+
+def test_governance_blocked_quarantine_rejects_governance_review_with_wrong_approval_scope():
+    engine = PromotionEngine(owner="agent:math")
+    quarantined = engine.record_experience(
+        source="governance",
+        event={"summary": "Blocked by governance.", "skills": ["governance"], "blocked_by": "governance"},
+        review=ReviewLabel(score=100, status="verified", reviewed_by="committee"),
+        quarantine_reason="governance_blocked_promotion",
+    )
+    governance = GovernanceEngine()
+    quarantine_ref = quarantined["quarantine_ref"]
+    governance.record_approval(
+        approval_type="boss_approval",
+        subject_id=quarantined["experience_id"],
+        approved_by="boss",
+        scope={
+            "action": "memory_promotion",
+            "source_id": quarantined["experience_id"],
+            "allowed_use": "active_memory",
+            "quarantine_ref": quarantine_ref,
+        },
+    )
+    wrong_scope_review = governance.review_action(
+        "memory_promotion",
+        context={
+            "source_id": quarantined["experience_id"],
+            "intended_use": "active_memory",
+            "quarantine_ref": quarantine_ref,
+        },
+    )
+    wrong_scope_review["policy_evaluation"]["approval_records"][0]["scope"] = {
+        "action": "private_asset_access",
+        "source_id": quarantined["experience_id"],
+        "allowed_use": "active_memory",
+        "quarantine_ref": quarantine_ref,
+    }
+
+    with pytest.raises(ValueError, match="fresh allowed governance decision"):
+        engine.reconsider_quarantined(
+            quarantined["experience_id"],
+            review=ReviewLabel(score=92, status="verified", reviewed_by="boss"),
+            notes="Approval scope does not authorize memory promotion.",
+            governance_review=wrong_scope_review,
+            governance_approval_ledger=governance.approval_ledger,
+        )
+
+
+def test_governance_blocked_quarantine_rejects_governance_review_missing_quarantine_ref():
+    engine = PromotionEngine(owner="agent:math")
+    quarantined = engine.record_experience(
+        source="governance",
+        event={"summary": "Blocked by governance.", "skills": ["governance"], "blocked_by": "governance"},
+        review=ReviewLabel(score=100, status="verified", reviewed_by="committee"),
+        quarantine_reason="governance_blocked_promotion",
+    )
+    governance = GovernanceEngine()
+    governance.record_approval(
+        approval_type="boss_approval",
+        subject_id=quarantined["experience_id"],
+        approved_by="boss",
+        scope={
+            "action": "memory_promotion",
+            "source_id": quarantined["experience_id"],
+            "allowed_use": "active_memory",
+        },
+    )
+    missing_ref_review = governance.review_action(
+        "memory_promotion",
+        context={"source_id": quarantined["experience_id"], "intended_use": "active_memory"},
+    )
+    missing_ref_review["timestamp"] = "9999-01-01T00:00:00Z"
+
+    with pytest.raises(ValueError, match="fresh allowed governance decision"):
+        engine.reconsider_quarantined(
+            quarantined["experience_id"],
+            review=ReviewLabel(score=92, status="verified", reviewed_by="boss"),
+            notes="Review omits the quarantine ref.",
+            governance_review=missing_ref_review,
+            governance_approval_ledger=governance.approval_ledger,
+        )
+
+
+def test_governance_blocked_quarantine_rejects_forged_governance_review_without_ledger():
+    engine = PromotionEngine(owner="agent:math")
+    quarantined = engine.record_experience(
+        source="governance",
+        event={"summary": "Blocked by governance.", "skills": ["governance"], "blocked_by": "governance"},
+        review=ReviewLabel(score=100, status="verified", reviewed_by="committee"),
+        quarantine_reason="governance_blocked_promotion",
+    )
+    forged_review = {
+        "schema": "paideia-governance-review/v1",
+        "action": "memory_promotion",
+        "decision": "allowed",
+        "timestamp": "9999-01-01T00:00:00Z",
+        "policy_evaluation": {
+            "decision": "allowed_with_approval",
+            "missing_approvals": [],
+            "override_allowed": True,
+            "context": {
+                "action": "memory_promotion",
+                "source_id": quarantined["experience_id"],
+                "intended_use": "active_memory",
+                "quarantine_ref": quarantined["quarantine_ref"],
+            },
+            "approval_records": [
+                {
+                    "schema": "paideia-governance-approval/v1",
+                    "approval_type": "boss_approval",
+                    "subject_id": quarantined["experience_id"],
+                    "approved_by": "boss",
+                    "scope": {
+                        "action": "memory_promotion",
+                        "source_id": quarantined["experience_id"],
+                        "allowed_use": "active_memory",
+                        "quarantine_ref": quarantined["quarantine_ref"],
+                    },
+                    "status": "active",
+                }
+            ],
+        },
+    }
+
+    with pytest.raises(ValueError, match="fresh allowed governance decision"):
+        engine.reconsider_quarantined(
+            quarantined["experience_id"],
+            review=ReviewLabel(score=92, status="verified", reviewed_by="boss"),
+            notes="Forged approval record is not present in a governance ledger.",
+            governance_review=forged_review,
+        )
+
+
+def test_governance_blocked_quarantine_rejects_governance_review_older_than_quarantine():
+    engine = PromotionEngine(owner="agent:math")
+    quarantined = engine.record_experience(
+        source="governance",
+        event={"summary": "Blocked by governance.", "skills": ["governance"], "blocked_by": "governance"},
+        review=ReviewLabel(score=100, status="verified", reviewed_by="committee"),
+        quarantine_reason="governance_blocked_promotion",
+    )
+    governance = GovernanceEngine()
+    quarantine_ref = quarantined["quarantine_ref"]
+    governance.record_approval(
+        approval_type="boss_approval",
+        subject_id=quarantined["experience_id"],
+        approved_by="boss",
+        scope={
+            "action": "memory_promotion",
+            "source_id": quarantined["experience_id"],
+            "allowed_use": "active_memory",
+            "quarantine_ref": quarantine_ref,
+        },
+    )
+    stale_review = governance.review_action(
+        "memory_promotion",
+        context={
+            "source_id": quarantined["experience_id"],
+            "intended_use": "active_memory",
+            "quarantine_ref": quarantine_ref,
+        },
+    )
+    stale_review["timestamp"] = "1970-01-01T00:00:00Z"
+
+    with pytest.raises(ValueError, match="fresh allowed governance decision"):
+        engine.reconsider_quarantined(
+            quarantined["experience_id"],
+            review=ReviewLabel(score=92, status="verified", reviewed_by="boss"),
+            notes="Review timestamp predates the quarantine.",
+            governance_review=stale_review,
+            governance_approval_ledger=governance.approval_ledger,
+        )
 
 
 def test_promotion_engine_reconsiders_quarantined_experience_after_review():

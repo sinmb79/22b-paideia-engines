@@ -53,7 +53,7 @@ python -m paideia_engines.cli validate-suite-output `
 python -m paideia_engines.cli smoke --engine all --output .paideia-runs\smoke.json
 
 python -m paideia_engines.cli persist-runtime-evidence `
-  --runtime-output .paideia-runs\engines\09_runtime.json `
+  --runtime-output .paideia-runs\engines\08_runtime.json `
   --store-dir .paideia-runs\runtime `
   --artifact-base-dir examples `
   --output .paideia-runs\runtime-evidence-bundle.json

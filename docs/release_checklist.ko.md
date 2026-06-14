@@ -23,7 +23,7 @@ python -m paideia_engines.cli diagnose-manifest --manifest examples\acquired_sou
 python -m paideia_engines.cli diagnose-stress-pack --pack examples\stress_packs\core_subject_stress_pack.json --output .paideia-runs\stress-pack-diagnostics.json
 python -m paideia_engines.cli run-config --config examples\configured_suite.json --output .paideia-runs\result.json --output-dir .paideia-runs\engines
 python -m paideia_engines.cli validate-suite-output --output-dir .paideia-runs\engines --result .paideia-runs\result.json --output .paideia-runs\suite-output-validation.json
-python -m paideia_engines.cli persist-runtime-evidence --runtime-output .paideia-runs\engines\09_runtime.json --store-dir .paideia-runs\runtime --artifact-base-dir examples --output .paideia-runs\runtime-evidence-bundle.json
+python -m paideia_engines.cli persist-runtime-evidence --runtime-output .paideia-runs\engines\08_runtime.json --store-dir .paideia-runs\runtime --artifact-base-dir examples --output .paideia-runs\runtime-evidence-bundle.json
 python -m paideia_engines.cli validate-runtime-evidence --bundle .paideia-runs\runtime\runtime_phase5-run-0001\evidence-bundle.json --output .paideia-runs\runtime-evidence-validation.json
 python -m paideia_engines.cli replay-runtime-evidence --bundle .paideia-runs\runtime\runtime_phase5-run-0001\evidence-bundle.json --output .paideia-runs\runtime-evidence-replay.json
 python -m paideia_engines.cli smoke --engine all --output .paideia-runs\smoke.json
@@ -48,7 +48,7 @@ gh pr view 1 --json number,title,url,isDraft,headRefName,baseRefName,state,commi
 - Acquired-source manifest에는 local user-profile folder를 가리키는 private absolute path가 없어야 합니다.
 - Stress pack에는 `promotion_decision`, `ledger_version`, `experience_id` record가 없어야 합니다.
 - Configured-suite 출력은 trace schema v2를 선언하고 promotion이 governance와 runtime 뒤에 있어야 합니다.
-- governance-blocked promotion quarantine 규칙이 적용되어야 하며, blocked governance review는 보스 검토가 필요한 quarantined promotion decision을 만들어야 합니다.
+- governance-blocked promotion quarantine 규칙이 적용되어야 하며, blocked governance review는 보스 검토가 필요한 quarantined promotion decision을 만들어야 합니다. 재심사는 `memory_promotion`, quarantined `experience_id`, promotion이 발급한 `quarantine_ref`, `active_memory` 범위에 묶이고 governance approval ledger 안의 같은 `experience_id` 및 `quarantine_ref` active `boss_approval`을 포함한 fresh allowed `paideia-governance-review/v1` payload가 있어야 합니다.
 - verified artifact는 runtime evidence validation이 복사 파일 존재, size, byte hash, manifest hash, replay trace를 증명하기 전까지 release-reviewable claim으로만 취급합니다.
 - Runtime evidence bundle은 복사된 artifact file의 존재, size, byte hash, manifest hash, replay trace를 검증해야 합니다.
 - Benchmark validation은 golden schema, mutation expectation, release evidence threshold를 통과해야 합니다.

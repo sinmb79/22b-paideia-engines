@@ -119,6 +119,28 @@ def test_engine_contracts_document_governance_quarantine_reconsideration_gate():
         text = (ROOT / relative_path).read_text(encoding="utf-8")
         assert "force-quarantine" in text
         assert "fresh allowed governance decision" in text
+        assert "governance review payload" in text
+        assert "boss_approval" in text
+        assert "quarantine_ref" in text
+        assert "approval ledger" in text
+
+
+def test_runtime_evidence_docs_use_trace_schema_v2_runtime_filename():
+    paths = [
+        "docs/release_checklist.md",
+        "docs/release_checklist.ko.md",
+        "docs/release_guide.md",
+        "docs/release_guide.ko.md",
+        "docs/real_engine_development.md",
+        "docs/real_engine_development.ko.md",
+        "src/paideia_engines/runtime/README.md",
+        "src/paideia_engines/runtime/README.ko.md",
+    ]
+
+    for relative_path in paths:
+        text = (ROOT / relative_path).read_text(encoding="utf-8")
+        assert "09_runtime.json" not in text
+        assert "08_runtime.json" in text
 
 
 def test_ci_workflow_runs_release_quality_gates():

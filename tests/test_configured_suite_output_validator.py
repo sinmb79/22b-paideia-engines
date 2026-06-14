@@ -1,8 +1,9 @@
 import json
 from pathlib import Path
 
-from paideia_engines.orchestration.config_runner import run_config_file
+from paideia_engines.orchestration.config_runner import EXECUTION_TRACE, run_config_file
 from paideia_engines.orchestration.output_validator import (
+    EXPECTED_ENGINE_SCHEMAS,
     validate_configured_suite_outputs,
     validate_configured_suite_result,
 )
@@ -44,6 +45,10 @@ def test_configured_suite_output_validator_passes_release_ready_outputs(tmp_path
     assert report["checks"]["execution_trace_matches"] is True
     assert report["checks"]["engine_output_files_match_result"] is True
     assert report["checks"]["verification_passed"] is True
+
+
+def test_configured_suite_expected_schema_order_matches_trace_schema_v2():
+    assert list(EXPECTED_ENGINE_SCHEMAS) == list(EXECUTION_TRACE)
 
 
 def test_configured_suite_output_validator_can_validate_output_dir_without_result_json(tmp_path):
