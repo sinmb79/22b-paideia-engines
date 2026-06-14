@@ -76,6 +76,54 @@ def test_promotion_owner_and_minimum_score_are_fixed_trust_config():
     assert decision["owner"] == "agent:math"
 
 
+@pytest.mark.parametrize("owner", ["", "   "])
+def test_promotion_owner_must_not_be_empty(owner):
+    with pytest.raises(ValueError, match="owner must be a non-empty string"):
+        PromotionEngine(owner=owner)
+
+
+@pytest.mark.parametrize("owner", [" agent:math", "agent:math "])
+def test_promotion_owner_must_not_have_surrounding_whitespace(owner):
+    with pytest.raises(ValueError, match="owner must not contain surrounding whitespace"):
+        PromotionEngine(owner=owner)
+
+
+@pytest.mark.parametrize("owner", [None, 123])
+def test_promotion_owner_must_be_a_string(owner):
+    with pytest.raises(TypeError, match="owner must be a string"):
+        PromotionEngine(owner=owner)
+
+
+@pytest.mark.parametrize("minimum_score", ["90", 90.0, True, None])
+def test_promotion_minimum_score_must_be_an_integer(minimum_score):
+    with pytest.raises(TypeError, match="minimum_score must be an integer"):
+        PromotionEngine(owner="agent:math", minimum_score=minimum_score)
+
+
+@pytest.mark.parametrize("minimum_score", [-1, 101])
+def test_promotion_minimum_score_must_be_between_zero_and_one_hundred(minimum_score):
+    with pytest.raises(ValueError, match="minimum_score must be between 0 and 100"):
+        PromotionEngine(owner="agent:math", minimum_score=minimum_score)
+
+
+def test_minimum_score_100_requires_perfect_verified_review():
+    engine = PromotionEngine(owner="agent:math", minimum_score=100)
+
+    below = engine.record_experience(
+        source="assessment",
+        event={"summary": "Almost perfect.", "skills": ["verification"]},
+        review=ReviewLabel(score=99, status="verified", reviewed_by="boss"),
+    )
+    perfect = engine.record_experience(
+        source="assessment",
+        event={"summary": "Perfect.", "skills": ["verification"]},
+        review=ReviewLabel(score=100, status="verified", reviewed_by="boss"),
+    )
+
+    assert below["status"] == "quarantined"
+    assert perfect["status"] == "promoted"
+
+
 def test_minimum_score_gate_applies_to_quarantine_reconsideration():
     engine = PromotionEngine(owner="agent:math", minimum_score=90)
     quarantined = engine.record_experience(

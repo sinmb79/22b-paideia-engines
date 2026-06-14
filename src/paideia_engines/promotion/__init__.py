@@ -58,6 +58,17 @@ class PromotionEngine:
     schema = "paideia-promotion-engine/v1"
 
     def __init__(self, owner: str, minimum_score: int = 80) -> None:
+        if not isinstance(owner, str):
+            raise TypeError("owner must be a string.")
+        if not owner.strip():
+            raise ValueError("owner must be a non-empty string.")
+        if owner != owner.strip():
+            raise ValueError("owner must not contain surrounding whitespace.")
+        if isinstance(minimum_score, bool) or not isinstance(minimum_score, int):
+            raise TypeError("minimum_score must be an integer.")
+        if not 0 <= minimum_score <= 100:
+            raise ValueError("minimum_score must be between 0 and 100.")
+
         self._owner = owner
         self._minimum_score = minimum_score
         self._counter = 0

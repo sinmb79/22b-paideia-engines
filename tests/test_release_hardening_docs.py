@@ -154,7 +154,9 @@ def test_engine_contracts_document_promotion_snapshot_accessors():
         assert "Promotion ledgers and events use private stores" in text
         assert "detached mutable snapshots" in text
         assert "Promotion trust config is fixed at engine initialization" in text
+        assert "Promotion trust config is validated at engine initialization" in text
         assert "owner and minimum_score" in text
+        assert "0 and 100" in text
 
 
 def test_promotion_readme_documents_snapshot_copy_cost():
