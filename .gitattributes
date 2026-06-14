@@ -1,1 +1,5 @@
 examples/public_item_sample.jsonl text eol=lf
+examples/acquired_sources_manifest.jsonl text eol=lf
+examples/source_fixture_pack.json text eol=lf
+examples/source_samples/*.csv text eol=lf
+examples/source_samples/*.json text eol=lf

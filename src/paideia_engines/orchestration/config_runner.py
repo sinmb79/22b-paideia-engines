@@ -462,6 +462,7 @@ def run_configured_suite(
 
     promotion = PromotionEngine(owner=learner["learner_id"])
     review_label = assessment_result["review_label"]
+    governance_allowed = governance_review["decision"] == "allowed"
     promotion_event = {
         "summary": "Configured suite run completed after assessment, stress, governance, and runtime evidence.",
         "skills": ["configuration", "orchestration", "trace_review"],
@@ -470,14 +471,24 @@ def run_configured_suite(
         "governance_decision": governance_review["decision"],
         "runtime_run_id": runtime_run["run_id"],
     }
+    review_status = str(review_label["status"])
+    review_notes = str(review_label.get("notes", ""))
+    quarantine_reason = None
+    if not governance_allowed:
+        promotion_event["blocked_by"] = "governance"
+        review_status = "needs_review"
+        review_notes = "Governance blocked promotion."
+        quarantine_reason = "governance_blocked_promotion"
     promotion_decision = promotion.record_experience(
         source="configured_suite",
         event=promotion_event,
         review=ReviewLabel(
             score=int(review_label["score"]),
-            status=str(review_label["status"]),
+            status=review_status,
             reviewed_by=str(review_label["reviewed_by"]),
+            notes=review_notes,
         ),
+        quarantine_reason=quarantine_reason,
     )
     promotion_decision["event"] = dict(promotion_event)
 
@@ -488,7 +499,9 @@ def run_configured_suite(
             "acquisition_validation_passed": acquisition_validation["status"] == "passed",
             "stress_no_promotion_decision": "promotion_decision" not in stress_run,
             "promotion_recorded": promotion_decision["status"] in {"promoted", "quarantined"},
-            "governance_allowed": governance_review["decision"] == "allowed",
+            "promotion_governance_gate_enforced": governance_allowed
+            or promotion_decision["status"] == "quarantined",
+            "governance_allowed": governance_allowed,
             "runtime_review_required": runtime_run["acceptance_checklist"]["requires_review"] is True,
             "runtime_replayable": runtime_run["acceptance_checklist"]["checks"]["reproducibility"][
                 "replay_trace_available"

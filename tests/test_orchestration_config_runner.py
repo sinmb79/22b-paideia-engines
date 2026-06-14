@@ -174,6 +174,25 @@ def test_production_config_runs_when_required_values_are_explicit(tmp_path):
     assert result["outputs"]["verification"]["passed"] is True
 
 
+def test_configured_suite_governance_block_forces_promotion_quarantine(tmp_path):
+    config = _make_production_config(tmp_path)
+    config["governance"] = {
+        "action": "upload_training_data",
+        "context": {"external_upload": True},
+    }
+
+    result = run_configured_suite(config, output_dir=tmp_path / "outputs")
+
+    assert result["outputs"]["governance"]["decision"] == "blocked"
+    assert result["outputs"]["promotion"]["status"] == "quarantined"
+    assert result["outputs"]["promotion"]["requires_boss_review"] is True
+    assert result["outputs"]["promotion"]["reason"] == "governance_blocked_promotion"
+    assert result["outputs"]["promotion"]["event"]["blocked_by"] == "governance"
+    assert result["outputs"]["promotion"]["review"]["status"] == "needs_review"
+    assert result["outputs"]["verification"]["checks"]["promotion_governance_gate_enforced"] is True
+    assert result["outputs"]["verification"]["passed"] is False
+
+
 def test_production_config_rejects_missing_curriculum_standards(tmp_path):
     config = _make_production_config(tmp_path)
     config["curriculum"] = {

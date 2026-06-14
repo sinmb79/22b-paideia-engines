@@ -47,6 +47,9 @@ gh pr view 1 --json number,title,url,isDraft,headRefName,baseRefName,state,commi
 - Acquired-source manifest는 `examples/`, `data/`, `docs/`, `src/`, `tests/` 안의 AI-Hub corpus, 시험지 PDF/HWP/audio/video, 교과서 원본을 가리키지 않아야 합니다.
 - Acquired-source manifest에는 local user-profile folder를 가리키는 private absolute path가 없어야 합니다.
 - Stress pack에는 `promotion_decision`, `ledger_version`, `experience_id` record가 없어야 합니다.
+- Configured-suite 출력은 trace schema v2를 선언하고 promotion이 governance와 runtime 뒤에 있어야 합니다.
+- governance-blocked promotion quarantine 규칙이 적용되어야 하며, blocked governance review는 보스 검토가 필요한 quarantined promotion decision을 만들어야 합니다.
+- verified artifact는 runtime evidence validation이 복사 파일 존재, size, byte hash, manifest hash, replay trace를 증명하기 전까지 release-reviewable claim으로만 취급합니다.
 - Runtime evidence bundle은 복사된 artifact file의 존재, size, byte hash, manifest hash, replay trace를 검증해야 합니다.
 - Benchmark validation은 golden schema, mutation expectation, release evidence threshold를 통과해야 합니다.
 - Release candidate validation은 link, UTF-8, replacement character, sensitive pattern, 개인 로컬 경로, acquired-source manifest, generated path, packaging metadata check를 통과해야 합니다.

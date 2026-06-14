@@ -93,6 +93,27 @@ def test_release_checklist_contains_required_validation_commands():
     assert "<release-sensitive-patterns>" not in checklist
 
 
+def test_trust_boundary_docs_pin_promotion_and_artifact_gates():
+    required_phrases = [
+        "governance-blocked promotion quarantine",
+        "verified artifact",
+        "trace schema v2",
+    ]
+    documented_paths = [
+        "docs/architecture.md",
+        "docs/architecture.ko.md",
+        "docs/release_checklist.md",
+        "docs/release_checklist.ko.md",
+        "docs/engine_contracts.md",
+        "docs/engine_contracts.ko.md",
+    ]
+
+    for relative_path in documented_paths:
+        text = (ROOT / relative_path).read_text(encoding="utf-8")
+        for phrase in required_phrases:
+            assert phrase in text, f"{relative_path} must document {phrase!r}"
+
+
 def test_ci_workflow_runs_release_quality_gates():
     workflow = ROOT / ".github" / "workflows" / "ci.yml"
 
