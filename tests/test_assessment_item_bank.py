@@ -1,3 +1,5 @@
+import pytest
+
 from paideia_engines.assessment import AssessmentEngine
 from paideia_engines.assessment.item_bank import AssessmentItem, ItemBank
 
@@ -95,3 +97,28 @@ def test_assessment_engine_scores_solution_process_partially():
     assert result["score_breakdown"]["accuracy"] == 50
     assert result["score_breakdown"]["process"] > 0
     assert result["score_breakdown"]["clarity"] >= 0
+
+
+def test_assessment_engine_rejects_unknown_rubric_criteria():
+    bank = ItemBank(
+        [
+            AssessmentItem(
+                item_id="math-3-unsafe",
+                standard_id="E-MATH-03-01",
+                gate_id="unit_check",
+                item_type="short_answer",
+                prompt="What is 245 + 130?",
+                answer="375",
+                distractors=[],
+                explanation="245 + 130 = 375.",
+                rubric={"accuracy": 70, "bonus_typo": 30},
+            )
+        ]
+    )
+    engine = AssessmentEngine(item_bank=bank)
+
+    with pytest.raises(ValueError, match="Unknown rubric criteria"):
+        engine.evaluate_item_response(
+            "math-3-unsafe",
+            response={"answer": "375", "explanation": "Any text should not earn unknown rubric weight."},
+        )

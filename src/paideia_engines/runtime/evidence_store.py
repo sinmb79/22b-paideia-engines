@@ -8,6 +8,7 @@ import json
 from pathlib import Path
 import re
 from typing import Any
+import os
 
 
 RUNTIME_EVIDENCE_BUNDLE_SCHEMA = "paideia-runtime-evidence-bundle/v1"
@@ -24,6 +25,7 @@ REQUIRED_BUNDLE_FILES = {
 }
 
 PROMOTION_LEAK_KEYS = {"promotion_decision", "ledger_version", "experience_id"}
+SENSITIVE_ARTIFACT_NAME_FRAGMENTS = (".env", "id_rsa", "credentials", "token", "secret")
 
 
 def persist_runtime_evidence(
@@ -295,11 +297,61 @@ def _build_artifact_evidence(
 
 def _resolve_artifact_path(raw_path: str, artifact_base_dir: Path | None) -> Path:
     path = Path(raw_path)
-    if path.is_absolute():
-        return path.resolve()
+    _reject_parent_directory_refs(path)
     if artifact_base_dir is not None:
-        return (artifact_base_dir / path).resolve()
-    return path.resolve()
+        return _resolve_artifact_path_with_base(path, artifact_base_dir)
+    if path.is_absolute():
+        raise ValueError("Absolute artifact paths require artifact_base_dir for safe persistence.")
+    candidate = Path.cwd() / path
+    return _ensure_artifact_path_is_safe(candidate, artifact_base_dir=None)
+
+
+def _resolve_artifact_path_with_base(path: Path, artifact_base_dir: Path) -> Path:
+    if path.is_absolute():
+        candidate = path
+    else:
+        candidate = artifact_base_dir / path
+    return _ensure_artifact_path_is_safe(candidate, artifact_base_dir=artifact_base_dir)
+
+
+def _ensure_artifact_path_is_safe(path: Path, artifact_base_dir: Path | None) -> Path:
+    if _contains_sensitive_artifact_name(path):
+        raise ValueError(f"Artifact filename contains sensitive token: {path.name}")
+    if _path_contains_symlink(path):
+        raise ValueError(f"Artifact path must not use symlinks: {path}")
+    resolved = path.resolve()
+    if artifact_base_dir is not None and not _is_within_artifact_base(resolved, artifact_base_dir):
+        raise ValueError(f"Artifact path must stay within artifact_base_dir: {resolved}")
+    return resolved
+
+
+def _reject_parent_directory_refs(path: Path) -> None:
+    if any(part == ".." for part in path.parts):
+        raise ValueError(
+            f"Artifact path must not contain parent directory references or escape artifact_base_dir: {path}"
+        )
+
+
+def _is_within_artifact_base(candidate: Path, artifact_base_dir: Path) -> bool:
+    candidate_path = os.path.normpath(str(candidate)).casefold()
+    base_path = os.path.normpath(str(artifact_base_dir)).casefold()
+    return candidate_path == base_path or candidate_path.startswith(f"{base_path}{os.sep}")
+
+
+def _contains_sensitive_artifact_name(path: Path) -> bool:
+    filename = path.name.lower()
+    return any(fragment in filename for fragment in SENSITIVE_ARTIFACT_NAME_FRAGMENTS)
+
+
+def _path_contains_symlink(path: Path) -> bool:
+    current = path
+    while True:
+        if current.is_symlink():
+            return True
+        parent = current.parent
+        if parent == current:
+            return False
+        current = parent
 
 
 def _load_bundle_files(bundle: dict[str, Any], issues: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:

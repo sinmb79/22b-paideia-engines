@@ -61,6 +61,64 @@ def _sample_config(tmp_path: Path) -> dict[str, object]:
     }
 
 
+def _write_production_items(tmp_path: Path) -> Path:
+    items_path = tmp_path / "production-items.json"
+    items_path.write_text(
+        json.dumps(
+            {
+                "schema": "paideia-assessment-items/v1",
+                "items": [
+                    {
+                        "item_id": "math-3-prod",
+                        "standard_id": "E-MATH-03-01",
+                        "gate_id": "unit_check",
+                        "item_type": "short_answer",
+                        "prompt": "What is 245 + 130?",
+                        "answer": "375",
+                        "distractors": [],
+                        "explanation": "245 + 130 = 375.",
+                        "rubric": {"accuracy": 80, "explanation": 20},
+                    }
+                ],
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+    return items_path
+
+
+def _make_production_config(tmp_path: Path) -> dict[str, object]:
+    items_path = _write_production_items(tmp_path)
+    config = _sample_config(tmp_path)
+    config["schema"] = "paideia-configured-suite/v1"
+    config["mode"] = "production"
+    config["data"]["acquired_sources"] = [
+        {
+            "schema": "paideia-acquired-source/v1",
+            "source_id": "moe_csat_example_items",
+            "status": "acquired",
+            "local_path": str(items_path),
+            "hash": DataAcquisitionEngine.hash_path(items_path),
+            "content_scope": "public_content",
+            "license_note_path": None,
+            "approved_by": "boss",
+        }
+    ]
+    config["assessment"] = {
+        "items_path": str(items_path),
+        "parser": "paideia_json",
+        "item_id": "math-3-prod",
+        "answer": "375",
+        "explanation": "I used place value to verify 375.",
+    }
+    config["stress"] = {
+        "scenario_id": "phase5-contradictory-evidence",
+        "response": "I compare both sources, verify place value, and ask for review before memory promotion.",
+    }
+    return config
+
+
 def test_configured_suite_runs_all_engines_and_writes_engine_outputs(tmp_path):
     result = run_configured_suite(_sample_config(tmp_path), output_dir=tmp_path / "outputs")
 
@@ -87,6 +145,36 @@ def test_configured_suite_runs_all_engines_and_writes_engine_outputs(tmp_path):
 
     for path in result["output_paths"].values():
         assert Path(path).exists()
+
+
+def test_production_config_rejects_demo_defaults(tmp_path):
+    config = _sample_config(tmp_path)
+    config["schema"] = "paideia-configured-suite/v1"
+    config["mode"] = "production"
+
+    with pytest.raises(ValueError, match="config.assessment.item_id"):
+        run_configured_suite(config, output_dir=tmp_path / "outputs")
+
+
+def test_production_config_runs_when_required_values_are_explicit(tmp_path):
+    config = _make_production_config(tmp_path)
+
+    result = run_configured_suite(config, output_dir=tmp_path / "outputs")
+
+    assert result["mode"] == "production"
+    assert result["outputs"]["verification"]["passed"] is True
+
+
+def test_production_config_rejects_missing_curriculum_standards(tmp_path):
+    config = _make_production_config(tmp_path)
+    config["curriculum"] = {
+        "school_level": "elementary",
+        "grade": "3",
+        "subject": "math",
+    }
+
+    with pytest.raises(ValueError, match="config.curriculum.standards"):
+        run_configured_suite(config, output_dir=tmp_path / "outputs")
 
 
 def test_config_runner_loads_json_file_and_writes_result(tmp_path):

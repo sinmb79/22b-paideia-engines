@@ -98,9 +98,45 @@ def _build_benchmark_evidence(tmp_path: Path) -> tuple[Path, Path, Path]:
 
 
 def test_cli_run_config_writes_json_output(tmp_path):
+    output_path = tmp_path / "result.json"
+
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "paideia_engines.cli",
+            "run-config",
+            "--config",
+            str(ROOT / "examples" / "configured_suite.json"),
+            "--output",
+            str(output_path),
+            "--output-dir",
+            str(tmp_path / "outputs"),
+        ],
+        cwd=ROOT,
+        env=_env(),
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+
+    assert output_path.exists()
+    payload = json.loads(output_path.read_text(encoding="utf-8"))
+    assert payload["schema"] == "paideia-configured-suite-run/v1"
+    assert payload["config_id"] == "phase5-local-growth-demo"
+    assert payload["outputs"]["verification"]["passed"] is True
+    assert "wrote" in completed.stdout.lower()
+
+
+def test_cli_run_config_returns_nonzero_when_verification_fails(tmp_path):
+    config = _config(tmp_path)
+    config["assessment"] = {
+        "answer": "wrong",
+        "explanation": "This answer does not solve the item.",
+    }
     config_path = tmp_path / "config.json"
     output_path = tmp_path / "result.json"
-    config_path.write_text(json.dumps(_config(tmp_path), ensure_ascii=False), encoding="utf-8")
+    config_path.write_text(json.dumps(config, ensure_ascii=False), encoding="utf-8")
 
     completed = subprocess.run(
         [
@@ -119,14 +155,13 @@ def test_cli_run_config_writes_json_output(tmp_path):
         env=_env(),
         text=True,
         capture_output=True,
-        check=True,
+        check=False,
     )
 
-    assert output_path.exists()
+    assert completed.returncode == 1
     payload = json.loads(output_path.read_text(encoding="utf-8"))
-    assert payload["schema"] == "paideia-configured-suite-run/v1"
-    assert payload["config_id"] == "cli-demo"
-    assert "wrote" in completed.stdout.lower()
+    assert payload["outputs"]["verification"]["passed"] is False
+    assert payload["outputs"]["verification"]["checks"]["assessment_passed"] is False
 
 
 def test_cli_smoke_runs_all_engines(tmp_path):

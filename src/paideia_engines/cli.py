@@ -139,8 +139,17 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     if args.command == "run-config":
         result = run_config_file(args.config, output_path=args.output, output_dir=args.output_dir)
-        print(f"Wrote configured suite result to {result['result_path']}")
-        return 0
+        verification_passed = result.get("outputs", {}).get("verification", {}).get("passed") is True
+        print(
+            json.dumps(
+                {
+                    "wrote": result["result_path"],
+                    "verification_passed": verification_passed,
+                },
+                ensure_ascii=False,
+            )
+        )
+        return 0 if verification_passed else 1
 
     if args.command == "smoke":
         result = run_engine_smoke(args.engine)

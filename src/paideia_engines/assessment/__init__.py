@@ -7,6 +7,10 @@ from typing import Any
 from .item_bank import AssessmentItem, ItemBank
 
 
+ALLOWED_RUBRIC_CRITERIA = {"accuracy", "explanation", "process", "clarity"}
+EVIDENCE_KEYWORDS = ("evidence", "uncertainty", "verify", "verification", "source", "trace", "check")
+
+
 class AssessmentEngine:
     """Score submissions against a fixed rubric and build learner transcripts."""
 
@@ -111,17 +115,18 @@ class AssessmentEngine:
         }
 
     def _score(self, answer: str, artifact_count: int) -> int:
-        score = 40
+        score = 35
         answer_words = [word for word in answer.replace(".", " ").split(" ") if word]
-        score += min(30, len(answer_words))
+        score += min(20, len(set(answer_words)) * 2)
 
-        for keyword in ("evidence", "uncertainty", "verify", "verification", "source", "trace", "check"):
-            if keyword in answer:
-                score += 7
+        keyword_hits = {keyword for keyword in EVIDENCE_KEYWORDS if keyword in answer}
+        score += min(20, len(keyword_hits) * 4)
 
-        score += min(15, artifact_count * 5)
+        score += min(25, artifact_count * 20)
         if "but" in answer or "however" in answer:
             score += 5
+        if artifact_count == 0:
+            score = min(score, 79)
         return max(0, min(100, score))
 
     def _score_item_response(
@@ -136,6 +141,9 @@ class AssessmentEngine:
         normalized_answer = answer.strip().lower()
         expected = item.answer.strip().lower()
         rubric = item.rubric or {"accuracy": 100}
+        unknown_criteria = set(rubric) - ALLOWED_RUBRIC_CRITERIA
+        if unknown_criteria:
+            raise ValueError(f"Unknown rubric criteria: {sorted(unknown_criteria)}")
 
         for criterion, weight in rubric.items():
             criterion_weight = self._coerce_int(weight)
