@@ -69,6 +69,8 @@ decision = engine.record_experience(
 
 - [Architecture](docs/architecture.md)
 - [Architecture in Korean](docs/architecture.ko.md)
+- [Data acquisition plan](docs/data_acquisition.md)
+- [Data acquisition plan in Korean](docs/data_acquisition.ko.md)
 
 ## Safety Defaults
 

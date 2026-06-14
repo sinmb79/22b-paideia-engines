@@ -17,4 +17,6 @@ def test_readme_exposes_korean_language_choice():
 def test_architecture_docs_and_basic_example_exist():
     assert (ROOT / "docs" / "architecture.md").exists()
     assert (ROOT / "docs" / "architecture.ko.md").exists()
+    assert (ROOT / "docs" / "data_acquisition.md").exists()
+    assert (ROOT / "docs" / "data_acquisition.ko.md").exists()
     assert (ROOT / "examples" / "basic_growth_cycle.py").exists()

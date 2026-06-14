@@ -69,6 +69,8 @@ decision = engine.record_experience(
 
 - [아키텍처](docs/architecture.ko.md)
 - [Architecture in English](docs/architecture.md)
+- [데이터 확보 계획](docs/data_acquisition.ko.md)
+- [Data acquisition plan in English](docs/data_acquisition.md)
 
 ## 안전 기본값
 
