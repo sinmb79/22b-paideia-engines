@@ -4,7 +4,7 @@
 
 ## 신뢰 경계
 
-설정 기반 suite 출력은 trace schema v2를 사용합니다. 검토 도구는 평가와 스트레스 이후에 거버넌스와 런타임이 실행되고, 그 다음에 승급과 검증이 온다는 순서에 의존할 수 있습니다. 거버넌스가 `blocked`를 반환하면 governance-blocked promotion quarantine 규칙에 따라 평가 점수가 높아도 승급 기록은 반드시 격리되고 보스 검토가 필요합니다. verified artifact는 런타임 evidence bundle 검증이 복사된 파일, 바이트 해시, manifest 해시, replay trace를 증명하기 전까지는 릴리스 검토 가능한 증거 주장으로만 취급하며, bundle-backed promotion은 v0.3 증거 파이프라인에서 더 깊게 연결합니다.
+설정 기반 suite 출력은 trace schema v2를 사용합니다. 검토 도구는 평가와 스트레스 이후에 거버넌스와 런타임이 실행되고, 그 다음에 승급과 검증이 온다는 순서에 의존할 수 있습니다. 거버넌스가 `blocked`를 반환하면 governance-blocked promotion quarantine 규칙에 따라 평가 점수가 높아도 승급 기록은 반드시 격리되고 보스 검토가 필요합니다. 이 격리 기록을 재심사하려면 quarantined `experience_id`, promotion이 발급한 `quarantine_ref`, `active_memory` 사용 범위에 묶이고 governance approval ledger 안의 같은 `experience_id` 및 `quarantine_ref` active `boss_approval`을 포함한 `memory_promotion`용 fresh allowed `paideia-governance-review/v1` payload가 필요하며, 단순 decision 문자열은 충분하지 않습니다. verified artifact는 런타임 evidence bundle 검증이 복사된 파일, 바이트 해시, manifest 해시, replay trace를 증명하기 전까지는 릴리스 검토 가능한 증거 주장으로만 취급하며, bundle-backed promotion은 v0.3 증거 파이프라인에서 더 깊게 연결합니다.
 
 파이데이아 엔진은 하나의 에이전트 루프가 아니라, 명확한 엔진 경계를 중심으로 구성됩니다. 각 엔진은 한 종류의 판단을 책임지고, 다른 엔진이 소비할 수 있는 결정적 기록을 남깁니다.
 

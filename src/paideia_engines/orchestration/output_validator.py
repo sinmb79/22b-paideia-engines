@@ -12,7 +12,7 @@ from paideia_engines.orchestration.config_runner import EXECUTION_TRACE
 VALIDATION_SCHEMA = "paideia-configured-suite-output-validation/v1"
 SUITE_SCHEMA = "paideia-configured-suite-run/v1"
 
-EXPECTED_ENGINE_SCHEMAS = {
+_ENGINE_SCHEMA_BY_NAME = {
     "data_acquisition": "paideia-data-acquisition-plan/v1",
     "acquisition_validation": "paideia-acquisition-validation-report/v1",
     "curriculum_mapping": "paideia-curriculum-learning-unit/v1",
@@ -24,6 +24,7 @@ EXPECTED_ENGINE_SCHEMAS = {
     "runtime": "paideia-runtime-run/v1",
     "verification": "paideia-configured-suite-verification/v1",
 }
+EXPECTED_ENGINE_SCHEMAS = {engine_name: _ENGINE_SCHEMA_BY_NAME[engine_name] for engine_name in EXECUTION_TRACE}
 
 PROMOTION_LEAK_KEYS = {"promotion_decision", "ledger_version", "experience_id"}
 

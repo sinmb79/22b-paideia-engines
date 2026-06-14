@@ -8,7 +8,7 @@ from paideia_engines.data_acquisition import (
     diagnose_source_fixture_pack,
 )
 from paideia_engines.evaluation import validate_benchmark_pack
-from paideia_engines.orchestration.config_runner import run_config_file, run_engine_smoke
+from paideia_engines.orchestration.config_runner import EXECUTION_TRACE, run_config_file, run_engine_smoke
 from paideia_engines.runtime import persist_runtime_evidence, validate_runtime_evidence_bundle
 from paideia_engines.stress import diagnose_stress_scenario_pack
 
@@ -90,6 +90,44 @@ def test_benchmark_pack_passes_release_ready_evidence(tmp_path):
     assert report["checks"]["thresholds_met"] is True
     assert report["measurements"]["contract_validation"]["count"] == 10
     assert report["measurements"]["runtime_evidence_validation"]["count"] == 1
+
+
+def test_benchmark_pack_golden_schema_order_matches_trace_schema_v2():
+    pack = _load_json(ROOT / "examples" / "benchmark_packs" / "core_engine_benchmark_pack.json")
+
+    assert list(pack["golden_engine_schemas"]) == list(EXECUTION_TRACE)
+
+
+def test_benchmark_pack_blocks_stale_golden_schema_order(tmp_path):
+    result_path, output_dir, reports_dir = _build_evidence(tmp_path)
+    pack_path = tmp_path / "benchmark-pack.json"
+    pack = _load_json(ROOT / "examples" / "benchmark_packs" / "core_engine_benchmark_pack.json")
+    schemas = pack["golden_engine_schemas"]
+    stale_order = [
+        "data_acquisition",
+        "acquisition_validation",
+        "curriculum_mapping",
+        "cultivation",
+        "assessment",
+        "stress",
+        "promotion",
+        "governance",
+        "runtime",
+        "verification",
+    ]
+    pack["golden_engine_schemas"] = {engine_name: schemas[engine_name] for engine_name in stale_order}
+    _write_json(pack_path, pack)
+
+    report = validate_benchmark_pack(
+        pack_path,
+        result=result_path,
+        output_dir=output_dir,
+        reports_dir=reports_dir,
+    )
+
+    assert report["status"] == "blocked"
+    assert report["checks"]["golden_engine_schemas_match"] is False
+    assert "golden_engine_schemas_mismatch" in _issue_codes(report)
 
 
 def test_benchmark_pack_blocks_tampered_suite_outputs(tmp_path):

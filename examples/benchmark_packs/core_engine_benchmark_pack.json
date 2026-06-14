@@ -9,9 +9,9 @@
     "cultivation": "paideia-cultivation-roadmap/v1",
     "assessment": "paideia-assessment-item-result/v1",
     "stress": "paideia-stress-scenario-run/v1",
-    "promotion": "paideia-promotion-decision/v1",
     "governance": "paideia-governance-review/v1",
     "runtime": "paideia-runtime-run/v1",
+    "promotion": "paideia-promotion-decision/v1",
     "verification": "paideia-configured-suite-verification/v1"
   },
   "reports": {

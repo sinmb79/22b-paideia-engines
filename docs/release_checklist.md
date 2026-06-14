@@ -23,7 +23,7 @@ python -m paideia_engines.cli diagnose-manifest --manifest examples\acquired_sou
 python -m paideia_engines.cli diagnose-stress-pack --pack examples\stress_packs\core_subject_stress_pack.json --output .paideia-runs\stress-pack-diagnostics.json
 python -m paideia_engines.cli run-config --config examples\configured_suite.json --output .paideia-runs\result.json --output-dir .paideia-runs\engines
 python -m paideia_engines.cli validate-suite-output --output-dir .paideia-runs\engines --result .paideia-runs\result.json --output .paideia-runs\suite-output-validation.json
-python -m paideia_engines.cli persist-runtime-evidence --runtime-output .paideia-runs\engines\09_runtime.json --store-dir .paideia-runs\runtime --artifact-base-dir examples --output .paideia-runs\runtime-evidence-bundle.json
+python -m paideia_engines.cli persist-runtime-evidence --runtime-output .paideia-runs\engines\08_runtime.json --store-dir .paideia-runs\runtime --artifact-base-dir examples --output .paideia-runs\runtime-evidence-bundle.json
 python -m paideia_engines.cli validate-runtime-evidence --bundle .paideia-runs\runtime\runtime_phase5-run-0001\evidence-bundle.json --output .paideia-runs\runtime-evidence-validation.json
 python -m paideia_engines.cli replay-runtime-evidence --bundle .paideia-runs\runtime\runtime_phase5-run-0001\evidence-bundle.json --output .paideia-runs\runtime-evidence-replay.json
 python -m paideia_engines.cli smoke --engine all --output .paideia-runs\smoke.json
@@ -48,7 +48,7 @@ gh pr view 1 --json number,title,url,isDraft,headRefName,baseRefName,state,commi
 - Acquired-source manifests contain no private absolute paths to local user-profile folders.
 - Stress packs contain no `promotion_decision`, `ledger_version`, or `experience_id` records.
 - Configured-suite outputs declare trace schema v2 and keep promotion after governance and runtime.
-- governance-blocked promotion quarantine is enforced: a blocked governance review must yield a quarantined promotion decision that requires boss review.
+- governance-blocked promotion quarantine is enforced: a blocked governance review must yield a quarantined promotion decision that requires boss review, and reconsideration requires a fresh allowed `paideia-governance-review/v1` payload scoped to `memory_promotion`, the quarantined `experience_id`, the promotion-issued `quarantine_ref`, and `active_memory`, with an active `boss_approval` for the same `experience_id` and `quarantine_ref` present in the governance approval ledger.
 - A verified artifact is treated as a release-reviewable claim unless runtime evidence validation proves copied file existence, size, byte hash, manifest hash, and replay trace.
 - Runtime evidence bundles validate copied artifact file existence, size, byte hash, manifest hash, and replay trace.
 - Benchmark validation passes and enforces golden schemas, mutation expectations, and release evidence thresholds.
