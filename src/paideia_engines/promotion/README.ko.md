@@ -19,6 +19,9 @@
 - `reconsider_quarantined(...)`
 - `supersede_promoted(...)`
 - `route_active_memory(...)`
+- `owner`, `minimum_score`, `ledger`, `events`는 read-only accessor입니다.
+
+`ledger`, `events`, 반환된 promotion decision, active-memory route는 detached mutable snapshots입니다. Python 객체 의미상 반환 snapshot 수정은 가능하지만 엔진 내부 상태는 바뀌지 않습니다. 큰 ledger에서는 snapshot copy 비용이 생길 수 있으므로, 대용량 사용은 향후 persistence/replay backend를 우선 고려합니다.
 
 ## 안전 경계
 

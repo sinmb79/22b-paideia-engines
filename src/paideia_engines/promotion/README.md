@@ -19,6 +19,9 @@ The Promotion Engine decides whether reviewed experiences become active memory.
 - `reconsider_quarantined(...)`
 - `supersede_promoted(...)`
 - `route_active_memory(...)`
+- `owner`, `minimum_score`, `ledger`, and `events` are read-only accessors.
+
+`ledger`, `events`, returned promotion decisions, and active-memory routes are detached mutable snapshots. Mutating a returned snapshot is allowed by Python object semantics, but it never mutates engine internal state. Snapshot copying has a cost for large ledgers; high-volume use should prefer future persistence/replay backends instead of repeatedly materializing full in-memory ledgers.
 
 ## Safety Boundary
 
