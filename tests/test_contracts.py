@@ -1,10 +1,19 @@
+from pathlib import Path
+
 from paideia_engines.contracts import (
+    EngineContract,
     EngineEvent,
     PromotionDecision,
     QuarantineDecision,
     ReviewLabel,
     default_local_policy,
+    engine_contract_registry,
+    engine_contracts,
+    validate_engine_contract_registry,
 )
+
+
+ROOT = Path(__file__).resolve().parents[1]
 
 
 def test_engine_event_serializes_with_traceable_contract_fields():
@@ -45,3 +54,47 @@ def test_default_policy_is_local_first_and_blocks_external_uploads():
     assert policy["data_boundary"] == "local-first"
     assert policy["external_uploads"] == "blocked_by_default"
     assert "boss_private_assets" in policy["protected_assets"]
+
+
+def test_engine_contract_registry_lists_every_reusable_engine():
+    registry = engine_contract_registry()
+    contracts = engine_contracts()
+    names = {contract.name for contract in contracts}
+
+    assert registry["schema"] == "paideia-engine-contract-registry/v1"
+    assert registry["phase"] == 13
+    assert all(isinstance(contract, EngineContract) for contract in contracts)
+    assert names == {
+        "data_acquisition",
+        "curriculum_mapping",
+        "cultivation",
+        "assessment",
+        "stress",
+        "promotion",
+        "governance",
+        "runtime",
+        "orchestration",
+    }
+    for contract in contracts:
+        assert contract.public_api
+        assert contract.output_schemas
+        assert contract.safety_boundaries
+        assert contract.status == "phase13_contract_frozen"
+
+
+def test_engine_contract_registry_validation_passes_current_repo():
+    report = validate_engine_contract_registry(ROOT)
+
+    assert report["schema"] == "paideia-engine-contract-validation/v1"
+    assert report["status"] == "passed"
+    assert report["summary"]["engine_count"] == 9
+    assert report["summary"]["failed"] == 0
+    assert report["issues"] == []
+
+
+def test_engine_contract_registry_validation_blocks_missing_repo_files(tmp_path):
+    report = validate_engine_contract_registry(tmp_path)
+
+    assert report["status"] == "blocked"
+    assert report["summary"]["failed"] > 0
+    assert any(issue["code"] == "package_exists" for issue in report["issues"])

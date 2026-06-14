@@ -260,3 +260,32 @@ def test_cli_diagnose_stress_pack_writes_report(tmp_path):
     assert payload["status"] == "passed"
     assert payload["summary"]["scenario_count"] >= 6
     assert "stress_pack_diagnostics" in completed.stdout
+
+
+def test_cli_validate_contracts_writes_report(tmp_path):
+    output_path = tmp_path / "contract-validation.json"
+
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "paideia_engines.cli",
+            "validate-contracts",
+            "--repo-root",
+            str(ROOT),
+            "--output",
+            str(output_path),
+        ],
+        cwd=ROOT,
+        env=_env(),
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+
+    payload = json.loads(output_path.read_text(encoding="utf-8"))
+    assert payload["schema"] == "paideia-engine-contract-validation/v1"
+    assert payload["status"] == "passed"
+    assert payload["summary"]["engine_count"] == 9
+    assert payload["summary"]["failed"] == 0
+    assert "contract_validation" in completed.stdout

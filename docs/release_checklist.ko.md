@@ -14,6 +14,7 @@ python examples\assessment_and_cultivation_pipeline.py
 python examples\stress_and_promotion_pipeline.py
 python examples\governance_and_runtime_pipeline.py
 python examples\source_specific_parsers.py
+python -m paideia_engines.cli validate-contracts --repo-root . --output .paideia-runs\contract-validation.json
 python -m paideia_engines.cli diagnose-source --manifest examples\source_fixture_pack.json --output .paideia-runs\source-diagnostics.json
 python -m paideia_engines.cli diagnose-manifest --manifest examples\acquired_sources_manifest.jsonl --output .paideia-runs\manifest-diagnostics.json
 python -m paideia_engines.cli diagnose-stress-pack --pack examples\stress_packs\core_subject_stress_pack.json --output .paideia-runs\stress-pack-diagnostics.json
@@ -21,7 +22,7 @@ python -m paideia_engines.cli run-config --config examples\configured_suite.json
 python -m paideia_engines.cli validate-suite-output --output-dir .paideia-runs\engines --result .paideia-runs\result.json --output .paideia-runs\suite-output-validation.json
 python -m paideia_engines.cli smoke --engine all --output .paideia-runs\smoke.json
 python -m compileall src
-rg -n "<release-sensitive-patterns>" README.md README.ko.md docs src tests data examples -g "!**/__pycache__/**"
+rg -n "([O]PENAI_API_KEY|[A]NTHROPIC_API_KEY|[G]ITHUB_TOKEN|github[_]pat_|gh[p]_|\bsk-[A-Za-z0-9]{16,}|[B]EGIN (RSA|OPENSSH|PRIVATE) KEY|passw[o]rd\s*=|secr[e]t\s*=)" README.md README.ko.md docs src tests data examples -g "!**/__pycache__/**"
 git status --short --branch
 gh pr view 1 --json number,title,url,isDraft,headRefName,baseRefName,state,commits
 ```
@@ -29,6 +30,7 @@ gh pr view 1 --json number,title,url,isDraft,headRefName,baseRefName,state,commi
 ## 필수 수동 확인
 
 - README에서 한국어 문서와 엔진 문서로 이동할 수 있어야 합니다.
+- 엔진 계약 검증이 통과해야 하며, 모든 엔진은 공개 API, schema, 문서, 예제, 안전 경계 항목을 가져야 합니다.
 - 모든 엔진 패키지에 영문/한국어 README가 있어야 합니다.
 - `.paideia-runs/`, `.paideia-data/`, `.paideia-smoke/`, 로컬 생성 산출물이 staged 상태가 아니어야 합니다.
 - 공개 seed data는 metadata만 포함하고 제한 교과서 본문을 포함하지 않아야 합니다.

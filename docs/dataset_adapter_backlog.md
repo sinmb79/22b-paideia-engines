@@ -60,22 +60,31 @@ The Phase 11 diagnostics layer verifies acquired-source manifests before larger 
 
 The Phase 12 stress pack adds reusable math, language, science, and evidence-review scenarios while preserving candidate-only promotion boundaries.
 
+## Implemented In Phase 13
+
+- `engine_contract_registry(...)`
+- `validate_engine_contract_registry(...)`
+- CLI command: `validate-contracts`
+- Bilingual contract registry docs: `docs/engine_contracts.md` and `docs/engine_contracts.ko.md`
+
+The Phase 13 registry freezes the current public API, schema, documentation, example, and safety-boundary declarations for every reusable engine before deeper adapter certification and benchmark work.
+
 ## Adapter Priorities
 
-1. **Public curriculum standards importer**
+1. **Official adapter certification matrix**
+   - Input: public-safe local fixture exports linked to a valid acquired-source manifest.
+   - Output: certified parser/source/schema rows for NCIC/data.go.kr, public assessment, AI-Hub-like, and public exam metadata adapters.
+   - Guardrail: keep HWP/PDF and restricted source parsing out of the public repo until explicit license evidence exists.
+
+2. **Public curriculum standards importer**
    - Input: official public curriculum files or manually prepared JSON.
    - Output: `CurriculumStandard` mappings.
    - Guardrail: preserve provider attribution and source URL.
 
-2. **Public assessment item importer**
+3. **Public assessment item importer**
    - Input: public example items or manually licensed item banks.
    - Output: `AssessmentItem` records.
    - Guardrail: no scraping restricted pages.
-
-3. **Official format-specific parser hardening**
-   - Input: real public-source CSV/JSON exports collected under a valid manifest.
-   - Output: normalized engine records plus parser diagnostics.
-   - Guardrail: keep HWP/PDF and restricted source parsing out of the public repo until explicit license evidence exists.
 
 4. **Benchmark and evaluation fixtures**
    - Input: public-safe expected-output fixtures for each engine.

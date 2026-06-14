@@ -43,6 +43,17 @@ python -m paideia_engines.cli diagnose-source --manifest examples/source_fixture
 
 Phase 9 adds parser diagnostics for public-safe fixture packs. A diagnostics report checks file existence, SHA-256 hash, supported parser, extension, required headers or JSON fields, parser completion, and minimum record count. The fixture pack stays metadata/sample-only and does not include restricted textbook or exam contents.
 
+## Adding Official Export Samples
+
+Use this order for every new parser fixture:
+
+1. Add only a public-safe local fixture export or a synthetic mini export.
+2. Register the fixture in an acquired-source manifest and run `diagnose-manifest`.
+3. Register the fixture in `examples/source_fixture_pack.json` and run `diagnose-source`.
+4. Run the parser only after manifest diagnostics and source fixture diagnostics pass.
+
+Do not add original textbook PDFs/HWPs, exam PDFs/HWPs/audio/video, AI-Hub full corpora, private paths, or downloaded restricted source bundles to the public repository. Phase 14 will certify official adapter rows by linking parser fixtures to valid acquired-source manifests.
+
 ## Non-Goals
 
 - HWP/PDF textbook parsing

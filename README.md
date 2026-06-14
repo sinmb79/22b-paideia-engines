@@ -13,6 +13,7 @@ AI agents become hard to trust when training, evaluation, memory, runtime execut
 - **Data Acquisition Engine**: plans data use with license gates.
 - **Manifest Diagnostics**: validates acquired-source JSONL manifests before release or local corpus wiring.
 - **Source Parser Diagnostics**: validates public-safe parser fixture packs before release.
+- **Engine Contract Registry**: freezes public APIs, schemas, docs, examples, and safety boundaries.
 - **Suite Output Validator**: cross-checks configured-suite result JSON and per-engine outputs before release.
 - **Curriculum Mapping Engine**: maps standards into learning units.
 - **Cultivation Engine**: builds training blueprints and roadmaps.
@@ -123,11 +124,14 @@ decision = engine.record_experience(
 - Phase 10: configured-suite output validator
 - Phase 11: acquired-source manifest diagnostics
 - Phase 12: subject-specific stress scenario packs
+- Phase 13: engine contract registry and validation
 
 ## Documentation
 
 - [Architecture](docs/architecture.md)
 - [Architecture in Korean](docs/architecture.ko.md)
+- [Engine contract registry](docs/engine_contracts.md)
+- [Engine contract registry in Korean](docs/engine_contracts.ko.md)
 - [Engine documentation](docs/engines/README.md)
 - [Engine documentation in Korean](docs/engines/README.ko.md)
 - [Data acquisition plan](docs/data_acquisition.md)

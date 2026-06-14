@@ -6,7 +6,7 @@ This roadmap tracks the work needed to turn the Paideia engine suite from a scaf
 
 ## Current Position
 
-The suite now has v0.2 cores for data acquisition, curriculum mapping, cultivation, assessment, stress, promotion, governance, runtime, and config-driven orchestration. Phase 6 adds release hardening. Phase 7 adds acquired-source validation reports and JSON adapters. Phase 8 adds NCIC/data.go.kr-style CSV parsing, AI-Hub-like math JSON parsing, public assessment CSV parsing, and public exam metadata manifests. Phase 9 adds parser diagnostics and public-safe fixture packs. Phase 10 adds configured-suite output validation. Phase 11 adds acquired-source manifest diagnostics. Phase 12 adds subject-specific stress packs. The next depth work is official parser hardening with real public exports.
+The suite now has v0.2 cores for data acquisition, curriculum mapping, cultivation, assessment, stress, promotion, governance, runtime, and config-driven orchestration. Phase 6 adds release hardening. Phase 7 adds acquired-source validation reports and JSON adapters. Phase 8 adds NCIC/data.go.kr-style CSV parsing, AI-Hub-like math JSON parsing, public assessment CSV parsing, and public exam metadata manifests. Phase 9 adds parser diagnostics and public-safe fixture packs. Phase 10 adds configured-suite output validation. Phase 11 adds acquired-source manifest diagnostics. Phase 12 adds subject-specific stress packs. Phase 13 adds the public engine contract registry. The next depth work is official adapter certification with public-safe fixture exports under valid manifests.
 
 ## Phase 1: Data And Curriculum
 
@@ -222,11 +222,31 @@ Capabilities:
 - Stress pack diagnostics for schema, unique ids, valid scenarios, curriculum links, subject coverage, and promotion-boundary cleanliness
 - CLI command: `diagnose-stress-pack`
 
+## Phase 13: Engine Contract Registry
+
+Added:
+
+```text
+src/paideia_engines/contracts/registry.py
+docs/engine_contracts.md
+docs/engine_contracts.ko.md
+```
+
+Capabilities:
+
+- Public contract registry for every reusable engine
+- API, input schema, output schema, CLI, example, doc, safety-boundary, and compatibility declarations
+- Contract validation report
+- CLI command: `validate-contracts`
+- Pre-1.0 compatibility policy for additive changes, schema bumps, and deprecations
+
 ## Next Development Order
 
-1. Official format-specific parser hardening with real public-source exports under a valid manifest.
-2. Broader benchmark/evaluation fixtures for engine-by-engine regression testing.
-3. Ready PR/release preparation after final validation remains green.
+1. Official adapter certification matrix with public-safe fixture exports under valid manifests.
+2. Evaluation and benchmark pack for engine-by-engine regression testing.
+3. Persistent runtime and evidence store for replayable run bundles.
+4. Release candidate pipeline with wheel install smoke, CLI matrix, link/encoding checks, and concrete sensitive scans.
+5. Downstream reuse recipes for other 22B AI projects.
 
 ## Verification
 
@@ -237,6 +257,7 @@ python examples\data_and_curriculum_pipeline.py
 python examples\assessment_and_cultivation_pipeline.py
 python examples\stress_and_promotion_pipeline.py
 python examples\governance_and_runtime_pipeline.py
+python -m paideia_engines.cli validate-contracts --repo-root . --output .paideia-runs\contract-validation.json
 python -m paideia_engines.cli diagnose-source --manifest examples\source_fixture_pack.json --output .paideia-runs\source-diagnostics.json
 python -m paideia_engines.cli diagnose-manifest --manifest examples\acquired_sources_manifest.jsonl --output .paideia-runs\manifest-diagnostics.json
 python -m paideia_engines.cli diagnose-stress-pack --pack examples\stress_packs\core_subject_stress_pack.json --output .paideia-runs\stress-pack-diagnostics.json

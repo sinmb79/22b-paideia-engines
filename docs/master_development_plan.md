@@ -44,6 +44,12 @@ The project is complete only when:
 | 10 | Configured-suite output validator | Implemented v0.2 core |
 | 11 | Acquired-source manifest diagnostics | Implemented v0.2 core |
 | 12 | Subject-specific stress scenario packs | Implemented v0.2 core |
+| 13 | Engine contract registry and compatibility gate | Implemented v0.2 core |
+| 14 | Official adapter certification matrix | Planned |
+| 15 | Evaluation and benchmark pack | Planned |
+| 16 | Persistent runtime and evidence store | Planned |
+| 17 | Release candidate pipeline | Planned |
+| 18 | Downstream reuse recipes | Planned |
 
 ## Phase 0. Foundation
 
@@ -263,6 +269,52 @@ Completion criteria:
 - Stress pack diagnostics reject promotion-decision or ledger records.
 - Release checklist includes the stress pack diagnostics CLI command.
 
+## Phase 13. Engine Contract Registry
+
+Delivered:
+
+- Public engine contract registry
+- Contract validation report
+- CLI command: `validate-contracts`
+- Compatibility policy for pre-1.0 additive changes, schema version bumps, and deprecations
+- Bilingual engine contract documentation
+
+Completion criteria:
+
+- Every reusable engine is represented in the contract registry.
+- Every contract declares public API names, input/output schemas, docs, examples, and safety boundaries.
+- The release checklist includes contract validation before parser, manifest, stress pack, suite output, and smoke checks.
+- Orchestration remains a composition layer and does not hide engine-specific contracts.
+
+## Final Delivery Program
+
+The remaining work must move as a coordinated program, not as isolated one-off patches:
+
+1. **Phase 14: Official Adapter Certification Matrix**
+   - Certify NCIC/data.go.kr, public assessment, AI-Hub-like, and public exam metadata adapters against public-safe local fixture exports.
+   - Require valid acquired-source manifest links, hash checks, parser/source mapping, and failure fixtures.
+
+2. **Phase 15: Evaluation And Benchmark Pack**
+   - Add golden fixtures for every engine.
+   - Add mutation/tamper tests for schemas, boundaries, stress coverage, assessment quality, and governance evidence.
+   - Define minimum coverage thresholds for release readiness.
+
+3. **Phase 16: Persistent Runtime And Evidence Store**
+   - Persist run bundles that can be replayed after the Python process exits.
+   - Validate real artifact file existence, size, and content hash.
+   - Add artifact manifest validation to the release path.
+
+4. **Phase 17: Release Candidate Pipeline**
+   - Build and install the package from a wheel.
+   - Run CLI subprocess matrix from the installed package.
+   - Add link, encoding, and concrete sensitive-pattern checks.
+   - Prepare GitHub release evidence.
+
+5. **Phase 18: Downstream Reuse Recipes**
+   - Provide integration recipes for other 22B AI projects.
+   - Show how to import one engine alone and how to compose the full suite.
+   - Add migration notes from local agent internals to reusable package contracts.
+
 ## Active Branch And PR
 
 ```text
@@ -272,9 +324,11 @@ https://github.com/sinmb79/22b-paideia-engines/pull/1
 
 ## Next Work
 
-Final release loop for this branch:
+Next coordinated stages:
 
-1. Run full validation.
-2. Commit and push the latest output-validation and release-readiness changes.
-3. Update the draft PR with the new validation evidence.
-4. Convert the PR to ready or cut a release only after the checklist remains green.
+1. Complete Phase 14 adapter certification.
+2. Complete Phase 15 benchmark and evaluation fixtures.
+3. Complete Phase 16 persistent runtime evidence.
+4. Complete Phase 17 release candidate pipeline.
+5. Complete Phase 18 downstream reuse recipes.
+6. Convert the PR to ready or cut a release only after every checklist and gate remains green.

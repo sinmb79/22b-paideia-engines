@@ -30,6 +30,8 @@ def test_release_hardening_docs_exist_and_are_linked():
     expected_docs = [
         "docs/engines/README.md",
         "docs/engines/README.ko.md",
+        "docs/engine_contracts.md",
+        "docs/engine_contracts.ko.md",
         "docs/release_guide.md",
         "docs/release_guide.ko.md",
         "docs/release_checklist.md",
@@ -49,9 +51,11 @@ def test_release_hardening_docs_exist_and_are_linked():
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     korean = (ROOT / "README.ko.md").read_text(encoding="utf-8")
     assert "[Engine documentation](docs/engines/README.md)" in readme
+    assert "[Engine contract registry](docs/engine_contracts.md)" in readme
     assert "[Release checklist](docs/release_checklist.md)" in readme
     assert "[Source-specific parsers](docs/source_parsers.md)" in readme
     assert "[엔진 문서](docs/engines/README.ko.md)" in korean
+    assert "[엔진 계약 레지스트리](docs/engine_contracts.ko.md)" in korean
     assert "[릴리스 체크리스트](docs/release_checklist.ko.md)" in korean
     assert "[출처별 파서](docs/source_parsers.ko.md)" in korean
 
@@ -62,6 +66,7 @@ def test_release_checklist_contains_required_validation_commands():
     required_commands = [
         "python -m pytest tests -q",
         "python -m compileall src",
+        "python -m paideia_engines.cli validate-contracts",
         "python -m paideia_engines.cli run-config",
         "python -m paideia_engines.cli validate-suite-output",
         "python -m paideia_engines.cli smoke",
@@ -72,6 +77,7 @@ def test_release_checklist_contains_required_validation_commands():
     ]
     for command in required_commands:
         assert command in checklist
+    assert "<release-sensitive-patterns>" not in checklist
 
 
 def test_public_asset_audit_declares_forbidden_asset_classes():

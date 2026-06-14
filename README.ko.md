@@ -123,11 +123,14 @@ decision = engine.record_experience(
 - Phase 10: configured-suite output validator
 - Phase 11: acquired-source manifest diagnostics
 - Phase 12: subject-specific stress scenario packs
+- Phase 13: engine contract registry and validation
 
 ## 문서
 
 - [아키텍처](docs/architecture.ko.md)
 - [Architecture in English](docs/architecture.md)
+- [엔진 계약 레지스트리](docs/engine_contracts.ko.md)
+- [Engine contract registry in English](docs/engine_contracts.md)
 - [엔진 문서](docs/engines/README.ko.md)
 - [Engine documentation in English](docs/engines/README.md)
 - [데이터 확보 계획](docs/data_acquisition.ko.md)

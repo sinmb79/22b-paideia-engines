@@ -6,6 +6,7 @@ import argparse
 import json
 from typing import Sequence
 
+from paideia_engines.contracts import validate_engine_contract_registry
 from paideia_engines.data_acquisition.manifest_diagnostics import diagnose_acquired_source_manifest
 from paideia_engines.data_acquisition.source_diagnostics import diagnose_source_fixture_pack
 from paideia_engines.orchestration.config_runner import run_config_file, run_engine_smoke, write_json
@@ -54,6 +55,13 @@ def build_parser() -> argparse.ArgumentParser:
     )
     diagnose_stress_pack.add_argument("--pack", required=True, help="Path to a stress scenario pack JSON file.")
     diagnose_stress_pack.add_argument("--output", required=True, help="Path to write the diagnostics report JSON.")
+
+    validate_contracts = subcommands.add_parser(
+        "validate-contracts",
+        help="Validate the public engine contract registry against this repository.",
+    )
+    validate_contracts.add_argument("--repo-root", default=".", help="Repository root to validate.")
+    validate_contracts.add_argument("--output", required=True, help="Path to write the contract validation report JSON.")
 
     validate_suite = subcommands.add_parser(
         "validate-suite-output",
@@ -122,6 +130,21 @@ def main(argv: Sequence[str] | None = None) -> int:
                 {
                     "wrote": output_path,
                     "stress_pack_diagnostics": result["summary"],
+                    "status": result["status"],
+                },
+                ensure_ascii=False,
+            )
+        )
+        return 0 if result["status"] == "passed" else 1
+
+    if args.command == "validate-contracts":
+        result = validate_engine_contract_registry(args.repo_root)
+        output_path = write_json(args.output, result)
+        print(
+            json.dumps(
+                {
+                    "wrote": output_path,
+                    "contract_validation": result["summary"],
                     "status": result["status"],
                 },
                 ensure_ascii=False,

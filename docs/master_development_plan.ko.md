@@ -44,6 +44,12 @@
 | 10 | configured-suite output validator | v0.2 core 구현 |
 | 11 | acquired-source manifest diagnostics | v0.2 core 구현 |
 | 12 | subject-specific stress scenario packs | v0.2 core 구현 |
+| 13 | engine contract registry and compatibility gate | v0.2 core 구현 |
+| 14 | official adapter certification matrix | 계획 |
+| 15 | evaluation and benchmark pack | 계획 |
+| 16 | persistent runtime and evidence store | 계획 |
+| 17 | release candidate pipeline | 계획 |
+| 18 | downstream reuse recipes | 계획 |
 
 ## Phase 0. Foundation
 
@@ -263,6 +269,52 @@ python -m paideia_engines.cli smoke --engine all --output .paideia-runs/smoke.js
 - Stress pack diagnostics는 promotion-decision 또는 ledger record를 거부한다.
 - Release checklist에 stress pack diagnostics CLI 명령이 포함된다.
 
+## Phase 13. Engine contract registry
+
+산출물:
+
+- 공개 엔진 계약 레지스트리
+- 계약 검증 리포트
+- CLI 명령: `validate-contracts`
+- 1.0 이전 additive change, schema version bump, deprecation 정책
+- 영문/한국어 엔진 계약 문서
+
+완료 기준:
+
+- 모든 재사용 엔진이 계약 레지스트리에 등록된다.
+- 모든 계약은 공개 API 이름, 입력/출력 schema, 문서, 예제, 안전 경계를 선언한다.
+- Release checklist가 parser, manifest, stress pack, suite output, smoke check 전에 계약 검증을 포함한다.
+- Orchestration은 조합 계층으로 남고 개별 엔진 계약을 숨기지 않는다.
+
+## 최종 개발 총괄 프로그램
+
+남은 작업은 개별 패치가 아니라 연결된 프로그램으로 진행합니다.
+
+1. **Phase 14: Official adapter certification matrix**
+   - NCIC/data.go.kr, public assessment, AI-Hub-like, public exam metadata adapter를 공개 안전 local fixture export 기준으로 인증합니다.
+   - valid acquired-source manifest link, hash check, parser/source mapping, failure fixture를 요구합니다.
+
+2. **Phase 15: Evaluation and benchmark pack**
+   - 모든 엔진별 golden fixture를 추가합니다.
+   - schema, boundary, stress coverage, assessment quality, governance evidence에 대한 mutation/tamper test를 추가합니다.
+   - release readiness를 위한 최소 coverage threshold를 정의합니다.
+
+3. **Phase 16: Persistent runtime and evidence store**
+   - Python process가 종료된 뒤에도 재생 가능한 run bundle을 저장합니다.
+   - 실제 artifact file 존재, 크기, content hash를 검증합니다.
+   - artifact manifest validation을 release path에 추가합니다.
+
+4. **Phase 17: Release candidate pipeline**
+   - wheel build/install smoke를 추가합니다.
+   - 설치된 패키지 기준 CLI subprocess matrix를 실행합니다.
+   - link, encoding, concrete sensitive-pattern check를 추가합니다.
+   - GitHub release evidence를 준비합니다.
+
+5. **Phase 18: Downstream reuse recipes**
+   - 다른 22B AI project가 가져다 쓸 수 있는 integration recipe를 제공합니다.
+   - 엔진 하나만 import하는 예제와 full suite 조합 예제를 함께 제공합니다.
+   - local agent 내부 구현에서 reusable package contract로 이동하는 migration note를 추가합니다.
+
 ## 현재 브랜치와 PR
 
 ```text
@@ -272,9 +324,11 @@ https://github.com/sinmb79/22b-paideia-engines/pull/1
 
 ## 바로 다음 작업
 
-이 브랜치의 최종 릴리스 루프를 진행합니다.
+다음 단계는 총괄 프로그램 순서대로 진행합니다.
 
-1. 전체 검증 실행
-2. 최신 output validation과 릴리스 준비 변경 커밋 및 푸시
-3. 검증 증거를 Draft PR에 반영
-4. 체크리스트가 계속 통과할 때만 PR ready 전환 또는 release 생성
+1. Phase 14 adapter certification 완료
+2. Phase 15 benchmark/evaluation fixture 완료
+3. Phase 16 persistent runtime evidence 완료
+4. Phase 17 release candidate pipeline 완료
+5. Phase 18 downstream reuse recipe 완료
+6. 모든 checklist와 gate가 계속 green일 때만 PR ready 전환 또는 release 생성
