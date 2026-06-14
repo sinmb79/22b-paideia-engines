@@ -70,6 +70,10 @@ python -m paideia_engines.cli validate-benchmarks `
   --output-dir .paideia-runs\engines `
   --reports-dir .paideia-runs `
   --output .paideia-runs\benchmark-validation.json
+
+python -m paideia_engines.cli validate-release-candidate `
+  --repo-root . `
+  --output .paideia-runs\release-candidate-validation.json
 ```
 
 ## 출력 의미
@@ -84,7 +88,12 @@ python -m paideia_engines.cli validate-benchmarks `
 - `10_verification.json`: 설정 기반 실행의 최종 검증 요약입니다.
 - `suite-output-validation.json`: result JSON, 엔진별 파일, 스키마, stress-to-promotion 경계를 교차 검증하는 release-quality 리포트입니다.
 - `smoke.json`: 엔진별 smoke 결과입니다.
+- `runtime-evidence-bundle.json`: 재실행 가능한 runtime evidence bundle index입니다.
+- `runtime-evidence-validation.json`: artifact file 존재, size, hash, trace replay를 검증합니다.
+- `runtime-evidence-replay.json`: 저장된 bundle에서 로드한 replayable trace입니다.
+- `benchmark-validation.json`: golden schema, mutation expectation, release evidence threshold를 확인하는 benchmark report입니다.
+- `release-candidate-validation.json`: packaging metadata, link, UTF-8, replacement character, sensitive pattern, 개인 로컬 경로, acquired-source manifest, public asset boundary를 검증합니다.
 
 ## 공개 릴리스 경계
 
-릴리스 전 [릴리스 체크리스트](release_checklist.ko.md)를 실행합니다. 개인 음성, credential, 제한 교과서 본문, 개인 이미지, 생성된 로컬 실행 산출물은 공개하지 않습니다.
+릴리스 전 [릴리스 체크리스트](release_checklist.ko.md)를 실행합니다. 개인 음성, credential, 제한 교과서 본문, 개인 이미지, 개인 로컬 경로, 생성된 로컬 실행 산출물은 공개하지 않습니다.

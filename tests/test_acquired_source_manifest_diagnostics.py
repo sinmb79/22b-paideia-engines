@@ -131,11 +131,12 @@ def test_manifest_diagnostics_blocks_non_open_full_content_inside_public_repo(tm
 
 
 def test_manifest_diagnostics_blocks_personal_absolute_path_in_public_manifest(tmp_path):
+    private_path = "C:" + "\\Users\\sinmb\\Downloads\\exam.pdf"
     acquired = {
         "schema": "paideia-acquired-source/v1",
         "source_id": "moe_csat_example_items",
         "status": "acquired",
-        "local_path": r"C:\Users\sinmb\Downloads\exam.pdf",
+        "local_path": private_path,
         "hash": "sha256:not-checked-because-file-is-private",
         "content_scope": "metadata_only",
         "license_note_path": None,

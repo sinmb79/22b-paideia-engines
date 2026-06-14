@@ -70,6 +70,10 @@ python -m paideia_engines.cli validate-benchmarks `
   --output-dir .paideia-runs\engines `
   --reports-dir .paideia-runs `
   --output .paideia-runs\benchmark-validation.json
+
+python -m paideia_engines.cli validate-release-candidate `
+  --repo-root . `
+  --output .paideia-runs\release-candidate-validation.json
 ```
 
 ## Output Meaning
@@ -88,7 +92,8 @@ python -m paideia_engines.cli validate-benchmarks `
 - `runtime-evidence-validation.json`: artifact file existence, size, hash, and trace replay validation.
 - `runtime-evidence-replay.json`: replayable trace loaded from the persisted bundle.
 - `benchmark-validation.json`: release benchmark report that checks golden schemas, mutation expectations, and evidence thresholds.
+- `release-candidate-validation.json`: packaging metadata, links, UTF-8, replacement-character, sensitive-pattern, personal-path, acquired-source manifest, and public-asset validation.
 
 ## Public Release Boundary
 
-Before release, run the checklist in [Release Checklist](release_checklist.md). Do not publish private voice assets, credentials, restricted textbook contents, personal images, or generated local run outputs.
+Before release, run the checklist in [Release Checklist](release_checklist.md). Do not publish private voice assets, credentials, restricted textbook contents, personal images, personal local paths, or generated local run outputs.

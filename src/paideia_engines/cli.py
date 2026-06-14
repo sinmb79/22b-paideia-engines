@@ -16,6 +16,7 @@ from paideia_engines.orchestration.output_validator import (
     validate_configured_suite_outputs,
     validate_configured_suite_result,
 )
+from paideia_engines.release_candidate import validate_release_candidate
 from paideia_engines.runtime import (
     persist_runtime_evidence,
     replay_runtime_evidence_bundle,
@@ -121,6 +122,13 @@ def build_parser() -> argparse.ArgumentParser:
     )
     replay_runtime.add_argument("--bundle", required=True, help="Path to an evidence-bundle JSON file or bundle dir.")
     replay_runtime.add_argument("--output", required=True, help="Path to write the replay JSON.")
+
+    release_candidate = subcommands.add_parser(
+        "validate-release-candidate",
+        help="Validate release-candidate metadata, docs, links, encoding, and public-safety gates.",
+    )
+    release_candidate.add_argument("--repo-root", default=".", help="Repository root to validate.")
+    release_candidate.add_argument("--output", required=True, help="Path to write the validation report JSON.")
 
     return parser
 
@@ -309,6 +317,21 @@ def main(argv: Sequence[str] | None = None) -> int:
                         "run_id": result["run_id"],
                         "trace_length": result["trace_length"],
                     },
+                    "status": result["status"],
+                },
+                ensure_ascii=False,
+            )
+        )
+        return 0 if result["status"] == "passed" else 1
+
+    if args.command == "validate-release-candidate":
+        result = validate_release_candidate(args.repo_root)
+        output_path = write_json(args.output, result)
+        print(
+            json.dumps(
+                {
+                    "wrote": output_path,
+                    "release_candidate_validation": result["summary"],
                     "status": result["status"],
                 },
                 ensure_ascii=False,

@@ -138,6 +138,7 @@ decision = engine.record_experience(
 - Phase 14: official adapter certification matrix
 - Phase 15: evaluation and benchmark pack
 - Phase 16: persistent runtime evidence store
+- Phase 17: release candidate pipeline
 
 ## Documentation
 
@@ -183,6 +184,7 @@ decision = engine.record_experience(
 - Stress pack diagnostics keep subject scenarios curriculum-linked and promotion-boundary clean.
 - Benchmark validation checks golden schemas, mutation expectations, and release evidence thresholds.
 - Runtime evidence validation checks copied artifact existence, size, hash, and disk-based replay.
+- Release candidate validation checks packaging metadata, links, UTF-8 readability, replacement characters, sensitive patterns, personal paths, acquired-source manifest boundaries, and public asset boundaries.
 
 ## License
 

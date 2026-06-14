@@ -6,7 +6,7 @@
 
 ## 현재 위치
 
-현재 엔진 모음은 데이터 확보, 교육과정 매핑, 육성, 평가, 스트레스, 승급, 거버넌스, 런타임, 설정 기반 오케스트레이션까지 v0.2 core를 갖추었습니다. Phase 6에서는 릴리스 하드닝을 추가했고, Phase 7에서는 확보 자료 validation report와 JSON 어댑터를 추가했습니다. Phase 8에서는 NCIC/data.go.kr 형식 CSV parsing, AI-Hub식 수학 JSON parsing, 공개 평가 CSV parsing, 공개 시험 metadata manifest를 추가했습니다. Phase 9에서는 parser diagnostics와 공개 안전 fixture pack을 추가했습니다. Phase 10에서는 configured-suite output validation을 추가했습니다. Phase 11에서는 acquired-source manifest diagnostics를 추가했습니다. Phase 12에서는 subject-specific stress pack을 추가했습니다. Phase 13에서는 공개 엔진 계약 레지스트리를 추가했습니다. Phase 14에서는 parser fixture를 valid acquired-source manifest record와 연결하는 adapter certification을 추가했습니다. 다음 심화 작업은 evaluation and benchmark fixture입니다.
+현재 엔진 모음은 데이터 확보, 교육과정 매핑, 육성, 평가, 스트레스, 승급, 거버넌스, 런타임, 설정 기반 오케스트레이션까지 v0.2 core를 갖추었습니다. Phase 6에서는 릴리스 하드닝을 추가했고, Phase 7에서는 확보 자료 validation report와 JSON 어댑터를 추가했습니다. Phase 8에서는 NCIC/data.go.kr 형식 CSV parsing, AI-Hub식 수학 JSON parsing, 공개 평가 CSV parsing, 공개 시험 metadata manifest를 추가했습니다. Phase 9에서는 parser diagnostics와 공개 안전 fixture pack을 추가했습니다. Phase 10에서는 configured-suite output validation을 추가했습니다. Phase 11에서는 acquired-source manifest diagnostics를 추가했습니다. Phase 12에서는 subject-specific stress pack을 추가했습니다. Phase 13에서는 공개 엔진 계약 레지스트리를 추가했습니다. Phase 14에서는 parser fixture를 valid acquired-source manifest record와 연결하는 adapter certification을 추가했습니다. Phase 15에서는 release evidence와 regression threshold를 확인하는 benchmark-pack validation을 추가했습니다. Phase 16에서는 persistent runtime evidence bundle과 artifact validation을 추가했습니다. Phase 17에서는 release-candidate packaging, link, encoding, sensitive pattern, 개인 로컬 경로, manifest boundary, public asset validation을 추가했습니다. 다음 심화 작업은 downstream reuse recipe입니다.
 
 ## Phase 1: 데이터와 교육과정
 
@@ -222,11 +222,105 @@ tests/test_stress_scenario_packs.py
 - schema, unique id, valid scenario, curriculum link, subject coverage, promotion-boundary cleanliness용 stress pack diagnostics
 - CLI 명령: `diagnose-stress-pack`
 
+## Phase 13: 엔진 계약 레지스트리
+
+추가 파일:
+
+```text
+src/paideia_engines/contracts/registry.py
+docs/engine_contracts.md
+docs/engine_contracts.ko.md
+```
+
+기능:
+
+- 모든 재사용 엔진의 public contract registry
+- API, input schema, output schema, CLI, example, doc, safety boundary, compatibility 선언
+- Contract validation report
+- CLI 명령: `validate-contracts`
+- Pre-1.0 compatibility policy
+
+## Phase 14: 공식 Adapter Certification Matrix
+
+추가 파일:
+
+```text
+src/paideia_engines/data_acquisition/adapter_certification.py
+examples/source_samples/public_assessment_sample.csv
+tests/test_adapter_certification.py
+```
+
+기능:
+
+- Source fixture diagnostics와 acquired-source manifest diagnostics를 연결하는 certification report
+- CLI 명령: `certify-adapters`
+- Parser/source allowlist 검사
+- Fixture path/hash/source_id와 acquired-source manifest record linkage 검사
+- Synthetic, metadata-only, open-public fixture export 정책
+
+## Phase 15: Evaluation And Benchmark Pack
+
+추가 파일:
+
+```text
+src/paideia_engines/evaluation/benchmark_pack.py
+examples/benchmark_packs/core_engine_benchmark_pack.json
+tests/test_benchmark_pack.py
+```
+
+기능:
+
+- Benchmark pack schema와 report validation
+- Golden configured-suite engine schema 검사
+- Mutation/tamper expectation 선언
+- Contract, adapter, source fixture, manifest, stress pack, smoke, suite-output, runtime evidence report 검증
+- Minimum release-readiness threshold
+- CLI 명령: `validate-benchmarks`
+
+## Phase 16: Persistent Runtime Evidence Store
+
+추가 파일:
+
+```text
+src/paideia_engines/runtime/evidence_store.py
+examples/runtime_artifacts/math-evidence.json
+tests/test_runtime_evidence_store.py
+```
+
+기능:
+
+- Run ID 기준 runtime evidence bundle 저장
+- Runtime run, trace, artifact manifest, acceptance checklist 파일화
+- Bundle 내부 artifact copy 저장
+- 실제 artifact file existence, size, SHA-256 validation
+- In-memory runtime index 없이 disk-based replay
+- CLI 명령: `persist-runtime-evidence`, `validate-runtime-evidence`, `replay-runtime-evidence`
+
+## Phase 17: Release Candidate Pipeline
+
+추가 파일:
+
+```text
+src/paideia_engines/release_candidate.py
+tests/test_release_candidate.py
+```
+
+기능:
+
+- Packaging metadata와 console script validation
+- Markdown local link validation
+- Public text file UTF-8 readability check
+- Unicode replacement character detection
+- Concrete sensitive-pattern scanning
+- 개인 로컬 경로 scanning
+- Acquired-source manifest public path와 content-scope check
+- Public forbidden asset extension check
+- Installed package target에서 console script와 module entrypoint wheel smoke
+- CLI 명령: `validate-release-candidate`
+
 ## 다음 개발 순서
 
-1. 유효한 manifest 아래 실제 공개 출처 export를 이용한 official format-specific parser hardening.
-2. 엔진별 regression testing을 위한 benchmark/evaluation fixture 확대.
-3. 최종 검증이 계속 통과할 때 Ready PR/release 준비.
+1. 다른 22B AI 프로젝트에서 바로 가져다 쓸 수 있는 downstream reuse recipe.
 
 ## 검증
 
@@ -237,6 +331,8 @@ python examples\data_and_curriculum_pipeline.py
 python examples\assessment_and_cultivation_pipeline.py
 python examples\stress_and_promotion_pipeline.py
 python examples\governance_and_runtime_pipeline.py
+python examples\source_specific_parsers.py
+python -m paideia_engines.cli validate-contracts --repo-root . --output .paideia-runs\contract-validation.json
 python -m paideia_engines.cli certify-adapters --fixtures examples\source_fixture_pack.json --manifest examples\acquired_sources_manifest.jsonl --output .paideia-runs\adapter-certification.json
 python -m paideia_engines.cli diagnose-source --manifest examples\source_fixture_pack.json --output .paideia-runs\source-diagnostics.json
 python -m paideia_engines.cli diagnose-manifest --manifest examples\acquired_sources_manifest.jsonl --output .paideia-runs\manifest-diagnostics.json
@@ -248,4 +344,5 @@ python -m paideia_engines.cli validate-runtime-evidence --bundle .paideia-runs\r
 python -m paideia_engines.cli replay-runtime-evidence --bundle .paideia-runs\runtime\runtime_phase5-run-0001\evidence-bundle.json --output .paideia-runs\runtime-evidence-replay.json
 python -m paideia_engines.cli smoke --engine all --output .paideia-runs\smoke.json
 python -m paideia_engines.cli validate-benchmarks --pack examples\benchmark_packs\core_engine_benchmark_pack.json --result .paideia-runs\result.json --output-dir .paideia-runs\engines --reports-dir .paideia-runs --output .paideia-runs\benchmark-validation.json
+python -m paideia_engines.cli validate-release-candidate --repo-root . --output .paideia-runs\release-candidate-validation.json
 ```

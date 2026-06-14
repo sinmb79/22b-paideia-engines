@@ -26,6 +26,7 @@ python -m paideia_engines.cli validate-runtime-evidence --bundle .paideia-runs\r
 python -m paideia_engines.cli replay-runtime-evidence --bundle .paideia-runs\runtime\runtime_phase5-run-0001\evidence-bundle.json --output .paideia-runs\runtime-evidence-replay.json
 python -m paideia_engines.cli smoke --engine all --output .paideia-runs\smoke.json
 python -m paideia_engines.cli validate-benchmarks --pack examples\benchmark_packs\core_engine_benchmark_pack.json --result .paideia-runs\result.json --output-dir .paideia-runs\engines --reports-dir .paideia-runs --output .paideia-runs\benchmark-validation.json
+python -m paideia_engines.cli validate-release-candidate --repo-root . --output .paideia-runs\release-candidate-validation.json
 python -m compileall src
 rg -n "([O]PENAI_API_KEY|[A]NTHROPIC_API_KEY|[G]ITHUB_TOKEN|github[_]pat_|gh[p]_|\bsk-[A-Za-z0-9]{16,}|[B]EGIN (RSA|OPENSSH|PRIVATE) KEY|passw[o]rd\s*=|secr[e]t\s*=)" README.md README.ko.md docs src tests data examples -g "!**/__pycache__/**"
 git status --short --branch
@@ -42,10 +43,11 @@ gh pr view 1 --json number,title,url,isDraft,headRefName,baseRefName,state,commi
 - Public seed data contains metadata only, not restricted textbook contents.
 - Public release validation does not use `--allow-local-only-full-content`.
 - Acquired-source manifests do not point to AI-Hub corpora, exam PDFs/HWPs/audio/video, or textbook originals inside `examples/`, `data/`, `docs/`, `src/`, or `tests/`.
-- Acquired-source manifests contain no private absolute paths such as `C:\Users\...`.
+- Acquired-source manifests contain no private absolute paths to local user-profile folders.
 - Stress packs contain no `promotion_decision`, `ledger_version`, or `experience_id` records.
 - Runtime evidence bundles validate copied artifact file existence, size, hash, and replay trace.
 - Benchmark validation passes and enforces golden schemas, mutation expectations, and release evidence thresholds.
+- Release candidate validation passes link, UTF-8, replacement-character, sensitive-pattern, personal-path, acquired-source manifest, generated-path, and packaging metadata checks.
 - PR body lists validation commands and current draft/ready status.
 
 ## Release Decision

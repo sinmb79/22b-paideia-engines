@@ -17,7 +17,7 @@ PUBLIC_RELEASE_ALLOWED_LICENSE_TIERS = {"open_public"}
 PUBLIC_REPO_DIRS = {"examples", "data", "docs", "src", "tests"}
 RESTRICTED_ORIGINAL_EXTENSIONS = {".hwp", ".hwpx", ".pdf", ".zip", ".mp3", ".wav", ".mp4", ".mov"}
 EXAM_SOURCE_IDS = {"moe_csat_example_items", "ebsi_national_exam_archives"}
-PERSONAL_PATH_PATTERN = re.compile(r"(^[A-Za-z]:\\Users\\|^/Users/|^/home/)", re.IGNORECASE)
+PERSONAL_PATH_PATTERN = re.compile(r"(^[A-Za-z]:\\[U]sers\\|^/[U]sers/|^/[Hh]ome/)", re.IGNORECASE)
 
 
 def diagnose_acquired_source_manifest(

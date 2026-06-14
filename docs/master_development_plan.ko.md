@@ -48,7 +48,7 @@
 | 14 | official adapter certification matrix | v0.2 core 구현 |
 | 15 | evaluation and benchmark pack | v0.2 core 구현 |
 | 16 | persistent runtime and evidence store | v0.2 core 구현 |
-| 17 | release candidate pipeline | 계획 |
+| 17 | release candidate pipeline | v0.2 core 구현 |
 | 18 | downstream reuse recipes | 계획 |
 
 ## Phase 0. Foundation
@@ -324,9 +324,9 @@ python -m paideia_engines.cli smoke --engine all --output .paideia-runs/smoke.js
    - artifact manifest validation을 release path에 추가합니다.
 
 3. **Phase 17: Release candidate pipeline**
-   - wheel build/install smoke를 추가합니다.
-   - 설치된 패키지 기준 CLI subprocess matrix를 실행합니다.
-   - link, encoding, concrete sensitive-pattern check를 추가합니다.
+   - 구현 완료: packaging metadata, link, UTF-8, replacement character, sensitive pattern, 개인 로컬 경로, acquired-source manifest, public asset boundary 검증과 `validate-release-candidate` CLI.
+   - 설치된 패키지 기준 console script와 module entrypoint wheel smoke를 실행합니다.
+   - link, encoding, concrete sensitive-pattern, personal-path check를 추가합니다.
    - GitHub release evidence를 준비합니다.
 
 4. **Phase 18: Downstream reuse recipes**
@@ -345,6 +345,5 @@ https://github.com/sinmb79/22b-paideia-engines/pull/1
 
 다음 단계는 총괄 프로그램 순서대로 진행합니다.
 
-1. Phase 17 release candidate pipeline 완료
-2. Phase 18 downstream reuse recipe 완료
-3. 모든 checklist와 gate가 계속 green일 때만 PR ready 전환 또는 release 생성
+1. Phase 18 downstream reuse recipe 완료
+2. 모든 checklist와 gate가 계속 green일 때만 PR ready 전환 또는 release 생성

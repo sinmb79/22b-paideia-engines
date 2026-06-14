@@ -6,7 +6,7 @@ This roadmap tracks the work needed to turn the Paideia engine suite from a scaf
 
 ## Current Position
 
-The suite now has v0.2 cores for data acquisition, curriculum mapping, cultivation, assessment, stress, promotion, governance, runtime, and config-driven orchestration. Phase 6 adds release hardening. Phase 7 adds acquired-source validation reports and JSON adapters. Phase 8 adds NCIC/data.go.kr-style CSV parsing, AI-Hub-like math JSON parsing, public assessment CSV parsing, and public exam metadata manifests. Phase 9 adds parser diagnostics and public-safe fixture packs. Phase 10 adds configured-suite output validation. Phase 11 adds acquired-source manifest diagnostics. Phase 12 adds subject-specific stress packs. Phase 13 adds the public engine contract registry. Phase 14 adds adapter certification that links parser fixtures to valid acquired-source manifest records. Phase 15 adds benchmark-pack validation for release evidence and regression thresholds. Phase 16 adds persistent runtime evidence bundles and artifact validation. The next depth work is the release candidate pipeline.
+The suite now has v0.2 cores for data acquisition, curriculum mapping, cultivation, assessment, stress, promotion, governance, runtime, and config-driven orchestration. Phase 6 adds release hardening. Phase 7 adds acquired-source validation reports and JSON adapters. Phase 8 adds NCIC/data.go.kr-style CSV parsing, AI-Hub-like math JSON parsing, public assessment CSV parsing, and public exam metadata manifests. Phase 9 adds parser diagnostics and public-safe fixture packs. Phase 10 adds configured-suite output validation. Phase 11 adds acquired-source manifest diagnostics. Phase 12 adds subject-specific stress packs. Phase 13 adds the public engine contract registry. Phase 14 adds adapter certification that links parser fixtures to valid acquired-source manifest records. Phase 15 adds benchmark-pack validation for release evidence and regression thresholds. Phase 16 adds persistent runtime evidence bundles and artifact validation. Phase 17 adds release-candidate packaging, link, encoding, sensitive-pattern, personal-path, manifest-boundary, and public-asset validation. The next depth work is downstream reuse recipes.
 
 ## Phase 1: Data And Curriculum
 
@@ -297,10 +297,31 @@ Capabilities:
 - Disk-based replay without the in-memory runtime index
 - CLI commands: `persist-runtime-evidence`, `validate-runtime-evidence`, `replay-runtime-evidence`
 
+## Phase 17: Release Candidate Pipeline
+
+Added:
+
+```text
+src/paideia_engines/release_candidate.py
+tests/test_release_candidate.py
+```
+
+Capabilities:
+
+- Packaging metadata and console-script validation
+- Markdown local-link validation
+- UTF-8 readability checks for public text files
+- Unicode replacement-character detection
+- Concrete sensitive-pattern scanning
+- Personal local-path scanning
+- Acquired-source manifest public-path and content-scope checks
+- Public forbidden asset extension checks
+- Wheel build/install smoke from an installed package target through both console script and module entrypoint
+- CLI command: `validate-release-candidate`
+
 ## Next Development Order
 
-1. Release candidate pipeline with wheel install smoke, CLI matrix, link/encoding checks, and concrete sensitive scans.
-2. Downstream reuse recipes for other 22B AI projects.
+1. Downstream reuse recipes for other 22B AI projects.
 
 ## Verification
 
@@ -323,4 +344,5 @@ python -m paideia_engines.cli validate-runtime-evidence --bundle .paideia-runs\r
 python -m paideia_engines.cli replay-runtime-evidence --bundle .paideia-runs\runtime\runtime_phase5-run-0001\evidence-bundle.json --output .paideia-runs\runtime-evidence-replay.json
 python -m paideia_engines.cli smoke --engine all --output .paideia-runs\smoke.json
 python -m paideia_engines.cli validate-benchmarks --pack examples\benchmark_packs\core_engine_benchmark_pack.json --result .paideia-runs\result.json --output-dir .paideia-runs\engines --reports-dir .paideia-runs --output .paideia-runs\benchmark-validation.json
+python -m paideia_engines.cli validate-release-candidate --repo-root . --output .paideia-runs\release-candidate-validation.json
 ```

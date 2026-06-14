@@ -48,7 +48,7 @@ The project is complete only when:
 | 14 | Official adapter certification matrix | Implemented v0.2 core |
 | 15 | Evaluation and benchmark pack | Implemented v0.2 core |
 | 16 | Persistent runtime and evidence store | Implemented v0.2 core |
-| 17 | Release candidate pipeline | Planned |
+| 17 | Release candidate pipeline | Implemented v0.2 core |
 | 18 | Downstream reuse recipes | Planned |
 
 ## Phase 0. Foundation
@@ -324,10 +324,9 @@ The remaining work must move as a coordinated program, not as isolated one-off p
    - CLI commands: `persist-runtime-evidence`, `validate-runtime-evidence`, `replay-runtime-evidence`.
 
 3. **Phase 17: Release Candidate Pipeline**
-   - Build and install the package from a wheel.
-   - Run CLI subprocess matrix from the installed package.
-   - Add link, encoding, and concrete sensitive-pattern checks.
-   - Prepare GitHub release evidence.
+   - Delivered release-candidate validation for packaging metadata, links, UTF-8 readability, replacement characters, sensitive patterns, personal paths, acquired-source manifests, and public asset boundaries.
+   - Added wheel build/install smoke from an installed package target through both console script and module entrypoint.
+   - Added CLI command: `validate-release-candidate`.
 
 4. **Phase 18: Downstream Reuse Recipes**
    - Provide integration recipes for other 22B AI projects.
@@ -345,6 +344,5 @@ https://github.com/sinmb79/22b-paideia-engines/pull/1
 
 Next coordinated stages:
 
-1. Complete Phase 17 release candidate pipeline.
-2. Complete Phase 18 downstream reuse recipes.
-3. Convert the PR to ready or cut a release only after every checklist and gate remains green.
+1. Complete Phase 18 downstream reuse recipes.
+2. Convert the PR to ready or cut a release only after every checklist and gate remains green.

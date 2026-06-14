@@ -500,3 +500,31 @@ def test_cli_persist_validate_and_replay_runtime_evidence(tmp_path):
     assert replay["status"] == "passed"
     assert "runtime_evidence_validation" in validate_completed.stdout
     assert "runtime_evidence_replay" in replay_completed.stdout
+
+
+def test_cli_validate_release_candidate_writes_report(tmp_path):
+    output_path = tmp_path / "release-candidate-validation.json"
+
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "paideia_engines.cli",
+            "validate-release-candidate",
+            "--repo-root",
+            str(ROOT),
+            "--output",
+            str(output_path),
+        ],
+        cwd=ROOT,
+        env=_env(),
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+
+    payload = json.loads(output_path.read_text(encoding="utf-8"))
+    assert payload["schema"] == "paideia-release-candidate-validation/v1"
+    assert payload["status"] == "passed"
+    assert payload["summary"]["failed"] == 0
+    assert "release_candidate_validation" in completed.stdout

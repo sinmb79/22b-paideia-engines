@@ -79,6 +79,7 @@ def test_release_checklist_contains_required_validation_commands():
         "python -m paideia_engines.cli validate-runtime-evidence",
         "python -m paideia_engines.cli replay-runtime-evidence",
         "python -m paideia_engines.cli validate-benchmarks",
+        "python -m paideia_engines.cli validate-release-candidate",
         "rg -n",
     ]
     for command in required_commands:

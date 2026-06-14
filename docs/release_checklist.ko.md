@@ -26,6 +26,7 @@ python -m paideia_engines.cli validate-runtime-evidence --bundle .paideia-runs\r
 python -m paideia_engines.cli replay-runtime-evidence --bundle .paideia-runs\runtime\runtime_phase5-run-0001\evidence-bundle.json --output .paideia-runs\runtime-evidence-replay.json
 python -m paideia_engines.cli smoke --engine all --output .paideia-runs\smoke.json
 python -m paideia_engines.cli validate-benchmarks --pack examples\benchmark_packs\core_engine_benchmark_pack.json --result .paideia-runs\result.json --output-dir .paideia-runs\engines --reports-dir .paideia-runs --output .paideia-runs\benchmark-validation.json
+python -m paideia_engines.cli validate-release-candidate --repo-root . --output .paideia-runs\release-candidate-validation.json
 python -m compileall src
 rg -n "([O]PENAI_API_KEY|[A]NTHROPIC_API_KEY|[G]ITHUB_TOKEN|github[_]pat_|gh[p]_|\bsk-[A-Za-z0-9]{16,}|[B]EGIN (RSA|OPENSSH|PRIVATE) KEY|passw[o]rd\s*=|secr[e]t\s*=)" README.md README.ko.md docs src tests data examples -g "!**/__pycache__/**"
 git status --short --branch
@@ -42,8 +43,11 @@ gh pr view 1 --json number,title,url,isDraft,headRefName,baseRefName,state,commi
 - 공개 seed data는 metadata만 포함하고 제한 교과서 본문을 포함하지 않아야 합니다.
 - 공개 release validation에는 `--allow-local-only-full-content`를 사용하지 않습니다.
 - Acquired-source manifest는 `examples/`, `data/`, `docs/`, `src/`, `tests/` 안의 AI-Hub corpus, 시험지 PDF/HWP/audio/video, 교과서 원본을 가리키지 않아야 합니다.
-- Acquired-source manifest에는 `C:\Users\...` 같은 private absolute path가 없어야 합니다.
+- Acquired-source manifest에는 local user-profile folder를 가리키는 private absolute path가 없어야 합니다.
 - Stress pack에는 `promotion_decision`, `ledger_version`, `experience_id` record가 없어야 합니다.
+- Runtime evidence bundle은 복사된 artifact file의 존재, size, hash, replay trace를 검증해야 합니다.
+- Benchmark validation은 golden schema, mutation expectation, release evidence threshold를 통과해야 합니다.
+- Release candidate validation은 link, UTF-8, replacement character, sensitive pattern, 개인 로컬 경로, acquired-source manifest, generated path, packaging metadata check를 통과해야 합니다.
 - PR 본문에 검증 명령과 현재 draft/ready 상태가 적혀 있어야 합니다.
 
 ## 릴리스 판단
