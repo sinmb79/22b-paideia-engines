@@ -63,6 +63,7 @@ The command fails if a required engine is missing from the registry, if contract
 - Promotion must preserve governance-blocked promotion quarantine as a contract: blocked governance cannot create active memory, only quarantined reviewable records.
 - `quarantine_reason` is a force-quarantine signal. A governance-blocked quarantine cannot be promoted during reconsideration without a fresh allowed governance decision carried as a `paideia-governance-review/v1` governance review payload for `memory_promotion`, scoped to the quarantined `experience_id`, the promotion-issued `quarantine_ref`, and `active_memory` use, with an active `boss_approval` record for that same `experience_id` and `quarantine_ref` present in the governance approval ledger.
 - `quarantine_ref` is intentionally non-deterministic because it acts as a local capability token for a single governance-blocked quarantine reconsideration. Replay-stable ledgers should compare the surrounding ledger fields and evidence bundle, not expect this token to repeat for identical inputs.
+- Governance APIs return snapshots: returned approval, review, and committee decision payloads must not share mutable objects with the internal ledger/trail entries.
 - Assessment may count a verified artifact for deterministic rubric scoring, but release-grade promotion must treat it as evidence only after runtime evidence validation proves file existence, byte hash, manifest hash, and replay trace.
 
 The registry lives in `src/paideia_engines/contracts/registry.py`.

@@ -113,6 +113,50 @@ def test_governance_review_approval_records_are_snapshots_not_ledger_aliases():
     assert engine.approval_ledger["approvals"][0]["scope"]["action"] == "memory_promotion"
 
 
+def test_record_approval_returns_snapshot_not_ledger_alias():
+    engine = GovernanceEngine()
+
+    approval = engine.record_approval(
+        approval_type="boss_approval",
+        subject_id="agent_math-exp-0001",
+        approved_by="boss",
+        scope={
+            "action": "memory_promotion",
+            "source_id": "agent_math-exp-0001",
+            "allowed_use": "active_memory",
+            "quarantine_ref": "quarantine-ref-test",
+        },
+        notes="Allow this quarantined record for local active memory.",
+    )
+    approval["scope"]["action"] = "tampered"
+
+    assert engine.approval_ledger["approvals"][0]["scope"]["action"] == "memory_promotion"
+
+
+def test_record_approval_deep_copies_nested_scope_input():
+    engine = GovernanceEngine()
+    scope = {
+        "action": "memory_promotion",
+        "source_id": "agent_math-exp-0001",
+        "allowed_use": "active_memory",
+        "quarantine_ref": "quarantine-ref-test",
+        "constraints": {
+            "expires_after": "24h",
+        },
+    }
+
+    engine.record_approval(
+        approval_type="boss_approval",
+        subject_id="agent_math-exp-0001",
+        approved_by="boss",
+        scope=scope,
+        notes="Allow this quarantined record for local active memory.",
+    )
+    scope["constraints"]["expires_after"] = "999y"
+
+    assert engine.approval_ledger["approvals"][0]["scope"]["constraints"]["expires_after"] == "24h"
+
+
 def test_governance_records_committee_decision_trail():
     engine = GovernanceEngine()
 
@@ -128,3 +172,30 @@ def test_governance_records_committee_decision_trail():
     assert decision["decision_id"].startswith("governance-decision-")
     assert decision["ledger_version"] == 1
     assert engine.decision_ledger["decisions"][0]["rationale"].startswith("Verified")
+
+
+def test_record_committee_decision_returns_snapshot_not_ledger_alias():
+    engine = GovernanceEngine()
+
+    decision = engine.record_committee_decision(
+        committee="oversight_committee",
+        subject_id="memory:promotion:exp-1",
+        decision="approved_for_local_memory",
+        reviewers=["boss", "education_lead"],
+        rationale="Verified high-quality experience and local-only memory scope.",
+    )
+    decision["reviewers"][0] = "tampered"
+
+    assert engine.decision_ledger["decisions"][0]["reviewers"] == ["boss", "education_lead"]
+
+
+def test_review_action_returns_snapshot_not_review_trail_alias():
+    engine = GovernanceEngine()
+
+    review = engine.review_action(
+        action="upload_training_data",
+        context={"contains_private_assets": True},
+    )
+    review["noted"]["private_asset"] = False
+
+    assert engine.reviews[0]["noted"]["private_asset"] is True

@@ -150,14 +150,14 @@ class GovernanceEngine:
             "approval_type": approval_type,
             "subject_id": subject_id,
             "approved_by": approved_by,
-            "scope": dict(scope),
+            "scope": deepcopy(scope),
             "notes": notes,
             "status": "active",
             "ledger_version": self.approval_ledger["version"],
             "timestamp": _utc_now(),
         }
-        self.approval_ledger["approvals"].append(approval)
-        return approval
+        self.approval_ledger["approvals"].append(deepcopy(approval))
+        return deepcopy(approval)
 
     def evaluate_policy(self, action: str, context: dict[str, Any] | None = None) -> dict[str, Any]:
         ctx = dict(context or {})
@@ -250,8 +250,8 @@ class GovernanceEngine:
             "ledger_version": self.decision_ledger["version"],
             "timestamp": _utc_now(),
         }
-        self.decision_ledger["decisions"].append(record)
-        return record
+        self.decision_ledger["decisions"].append(deepcopy(record))
+        return deepcopy(record)
 
     def review_action(self, action: str, context: dict[str, Any] | None = None) -> dict[str, Any]:
         policy_evaluation = self.evaluate_policy(action, context)
@@ -271,8 +271,8 @@ class GovernanceEngine:
                 "external_upload_risk": blocked and str(action).lower() in _EXPLICITLY_SENSITIVE_ACTIONS,
             },
         }
-        self.reviews.append(review)
-        return review
+        self.reviews.append(deepcopy(review))
+        return deepcopy(review)
 
 
 __all__ = ["GovernanceEngine"]

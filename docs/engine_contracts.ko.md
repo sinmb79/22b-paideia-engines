@@ -63,6 +63,7 @@ python -m paideia_engines.cli validate-contracts `
 - 승급 엔진은 governance-blocked promotion quarantine 계약을 지켜야 합니다. blocked governance는 active memory를 만들 수 없고, 보스가 검토할 수 있는 quarantined record만 남길 수 있습니다.
 - `quarantine_reason`은 force-quarantine 신호입니다. governance-blocked quarantine은 quarantined `experience_id`, promotion이 발급한 `quarantine_ref`, `active_memory` 사용 범위에 묶인 `memory_promotion`용 `paideia-governance-review/v1` governance review payload가 fresh allowed governance decision과 governance approval ledger 안의 같은 `experience_id` 및 `quarantine_ref` active `boss_approval` record를 증명하지 않으면 재심사 단계에서 promoted가 될 수 없습니다.
 - `quarantine_ref`는 intentionally non-deterministic 값입니다. 이 값은 하나의 governance-blocked quarantine 재심사에만 쓰이는 local capability token 역할을 하므로, replay-stable ledger는 같은 입력에서 이 토큰이 반복되기를 기대하지 말고 주변 ledger field와 evidence bundle을 비교해야 합니다.
+- Governance APIs return snapshots: 반환된 approval, review, committee decision payload는 내부 ledger/trail entry와 mutable object를 공유하면 안 됩니다.
 - 평가 엔진은 결정적 rubric scoring을 위해 verified artifact를 셀 수 있지만, release-grade promotion은 runtime evidence validation이 파일 존재, byte hash, manifest hash, replay trace를 증명한 뒤에만 이를 증거로 신뢰해야 합니다.
 
 레지스트리는 `src/paideia_engines/contracts/registry.py`에 있습니다.
