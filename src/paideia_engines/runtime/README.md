@@ -12,7 +12,7 @@ The Runtime Engine records task execution evidence without making learning updat
 - Persistent evidence bundles
 - Acceptance checklists
 - Replayable traces
-- Artifact file existence, size, and content-hash validation
+- Artifact file existence, size, byte hash, and manifest hash validation
 
 ## Public API
 
@@ -41,4 +41,4 @@ python -m paideia_engines.cli validate-runtime-evidence `
 
 ## Safety Boundary
 
-Runtime results require review before downstream memory promotion. Persistent evidence bundles copy declared artifacts into the local bundle and validate the copied bytes; they do not upload artifacts or create promotion decisions.
+Runtime results require review before downstream memory promotion. Persistent evidence bundles copy declared artifacts into the local bundle and validate copied bytes against persisted evidence plus manifest hash records; they do not upload artifacts or create promotion decisions.

@@ -47,7 +47,7 @@ gh pr view 1 --json number,title,url,isDraft,headRefName,baseRefName,state,commi
 - Acquired-source manifests do not point to AI-Hub corpora, exam PDFs/HWPs/audio/video, or textbook originals inside `examples/`, `data/`, `docs/`, `src/`, or `tests/`.
 - Acquired-source manifests contain no private absolute paths to local user-profile folders.
 - Stress packs contain no `promotion_decision`, `ledger_version`, or `experience_id` records.
-- Runtime evidence bundles validate copied artifact file existence, size, hash, and replay trace.
+- Runtime evidence bundles validate copied artifact file existence, size, byte hash, manifest hash, and replay trace.
 - Benchmark validation passes and enforces golden schemas, mutation expectations, and release evidence thresholds.
 - Release candidate validation passes link, UTF-8, replacement-character, sensitive-pattern, personal-path, acquired-source manifest, generated-path, and packaging metadata checks.
 - Downstream reuse examples run and prove both single-engine import and configured-suite composition.

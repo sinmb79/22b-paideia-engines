@@ -71,6 +71,26 @@ def test_runtime_evidence_validation_blocks_tampered_bundled_artifact(tmp_path):
     assert report["checks"]["artifact_file_hashes_match"] is False
 
 
+def test_runtime_evidence_validation_blocks_tampered_manifest_hash(tmp_path):
+    run = _runtime_run(tmp_path)
+    bundle = persist_runtime_evidence(run, tmp_path / "store", artifact_base_dir=tmp_path)
+    manifest_path = Path(bundle["files"]["artifact_manifest"]["path"])
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest["artifacts"][0]["content_hash"] = "sha256:" + "0" * 64
+    _write_json(manifest_path, manifest)
+    bundle_path = Path(bundle["bundle_path"])
+    bundle_payload = json.loads(bundle_path.read_text(encoding="utf-8"))
+    bundle_payload["files"]["artifact_manifest"]["size_bytes"] = manifest_path.stat().st_size
+    bundle_payload["files"]["artifact_manifest"]["sha256"] = _sha256_file(manifest_path)
+    _write_json(bundle_path, bundle_payload)
+
+    report = validate_runtime_evidence_bundle(bundle_path)
+
+    assert report["status"] == "blocked"
+    assert "artifact_manifest_hash_mismatch" in _issue_codes(report)
+    assert report["checks"]["artifact_manifest_hashes_match"] is False
+
+
 def test_runtime_evidence_validation_blocks_promotion_leak(tmp_path):
     run = _runtime_run(tmp_path)
     run["promotion_decision"] = {"status": "promoted"}
@@ -80,3 +100,13 @@ def test_runtime_evidence_validation_blocks_promotion_leak(tmp_path):
 
     assert report["status"] == "blocked"
     assert "runtime_evidence_promotion_leak" in _issue_codes(report)
+
+
+def _sha256_file(path: Path) -> str:
+    import hashlib
+
+    digest = hashlib.sha256()
+    with path.open("rb") as file:
+        for chunk in iter(lambda: file.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return "sha256:" + digest.hexdigest()

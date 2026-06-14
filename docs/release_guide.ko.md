@@ -91,7 +91,7 @@ python -m paideia_engines.cli validate-release-candidate `
 - `suite-output-validation.json`: result JSON, 엔진별 파일, 스키마, stress-to-promotion 경계를 교차 검증하는 release-quality 리포트입니다.
 - `smoke.json`: 엔진별 smoke 결과입니다.
 - `runtime-evidence-bundle.json`: 재실행 가능한 runtime evidence bundle index입니다.
-- `runtime-evidence-validation.json`: artifact file 존재, size, hash, trace replay를 검증합니다.
+- `runtime-evidence-validation.json`: artifact file 존재, size, byte hash, manifest hash, trace replay를 검증합니다.
 - `runtime-evidence-replay.json`: 저장된 bundle에서 로드한 replayable trace입니다.
 - `benchmark-validation.json`: golden schema, mutation expectation, release evidence threshold를 확인하는 benchmark report입니다.
 - `release-candidate-validation.json`: packaging metadata, link, UTF-8, replacement character, sensitive pattern, 개인 로컬 경로, acquired-source manifest, public asset boundary를 검증합니다.

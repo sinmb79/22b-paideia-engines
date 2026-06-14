@@ -269,9 +269,9 @@ def engine_contracts() -> list[EngineContract]:
             ],
             input_schemas=["paideia-runtime-input/v1"],
             output_schemas=[
-                "paideia-runtime-record/v1",
+                "paideia-runtime-run/v1",
                 "paideia-runtime-trace/v1",
-                "paideia-artifact-manifest/v1",
+                "paideia-runtime-artifact-manifest/v1",
                 "paideia-runtime-evidence-bundle/v1",
                 "paideia-runtime-evidence-validation/v1",
                 "paideia-runtime-evidence-replay/v1",

@@ -55,5 +55,6 @@ The command fails if a required engine is missing from the registry, if contract
 - Governance
 - Runtime
 - Orchestration
+- Evaluation
 
 The registry lives in `src/paideia_engines/contracts/registry.py`.

@@ -57,6 +57,7 @@ def validate_runtime_evidence_bundle(bundle_path: str | Path) -> dict[str, Any]:
         "artifact_files_exist": False,
         "artifact_file_sizes_match": False,
         "artifact_file_hashes_match": False,
+        "artifact_manifest_hashes_match": False,
         "replay_trace_available": False,
         "no_promotion_decision_leak": False,
     }
@@ -105,7 +106,7 @@ def validate_runtime_evidence_bundle(bundle_path: str | Path) -> dict[str, Any]:
         issues.append(_issue("error", "acceptance_review_not_required", "Runtime evidence must require review."))
 
     checks["artifact_count_matches"] = _artifact_count_matches(bundle, loaded_files.get("artifact_manifest"), issues)
-    artifact_checks = _validate_artifacts(bundle, issues)
+    artifact_checks = _validate_artifacts(bundle, loaded_files.get("artifact_manifest"), issues)
     checks.update(artifact_checks)
 
     checks["replay_trace_available"] = _replay_trace_available(bundle, loaded_files, issues)
@@ -384,7 +385,11 @@ def _artifact_count_matches(
     return matched
 
 
-def _validate_artifacts(bundle: dict[str, Any], issues: list[dict[str, Any]]) -> dict[str, bool]:
+def _validate_artifacts(
+    bundle: dict[str, Any],
+    manifest: dict[str, Any] | None,
+    issues: list[dict[str, Any]],
+) -> dict[str, bool]:
     artifacts = bundle.get("artifacts", [])
     if not isinstance(artifacts, list) or not artifacts:
         issues.append(_issue("error", "artifact_evidence_missing", "Runtime evidence bundle requires artifact evidence."))
@@ -392,14 +397,44 @@ def _validate_artifacts(bundle: dict[str, Any], issues: list[dict[str, Any]]) ->
             "artifact_files_exist": False,
             "artifact_file_sizes_match": False,
             "artifact_file_hashes_match": False,
+            "artifact_manifest_hashes_match": False,
         }
+    manifest_artifacts: dict[str, dict[str, Any]] = {}
+    if isinstance(manifest, dict) and isinstance(manifest.get("artifacts"), list):
+        for item in manifest["artifacts"]:
+            if isinstance(item, dict):
+                manifest_artifacts[str(item.get("artifact_id"))] = item
     files_exist = True
     sizes_match = True
     hashes_match = True
+    manifest_hashes_match = True
     for artifact in artifacts:
         if not isinstance(artifact, dict):
-            files_exist = sizes_match = hashes_match = False
+            files_exist = sizes_match = hashes_match = manifest_hashes_match = False
             continue
+        manifest_artifact = manifest_artifacts.get(str(artifact.get("artifact_id")))
+        if manifest_artifact is None:
+            manifest_hashes_match = False
+            issues.append(
+                _issue(
+                    "error",
+                    "artifact_manifest_record_missing",
+                    "Runtime artifact evidence must map to an artifact manifest record.",
+                    artifact_id=artifact.get("artifact_id"),
+                )
+            )
+        elif manifest_artifact.get("content_hash") != artifact.get("manifest_content_hash"):
+            manifest_hashes_match = False
+            issues.append(
+                _issue(
+                    "error",
+                    "artifact_manifest_hash_mismatch",
+                    "Runtime artifact manifest hash changed after evidence persistence.",
+                    artifact_id=artifact.get("artifact_id"),
+                    expected=artifact.get("manifest_content_hash"),
+                    actual=manifest_artifact.get("content_hash"),
+                )
+            )
         artifact_path = artifact.get("bundle_path") or artifact.get("resolved_path") or artifact.get("resolved_source_path")
         path = Path(str(artifact_path or "")).resolve()
         exists = path.exists() and path.is_file()
@@ -445,6 +480,7 @@ def _validate_artifacts(bundle: dict[str, Any], issues: list[dict[str, Any]]) ->
         "artifact_files_exist": files_exist,
         "artifact_file_sizes_match": sizes_match,
         "artifact_file_hashes_match": hashes_match,
+        "artifact_manifest_hashes_match": manifest_hashes_match,
     }
 
 
