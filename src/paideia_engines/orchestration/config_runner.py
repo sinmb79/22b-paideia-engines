@@ -50,6 +50,18 @@ SMOKE_ENGINES = [
     "orchestration",
 ]
 
+CONFIGURED_SUITE_SCHEMA = "paideia-configured-suite/v1"
+CONFIGURED_SUITE_RUN_SCHEMA = "paideia-configured-suite-run/v1"
+VALID_CONFIG_MODES = {"demo", "production"}
+PRODUCTION_REQUIRED_FIELDS = {
+    "data": ("engine",),
+    "learner": ("learner_id", "role", "objectives", "task"),
+    "curriculum": ("school_level", "grade", "subject"),
+    "assessment": ("item_id", "items_path", "parser", "answer", "explanation"),
+    "stress": ("scenario_id", "response"),
+    "runtime": ("tools",),
+}
+
 
 def load_config(path: str | Path) -> dict[str, Any]:
     config_path = Path(path)
@@ -81,6 +93,47 @@ def _config_section(config: dict[str, Any], section: str) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise TypeError(f"config.{section} must be a mapping.")
     return value
+
+
+def _config_mode(config: dict[str, Any]) -> str:
+    mode = str(config.get("mode", "demo")).strip().lower()
+    if mode not in VALID_CONFIG_MODES:
+        allowed = ", ".join(sorted(VALID_CONFIG_MODES))
+        raise ValueError(f"config.mode must be one of: {allowed}.")
+    return mode
+
+
+def _is_missing_required_value(value: Any) -> bool:
+    if value is None:
+        return True
+    if isinstance(value, str):
+        return not value.strip()
+    if isinstance(value, (list, tuple, dict, set)):
+        return len(value) == 0
+    return False
+
+
+def _validate_production_config(config: dict[str, Any]) -> None:
+    if config.get("schema") != CONFIGURED_SUITE_SCHEMA:
+        raise ValueError(f"production config requires schema {CONFIGURED_SUITE_SCHEMA}.")
+
+    for section, fields in PRODUCTION_REQUIRED_FIELDS.items():
+        section_config = _config_section(config, section)
+        for field in fields:
+            if field not in section_config or _is_missing_required_value(section_config[field]):
+                raise ValueError(f"production config requires config.{section}.{field}.")
+
+    data_config = _config_section(config, "data")
+    if _is_missing_required_value(data_config.get("acquired_sources")) and _is_missing_required_value(
+        data_config.get("manifest_path")
+    ):
+        raise ValueError("production config requires config.data.acquired_sources or config.data.manifest_path.")
+
+    curriculum_config = _config_section(config, "curriculum")
+    if _is_missing_required_value(curriculum_config.get("standards")) and _is_missing_required_value(
+        curriculum_config.get("standards_path")
+    ):
+        raise ValueError("production config requires config.curriculum.standards or config.curriculum.standards_path.")
 
 
 def _learner_config(config: dict[str, Any]) -> dict[str, Any]:
@@ -317,6 +370,10 @@ def run_configured_suite(
     output_dir: str | Path | None = None,
     config_base_dir: str | Path | None = None,
 ) -> dict[str, Any]:
+    mode = _config_mode(config)
+    if mode == "production":
+        _validate_production_config(config)
+
     learner = _learner_config(config)
     data_config = _config_section(config, "data")
     curriculum_config = _config_section(config, "curriculum")
@@ -444,7 +501,8 @@ def run_configured_suite(
     output_paths = _write_engine_outputs(output_dir, outputs)
 
     return {
-        "schema": "paideia-configured-suite-run/v1",
+        "schema": CONFIGURED_SUITE_RUN_SCHEMA,
+        "mode": mode,
         "config_id": str(config.get("config_id", "default")),
         "learner": learner,
         "execution_trace": list(EXECUTION_TRACE),

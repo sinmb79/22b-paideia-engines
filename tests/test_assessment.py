@@ -19,6 +19,21 @@ def test_assessment_engine_scores_submission_with_rubric_feedback():
     assert "evidence" in result["feedback"].lower()
 
 
+def test_keyword_stuffing_does_not_pass_assessment_without_artifacts():
+    engine = AssessmentEngine()
+
+    result = engine.evaluate(
+        gate_id="evidence_gate",
+        submission={
+            "answer": "evidence uncertainty verify source trace check " * 5,
+            "artifacts": [],
+        },
+    )
+
+    assert result["passed"] is False
+    assert result["score"] < 80
+
+
 def test_assessment_transcript_does_not_make_promotion_decisions():
     engine = AssessmentEngine()
 
