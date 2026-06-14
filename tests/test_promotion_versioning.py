@@ -53,12 +53,66 @@ def test_promotion_events_accessor_returns_snapshot_not_internal_store():
     assert engine.events[0]["event_type"] == "experience.recorded"
 
 
-@pytest.mark.parametrize("attribute", ["ledger", "events"])
-def test_promotion_snapshot_accessors_are_read_only(attribute):
+@pytest.mark.parametrize("attribute", ["ledger", "events", "owner", "minimum_score"])
+def test_promotion_trust_boundary_accessors_are_read_only(attribute):
     engine = PromotionEngine(owner="agent:math")
 
     with pytest.raises(AttributeError):
         setattr(engine, attribute, {})
+
+
+def test_promotion_owner_and_minimum_score_are_fixed_trust_config():
+    engine = PromotionEngine(owner="agent:math", minimum_score=90)
+    decision = engine.record_experience(
+        source="assessment",
+        event={"summary": "Strong but below stricter threshold.", "skills": ["place_value"]},
+        review=ReviewLabel(score=85, status="verified", reviewed_by="boss"),
+    )
+
+    assert engine.owner == "agent:math"
+    assert engine.minimum_score == 90
+    assert engine.ledger["owner"] == "agent:math"
+    assert decision["status"] == "quarantined"
+    assert decision["owner"] == "agent:math"
+
+
+def test_minimum_score_gate_applies_to_quarantine_reconsideration():
+    engine = PromotionEngine(owner="agent:math", minimum_score=90)
+    quarantined = engine.record_experience(
+        source="stress",
+        event={"summary": "Initially weak stress response.", "skills": ["stress_rehearsal"]},
+        review=ReviewLabel(score=62, status="needs_review", reviewed_by="committee"),
+    )
+
+    reconsidered = engine.reconsider_quarantined(
+        quarantined["experience_id"],
+        review=ReviewLabel(score=88, status="verified", reviewed_by="boss"),
+        notes="Still below the fixed stricter gate.",
+    )
+
+    assert reconsidered["status"] == "quarantined"
+    assert reconsidered["reason"] == "reconsideration_failed_verified_quality_gate"
+    assert engine.minimum_score == 90
+
+
+def test_minimum_score_gate_applies_to_promoted_supersession():
+    engine = PromotionEngine(owner="agent:math", minimum_score=90)
+    promoted = engine.record_experience(
+        source="assessment",
+        event={"summary": "Old method for place value.", "skills": ["place_value"]},
+        review=ReviewLabel(score=92, status="verified", reviewed_by="boss"),
+    )
+
+    with pytest.raises(ValueError, match="verified high-quality review"):
+        engine.supersede_promoted(
+            promoted["experience_id"],
+            event={"summary": "Replacement is below the fixed stricter gate.", "skills": ["place_value"]},
+            review=ReviewLabel(score=88, status="verified", reviewed_by="boss"),
+            reason="below stricter fixed gate",
+        )
+
+    assert engine.minimum_score == 90
+    assert len(engine.ledger["promoted_experiences"]) == 1
 
 
 def test_record_experience_returns_snapshot_not_ledger_alias():

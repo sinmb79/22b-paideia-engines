@@ -53,13 +53,13 @@ class ExperienceRecord:
 
 
 class PromotionEngine:
-    """Classify experiences by review quality and keep a deterministic ledger."""
+    """Classify experiences by fixed trust config and keep a deterministic ledger."""
 
     schema = "paideia-promotion-engine/v1"
 
     def __init__(self, owner: str, minimum_score: int = 80) -> None:
-        self.owner = owner
-        self.minimum_score = minimum_score
+        self._owner = owner
+        self._minimum_score = minimum_score
         self._counter = 0
         self._ledger: dict[str, Any] = {
             "schema": "paideia-promotion-ledger/v1",
@@ -70,6 +70,14 @@ class PromotionEngine:
             "history": [],
         }
         self._events: list[dict[str, Any]] = []
+
+    @property
+    def owner(self) -> str:
+        return self._owner
+
+    @property
+    def minimum_score(self) -> int:
+        return self._minimum_score
 
     @property
     def ledger(self) -> dict[str, Any]:
