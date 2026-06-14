@@ -47,7 +47,7 @@
 | 13 | engine contract registry and compatibility gate | v0.2 core 구현 |
 | 14 | official adapter certification matrix | v0.2 core 구현 |
 | 15 | evaluation and benchmark pack | v0.2 core 구현 |
-| 16 | persistent runtime and evidence store | 계획 |
+| 16 | persistent runtime and evidence store | v0.2 core 구현 |
 | 17 | release candidate pipeline | 계획 |
 | 18 | downstream reuse recipes | 계획 |
 
@@ -318,6 +318,7 @@ python -m paideia_engines.cli smoke --engine all --output .paideia-runs/smoke.js
    - release readiness를 위한 최소 coverage threshold를 정의합니다.
 
 2. **Phase 16: Persistent runtime and evidence store**
+   - 구현 완료: runtime evidence bundle 저장, artifact 복사, 실제 파일 size/hash 검증, 디스크 기반 replay, `persist-runtime-evidence`/`validate-runtime-evidence`/`replay-runtime-evidence` CLI.
    - Python process가 종료된 뒤에도 재생 가능한 run bundle을 저장합니다.
    - 실제 artifact file 존재, 크기, content hash를 검증합니다.
    - artifact manifest validation을 release path에 추가합니다.
@@ -344,7 +345,6 @@ https://github.com/sinmb79/22b-paideia-engines/pull/1
 
 다음 단계는 총괄 프로그램 순서대로 진행합니다.
 
-1. Phase 16 persistent runtime evidence 완료
-2. Phase 17 release candidate pipeline 완료
-3. Phase 18 downstream reuse recipe 완료
-4. 모든 checklist와 gate가 계속 green일 때만 PR ready 전환 또는 release 생성
+1. Phase 17 release candidate pipeline 완료
+2. Phase 18 downstream reuse recipe 완료
+3. 모든 checklist와 gate가 계속 green일 때만 PR ready 전환 또는 release 생성

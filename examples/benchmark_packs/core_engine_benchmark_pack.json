@@ -20,7 +20,8 @@
     "source_diagnostics": "source-diagnostics.json",
     "manifest_diagnostics": "manifest-diagnostics.json",
     "stress_pack_diagnostics": "stress-pack-diagnostics.json",
-    "smoke": "smoke.json"
+    "smoke": "smoke.json",
+    "runtime_evidence_validation": "runtime-evidence-validation.json"
   },
   "thresholds": {
     "min_engine_outputs": 10,
@@ -29,7 +30,8 @@
     "min_source_fixtures": 4,
     "min_manifest_records": 4,
     "min_stress_scenarios": 6,
-    "min_smoke_engines": 9
+    "min_smoke_engines": 9,
+    "min_runtime_artifacts": 1
   },
   "required_suite_checks": [
     "result_schema_matches",

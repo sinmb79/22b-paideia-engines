@@ -16,6 +16,11 @@ from paideia_engines.orchestration.output_validator import (
     validate_configured_suite_outputs,
     validate_configured_suite_result,
 )
+from paideia_engines.runtime import (
+    persist_runtime_evidence,
+    replay_runtime_evidence_bundle,
+    validate_runtime_evidence_bundle,
+)
 from paideia_engines.stress import diagnose_stress_scenario_pack
 
 
@@ -90,6 +95,32 @@ def build_parser() -> argparse.ArgumentParser:
     validate_benchmarks.add_argument("--output-dir", required=True, help="Directory containing per-engine outputs.")
     validate_benchmarks.add_argument("--reports-dir", required=True, help="Directory containing evidence reports.")
     validate_benchmarks.add_argument("--output", required=True, help="Path to write the benchmark report JSON.")
+
+    persist_runtime = subcommands.add_parser(
+        "persist-runtime-evidence",
+        help="Persist a runtime output JSON as a replayable evidence bundle.",
+    )
+    persist_runtime.add_argument("--runtime-output", required=True, help="Path to a runtime engine output JSON file.")
+    persist_runtime.add_argument("--store-dir", required=True, help="Directory to store runtime evidence bundles.")
+    persist_runtime.add_argument(
+        "--artifact-base-dir",
+        help="Base directory for relative artifact paths in the runtime output.",
+    )
+    persist_runtime.add_argument("--output", help="Optional path to write a copy of the bundle JSON.")
+
+    validate_runtime = subcommands.add_parser(
+        "validate-runtime-evidence",
+        help="Validate a persisted runtime evidence bundle and its artifact files.",
+    )
+    validate_runtime.add_argument("--bundle", required=True, help="Path to an evidence-bundle JSON file or bundle dir.")
+    validate_runtime.add_argument("--output", required=True, help="Path to write the validation report JSON.")
+
+    replay_runtime = subcommands.add_parser(
+        "replay-runtime-evidence",
+        help="Replay a persisted runtime evidence bundle without an in-memory RuntimeEngine.",
+    )
+    replay_runtime.add_argument("--bundle", required=True, help="Path to an evidence-bundle JSON file or bundle dir.")
+    replay_runtime.add_argument("--output", required=True, help="Path to write the replay JSON.")
 
     return parser
 
@@ -218,6 +249,66 @@ def main(argv: Sequence[str] | None = None) -> int:
                 {
                     "wrote": output_path,
                     "benchmark_validation": result["summary"],
+                    "status": result["status"],
+                },
+                ensure_ascii=False,
+            )
+        )
+        return 0 if result["status"] == "passed" else 1
+
+    if args.command == "persist-runtime-evidence":
+        with open(args.runtime_output, "r", encoding="utf-8") as file:
+            runtime_output = json.load(file)
+        result = persist_runtime_evidence(
+            runtime_output,
+            args.store_dir,
+            artifact_base_dir=args.artifact_base_dir,
+        )
+        output_path = args.output
+        if output_path:
+            output_path = write_json(output_path, result)
+        print(
+            json.dumps(
+                {
+                    "bundle_path": result["bundle_path"],
+                    "wrote": output_path or result["bundle_path"],
+                    "runtime_evidence": {
+                        "run_id": result["run_id"],
+                        "artifact_count": len(result["artifacts"]),
+                    },
+                    "status": result["status"],
+                },
+                ensure_ascii=False,
+            )
+        )
+        return 0
+
+    if args.command == "validate-runtime-evidence":
+        result = validate_runtime_evidence_bundle(args.bundle)
+        output_path = write_json(args.output, result)
+        print(
+            json.dumps(
+                {
+                    "wrote": output_path,
+                    "runtime_evidence_validation": result["summary"],
+                    "status": result["status"],
+                },
+                ensure_ascii=False,
+            )
+        )
+        return 0 if result["status"] == "passed" else 1
+
+    if args.command == "replay-runtime-evidence":
+        result = replay_runtime_evidence_bundle(args.bundle)
+        output_path = write_json(args.output, result)
+        print(
+            json.dumps(
+                {
+                    "wrote": output_path,
+                    "runtime_evidence_replay": {
+                        "run_id": result["run_id"],
+                        "trace_length": result["trace_length"],
+                    },
                     "status": result["status"],
                 },
                 ensure_ascii=False,

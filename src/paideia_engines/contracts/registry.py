@@ -260,14 +260,28 @@ def engine_contracts() -> list[EngineContract]:
             package="paideia_engines.runtime",
             version="0.2",
             status="phase13_contract_frozen",
-            public_api=["RuntimeEngine"],
+            public_api=[
+                "RuntimeEngine",
+                "RuntimeEvidenceStore",
+                "persist_runtime_evidence",
+                "validate_runtime_evidence_bundle",
+                "replay_runtime_evidence_bundle",
+            ],
             input_schemas=["paideia-runtime-input/v1"],
             output_schemas=[
                 "paideia-runtime-record/v1",
                 "paideia-runtime-trace/v1",
                 "paideia-artifact-manifest/v1",
+                "paideia-runtime-evidence-bundle/v1",
+                "paideia-runtime-evidence-validation/v1",
+                "paideia-runtime-evidence-replay/v1",
             ],
-            cli_commands=["smoke"],
+            cli_commands=[
+                "persist-runtime-evidence",
+                "validate-runtime-evidence",
+                "replay-runtime-evidence",
+                "smoke",
+            ],
             examples=["examples/governance_and_runtime_pipeline.py"],
             docs=[
                 "src/paideia_engines/runtime/README.md",
@@ -276,8 +290,9 @@ def engine_contracts() -> list[EngineContract]:
             safety_boundaries=[
                 "runtime outputs require review before memory promotion",
                 "artifact manifests are review evidence",
+                "persistent evidence bundles copy artifacts locally and validate real file hashes",
             ],
-            compatibility="Persistent replay is planned before 1.0; current in-memory replay remains versioned.",
+            compatibility="Persistent bundle schemas are additive before 1.0; replay and validation reports stay versioned.",
         ),
         EngineContract(
             name="orchestration",

@@ -46,6 +46,11 @@ REPORT_SPECS = {
         "threshold_key": "min_smoke_engines",
         "summary_key": "total",
     },
+    "runtime_evidence_validation": {
+        "schema": "paideia-runtime-evidence-validation/v1",
+        "threshold_key": "min_runtime_artifacts",
+        "summary_key": "artifact_count",
+    },
 }
 
 REQUIRED_MUTATION_EXPECTATIONS = {

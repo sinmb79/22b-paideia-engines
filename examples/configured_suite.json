@@ -42,7 +42,7 @@
     "tools": ["read_file", "summarize", "write_report"],
     "artifacts": [
       {
-        "path": "reports/math-evidence.json",
+        "path": "runtime_artifacts/math-evidence.json",
         "kind": "evidence"
       }
     ]

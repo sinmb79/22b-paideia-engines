@@ -9,6 +9,13 @@ import json
 import re
 from typing import Any
 
+from paideia_engines.runtime.evidence_store import (
+    RuntimeEvidenceStore,
+    persist_runtime_evidence,
+    replay_runtime_evidence_bundle,
+    validate_runtime_evidence_bundle,
+)
+
 
 def _utc_now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
@@ -171,4 +178,11 @@ class RuntimeEngine:
         }
 
 
-__all__ = ["RuntimeEngine", "TaskRun"]
+__all__ = [
+    "RuntimeEngine",
+    "RuntimeEvidenceStore",
+    "TaskRun",
+    "persist_runtime_evidence",
+    "replay_runtime_evidence_bundle",
+    "validate_runtime_evidence_bundle",
+]

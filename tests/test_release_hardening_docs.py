@@ -75,6 +75,9 @@ def test_release_checklist_contains_required_validation_commands():
         "python -m paideia_engines.cli diagnose-source",
         "python -m paideia_engines.cli diagnose-manifest",
         "python -m paideia_engines.cli diagnose-stress-pack",
+        "python -m paideia_engines.cli persist-runtime-evidence",
+        "python -m paideia_engines.cli validate-runtime-evidence",
+        "python -m paideia_engines.cli replay-runtime-evidence",
         "python -m paideia_engines.cli validate-benchmarks",
         "rg -n",
     ]

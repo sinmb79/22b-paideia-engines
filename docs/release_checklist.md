@@ -21,6 +21,9 @@ python -m paideia_engines.cli diagnose-manifest --manifest examples\acquired_sou
 python -m paideia_engines.cli diagnose-stress-pack --pack examples\stress_packs\core_subject_stress_pack.json --output .paideia-runs\stress-pack-diagnostics.json
 python -m paideia_engines.cli run-config --config examples\configured_suite.json --output .paideia-runs\result.json --output-dir .paideia-runs\engines
 python -m paideia_engines.cli validate-suite-output --output-dir .paideia-runs\engines --result .paideia-runs\result.json --output .paideia-runs\suite-output-validation.json
+python -m paideia_engines.cli persist-runtime-evidence --runtime-output .paideia-runs\engines\09_runtime.json --store-dir .paideia-runs\runtime --artifact-base-dir examples --output .paideia-runs\runtime-evidence-bundle.json
+python -m paideia_engines.cli validate-runtime-evidence --bundle .paideia-runs\runtime\runtime_phase5-run-0001\evidence-bundle.json --output .paideia-runs\runtime-evidence-validation.json
+python -m paideia_engines.cli replay-runtime-evidence --bundle .paideia-runs\runtime\runtime_phase5-run-0001\evidence-bundle.json --output .paideia-runs\runtime-evidence-replay.json
 python -m paideia_engines.cli smoke --engine all --output .paideia-runs\smoke.json
 python -m paideia_engines.cli validate-benchmarks --pack examples\benchmark_packs\core_engine_benchmark_pack.json --result .paideia-runs\result.json --output-dir .paideia-runs\engines --reports-dir .paideia-runs --output .paideia-runs\benchmark-validation.json
 python -m compileall src
@@ -41,6 +44,7 @@ gh pr view 1 --json number,title,url,isDraft,headRefName,baseRefName,state,commi
 - Acquired-source manifests do not point to AI-Hub corpora, exam PDFs/HWPs/audio/video, or textbook originals inside `examples/`, `data/`, `docs/`, `src/`, or `tests/`.
 - Acquired-source manifests contain no private absolute paths such as `C:\Users\...`.
 - Stress packs contain no `promotion_decision`, `ledger_version`, or `experience_id` records.
+- Runtime evidence bundles validate copied artifact file existence, size, hash, and replay trace.
 - Benchmark validation passes and enforces golden schemas, mutation expectations, and release evidence thresholds.
 - PR body lists validation commands and current draft/ready status.
 

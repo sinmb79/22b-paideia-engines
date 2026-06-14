@@ -9,6 +9,7 @@ from paideia_engines.data_acquisition import (
 )
 from paideia_engines.evaluation import validate_benchmark_pack
 from paideia_engines.orchestration.config_runner import run_config_file, run_engine_smoke
+from paideia_engines.runtime import persist_runtime_evidence, validate_runtime_evidence_bundle
 from paideia_engines.stress import diagnose_stress_scenario_pack
 
 
@@ -29,7 +30,7 @@ def _build_evidence(tmp_path: Path) -> tuple[Path, Path, Path]:
     output_dir = tmp_path / "engines"
     reports_dir = tmp_path / "reports"
 
-    run_config_file(
+    result = run_config_file(
         ROOT / "examples" / "configured_suite.json",
         output_path=result_path,
         output_dir=output_dir,
@@ -55,6 +56,15 @@ def _build_evidence(tmp_path: Path) -> tuple[Path, Path, Path]:
         diagnose_stress_scenario_pack(ROOT / "examples" / "stress_packs" / "core_subject_stress_pack.json"),
     )
     _write_json(reports_dir / "smoke.json", run_engine_smoke("all"))
+    bundle = persist_runtime_evidence(
+        result["outputs"]["runtime"],
+        tmp_path / "runtime-store",
+        artifact_base_dir=ROOT / "examples",
+    )
+    _write_json(
+        reports_dir / "runtime-evidence-validation.json",
+        validate_runtime_evidence_bundle(bundle["bundle_path"]),
+    )
     return result_path, output_dir, reports_dir
 
 
@@ -79,6 +89,7 @@ def test_benchmark_pack_passes_release_ready_evidence(tmp_path):
     assert report["checks"]["mutation_expectations_declared"] is True
     assert report["checks"]["thresholds_met"] is True
     assert report["measurements"]["contract_validation"]["count"] == 10
+    assert report["measurements"]["runtime_evidence_validation"]["count"] == 1
 
 
 def test_benchmark_pack_blocks_tampered_suite_outputs(tmp_path):

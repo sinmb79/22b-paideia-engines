@@ -137,6 +137,7 @@ decision = engine.record_experience(
 - Phase 13: engine contract registry and validation
 - Phase 14: official adapter certification matrix
 - Phase 15: evaluation and benchmark pack
+- Phase 16: persistent runtime evidence store
 
 ## Documentation
 
@@ -181,6 +182,7 @@ decision = engine.record_experience(
 - Manifest diagnostics block malformed, duplicate, unsafe, or non-public full-content source records before release.
 - Stress pack diagnostics keep subject scenarios curriculum-linked and promotion-boundary clean.
 - Benchmark validation checks golden schemas, mutation expectations, and release evidence thresholds.
+- Runtime evidence validation checks copied artifact existence, size, hash, and disk-based replay.
 
 ## License
 

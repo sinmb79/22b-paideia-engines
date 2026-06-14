@@ -47,7 +47,7 @@ The project is complete only when:
 | 13 | Engine contract registry and compatibility gate | Implemented v0.2 core |
 | 14 | Official adapter certification matrix | Implemented v0.2 core |
 | 15 | Evaluation and benchmark pack | Implemented v0.2 core |
-| 16 | Persistent runtime and evidence store | Planned |
+| 16 | Persistent runtime and evidence store | Implemented v0.2 core |
 | 17 | Release candidate pipeline | Planned |
 | 18 | Downstream reuse recipes | Planned |
 
@@ -318,9 +318,10 @@ The remaining work must move as a coordinated program, not as isolated one-off p
    - CLI command: `validate-benchmarks`.
 
 2. **Phase 16: Persistent Runtime And Evidence Store**
-   - Persist run bundles that can be replayed after the Python process exits.
-   - Validate real artifact file existence, size, and content hash.
-   - Add artifact manifest validation to the release path.
+   - Delivered persistent runtime evidence bundles.
+   - Added artifact copy, existence, size, and content-hash validation.
+   - Added replay from disk without an in-memory `RuntimeEngine`.
+   - CLI commands: `persist-runtime-evidence`, `validate-runtime-evidence`, `replay-runtime-evidence`.
 
 3. **Phase 17: Release Candidate Pipeline**
    - Build and install the package from a wheel.
@@ -344,7 +345,6 @@ https://github.com/sinmb79/22b-paideia-engines/pull/1
 
 Next coordinated stages:
 
-1. Complete Phase 16 persistent runtime evidence.
-2. Complete Phase 17 release candidate pipeline.
-3. Complete Phase 18 downstream reuse recipes.
-4. Convert the PR to ready or cut a release only after every checklist and gate remains green.
+1. Complete Phase 17 release candidate pipeline.
+2. Complete Phase 18 downstream reuse recipes.
+3. Convert the PR to ready or cut a release only after every checklist and gate remains green.

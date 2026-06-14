@@ -12,6 +12,7 @@ from paideia_engines.data_acquisition import (
     diagnose_source_fixture_pack,
 )
 from paideia_engines.orchestration.config_runner import run_config_file, run_engine_smoke
+from paideia_engines.runtime import persist_runtime_evidence, validate_runtime_evidence_bundle
 from paideia_engines.stress import diagnose_stress_scenario_pack
 
 
@@ -62,7 +63,7 @@ def _build_benchmark_evidence(tmp_path: Path) -> tuple[Path, Path, Path]:
     result_path = tmp_path / "result.json"
     output_dir = tmp_path / "engines"
     reports_dir = tmp_path / "reports"
-    run_config_file(ROOT / "examples" / "configured_suite.json", output_path=result_path, output_dir=output_dir)
+    result = run_config_file(ROOT / "examples" / "configured_suite.json", output_path=result_path, output_dir=output_dir)
     _write_json(reports_dir / "contract-validation.json", validate_engine_contract_registry(ROOT))
     _write_json(
         reports_dir / "adapter-certification.json",
@@ -84,6 +85,15 @@ def _build_benchmark_evidence(tmp_path: Path) -> tuple[Path, Path, Path]:
         diagnose_stress_scenario_pack(ROOT / "examples" / "stress_packs" / "core_subject_stress_pack.json"),
     )
     _write_json(reports_dir / "smoke.json", run_engine_smoke("all"))
+    bundle = persist_runtime_evidence(
+        result["outputs"]["runtime"],
+        tmp_path / "runtime-store",
+        artifact_base_dir=ROOT / "examples",
+    )
+    _write_json(
+        reports_dir / "runtime-evidence-validation.json",
+        validate_runtime_evidence_bundle(bundle["bundle_path"]),
+    )
     return result_path, output_dir, reports_dir
 
 
@@ -397,3 +407,96 @@ def test_cli_validate_benchmarks_writes_report(tmp_path):
     assert payload["status"] == "passed"
     assert payload["summary"]["failed"] == 0
     assert "benchmark_validation" in completed.stdout
+
+
+def test_cli_persist_validate_and_replay_runtime_evidence(tmp_path):
+    result_path = tmp_path / "result.json"
+    output_dir = tmp_path / "engines"
+    store_dir = tmp_path / "runtime-store"
+    validation_path = tmp_path / "runtime-evidence-validation.json"
+    replay_path = tmp_path / "runtime-evidence-replay.json"
+
+    subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "paideia_engines.cli",
+            "run-config",
+            "--config",
+            str(ROOT / "examples" / "configured_suite.json"),
+            "--output",
+            str(result_path),
+            "--output-dir",
+            str(output_dir),
+        ],
+        cwd=ROOT,
+        env=_env(),
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+    persist_completed = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "paideia_engines.cli",
+            "persist-runtime-evidence",
+            "--runtime-output",
+            str(output_dir / "09_runtime.json"),
+            "--store-dir",
+            str(store_dir),
+            "--artifact-base-dir",
+            str(ROOT / "examples"),
+        ],
+        cwd=ROOT,
+        env=_env(),
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+    persisted = json.loads(persist_completed.stdout)
+    bundle_path = persisted["bundle_path"]
+    validate_completed = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "paideia_engines.cli",
+            "validate-runtime-evidence",
+            "--bundle",
+            bundle_path,
+            "--output",
+            str(validation_path),
+        ],
+        cwd=ROOT,
+        env=_env(),
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+    replay_completed = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "paideia_engines.cli",
+            "replay-runtime-evidence",
+            "--bundle",
+            bundle_path,
+            "--output",
+            str(replay_path),
+        ],
+        cwd=ROOT,
+        env=_env(),
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+
+    validation = json.loads(validation_path.read_text(encoding="utf-8"))
+    replay = json.loads(replay_path.read_text(encoding="utf-8"))
+    assert validation["schema"] == "paideia-runtime-evidence-validation/v1"
+    assert validation["status"] == "passed"
+    assert validation["summary"]["artifact_count"] == 1
+    assert replay["schema"] == "paideia-runtime-evidence-replay/v1"
+    assert replay["status"] == "passed"
+    assert "runtime_evidence_validation" in validate_completed.stdout
+    assert "runtime_evidence_replay" in replay_completed.stdout

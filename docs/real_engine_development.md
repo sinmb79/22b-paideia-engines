@@ -6,7 +6,7 @@ This roadmap tracks the work needed to turn the Paideia engine suite from a scaf
 
 ## Current Position
 
-The suite now has v0.2 cores for data acquisition, curriculum mapping, cultivation, assessment, stress, promotion, governance, runtime, and config-driven orchestration. Phase 6 adds release hardening. Phase 7 adds acquired-source validation reports and JSON adapters. Phase 8 adds NCIC/data.go.kr-style CSV parsing, AI-Hub-like math JSON parsing, public assessment CSV parsing, and public exam metadata manifests. Phase 9 adds parser diagnostics and public-safe fixture packs. Phase 10 adds configured-suite output validation. Phase 11 adds acquired-source manifest diagnostics. Phase 12 adds subject-specific stress packs. Phase 13 adds the public engine contract registry. Phase 14 adds adapter certification that links parser fixtures to valid acquired-source manifest records. Phase 15 adds benchmark-pack validation for release evidence and regression thresholds. The next depth work is persistent runtime evidence.
+The suite now has v0.2 cores for data acquisition, curriculum mapping, cultivation, assessment, stress, promotion, governance, runtime, and config-driven orchestration. Phase 6 adds release hardening. Phase 7 adds acquired-source validation reports and JSON adapters. Phase 8 adds NCIC/data.go.kr-style CSV parsing, AI-Hub-like math JSON parsing, public assessment CSV parsing, and public exam metadata manifests. Phase 9 adds parser diagnostics and public-safe fixture packs. Phase 10 adds configured-suite output validation. Phase 11 adds acquired-source manifest diagnostics. Phase 12 adds subject-specific stress packs. Phase 13 adds the public engine contract registry. Phase 14 adds adapter certification that links parser fixtures to valid acquired-source manifest records. Phase 15 adds benchmark-pack validation for release evidence and regression thresholds. Phase 16 adds persistent runtime evidence bundles and artifact validation. The next depth work is the release candidate pipeline.
 
 ## Phase 1: Data And Curriculum
 
@@ -278,11 +278,29 @@ Capabilities:
 - Minimum release-readiness thresholds
 - CLI command: `validate-benchmarks`
 
+## Phase 16: Persistent Runtime And Evidence Store
+
+Added:
+
+```text
+src/paideia_engines/runtime/evidence_store.py
+examples/runtime_artifacts/math-evidence.json
+tests/test_runtime_evidence_store.py
+```
+
+Capabilities:
+
+- Runtime evidence bundles persisted by run id
+- Runtime run, trace, artifact manifest, and acceptance checklist files
+- Artifact copies stored inside the bundle
+- Real artifact file existence, size, and SHA-256 validation
+- Disk-based replay without the in-memory runtime index
+- CLI commands: `persist-runtime-evidence`, `validate-runtime-evidence`, `replay-runtime-evidence`
+
 ## Next Development Order
 
-1. Persistent runtime and evidence store for replayable run bundles.
-2. Release candidate pipeline with wheel install smoke, CLI matrix, link/encoding checks, and concrete sensitive scans.
-3. Downstream reuse recipes for other 22B AI projects.
+1. Release candidate pipeline with wheel install smoke, CLI matrix, link/encoding checks, and concrete sensitive scans.
+2. Downstream reuse recipes for other 22B AI projects.
 
 ## Verification
 
@@ -300,6 +318,9 @@ python -m paideia_engines.cli diagnose-manifest --manifest examples\acquired_sou
 python -m paideia_engines.cli diagnose-stress-pack --pack examples\stress_packs\core_subject_stress_pack.json --output .paideia-runs\stress-pack-diagnostics.json
 python -m paideia_engines.cli run-config --config examples\configured_suite.json --output .paideia-runs\result.json --output-dir .paideia-runs\engines
 python -m paideia_engines.cli validate-suite-output --output-dir .paideia-runs\engines --result .paideia-runs\result.json --output .paideia-runs\suite-output-validation.json
+python -m paideia_engines.cli persist-runtime-evidence --runtime-output .paideia-runs\engines\09_runtime.json --store-dir .paideia-runs\runtime --artifact-base-dir examples --output .paideia-runs\runtime-evidence-bundle.json
+python -m paideia_engines.cli validate-runtime-evidence --bundle .paideia-runs\runtime\runtime_phase5-run-0001\evidence-bundle.json --output .paideia-runs\runtime-evidence-validation.json
+python -m paideia_engines.cli replay-runtime-evidence --bundle .paideia-runs\runtime\runtime_phase5-run-0001\evidence-bundle.json --output .paideia-runs\runtime-evidence-replay.json
 python -m paideia_engines.cli smoke --engine all --output .paideia-runs\smoke.json
 python -m paideia_engines.cli validate-benchmarks --pack examples\benchmark_packs\core_engine_benchmark_pack.json --result .paideia-runs\result.json --output-dir .paideia-runs\engines --reports-dir .paideia-runs --output .paideia-runs\benchmark-validation.json
 ```

@@ -14,6 +14,7 @@ This repository includes only safe sample data and source metadata.
 | `examples/source_fixture_pack.json` | Public-safe parser diagnostics fixture manifest | Allowed |
 | `examples/benchmark_packs/core_engine_benchmark_pack.json` | Public-safe benchmark pack for release evidence validation | Allowed |
 | `examples/stress_packs/core_subject_stress_pack.json` | Public-safe subject stress scenario pack | Allowed |
+| `examples/runtime_artifacts/math-evidence.json` | Public-safe synthetic runtime artifact for evidence-bundle validation | Allowed |
 | `examples/source_samples/ncic_curriculum_sample.csv` | Tiny NCIC-style curriculum parser sample | Allowed |
 | `examples/source_samples/public_assessment_sample.csv` | Tiny public assessment CSV parser sample | Allowed |
 | `examples/source_samples/aihub_math_sample.json` | Tiny AI-Hub-like parser sample | Allowed |
