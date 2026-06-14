@@ -15,6 +15,7 @@ python examples\stress_and_promotion_pipeline.py
 python examples\governance_and_runtime_pipeline.py
 python examples\source_specific_parsers.py
 python -m paideia_engines.cli validate-contracts --repo-root . --output .paideia-runs\contract-validation.json
+python -m paideia_engines.cli certify-adapters --fixtures examples\source_fixture_pack.json --manifest examples\acquired_sources_manifest.jsonl --output .paideia-runs\adapter-certification.json
 python -m paideia_engines.cli diagnose-source --manifest examples\source_fixture_pack.json --output .paideia-runs\source-diagnostics.json
 python -m paideia_engines.cli diagnose-manifest --manifest examples\acquired_sources_manifest.jsonl --output .paideia-runs\manifest-diagnostics.json
 python -m paideia_engines.cli diagnose-stress-pack --pack examples\stress_packs\core_subject_stress_pack.json --output .paideia-runs\stress-pack-diagnostics.json
@@ -31,6 +32,7 @@ gh pr view 1 --json number,title,url,isDraft,headRefName,baseRefName,state,commi
 
 - README에서 한국어 문서와 엔진 문서로 이동할 수 있어야 합니다.
 - 엔진 계약 검증이 통과해야 하며, 모든 엔진은 공개 API, schema, 문서, 예제, 안전 경계 항목을 가져야 합니다.
+- Adapter certification이 통과해야 하며, 모든 parser fixture는 valid acquired-source manifest record와 연결되어야 합니다.
 - 모든 엔진 패키지에 영문/한국어 README가 있어야 합니다.
 - `.paideia-runs/`, `.paideia-data/`, `.paideia-smoke/`, 로컬 생성 산출물이 staged 상태가 아니어야 합니다.
 - 공개 seed data는 metadata만 포함하고 제한 교과서 본문을 포함하지 않아야 합니다.

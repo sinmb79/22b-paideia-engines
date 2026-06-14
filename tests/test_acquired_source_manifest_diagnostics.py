@@ -198,4 +198,4 @@ def test_example_acquired_source_manifest_is_release_safe():
     report = diagnose_acquired_source_manifest(ROOT / "examples" / "acquired_sources_manifest.jsonl")
 
     assert report["status"] == "passed"
-    assert report["summary"]["record_count"] == 1
+    assert report["summary"]["record_count"] == 4

@@ -58,9 +58,10 @@ def test_diagnose_source_fixture_pack_summarizes_example_pack():
 
     assert report["schema"] == "paideia-source-fixture-pack-diagnostics/v1"
     assert report["status"] == "passed"
-    assert report["summary"] == {"total": 3, "passed": 3, "review_required": 0, "blocked": 0}
+    assert report["summary"] == {"total": 4, "passed": 4, "review_required": 0, "blocked": 0}
     assert {fixture["fixture_id"] for fixture in report["fixtures"]} == {
         "ncic-curriculum-sample",
+        "public-assessment-sample",
         "aihub-math-sample",
         "ebsi-exam-metadata-sample",
     }
@@ -76,6 +77,9 @@ def test_fixture_pack_manifest_paths_are_relative_and_public_samples_only():
         assert not Path(fixture["path"]).is_absolute()
         assert fixture["content_scope"] in {"public_sample", "metadata_only"}
         assert fixture["sha256"].startswith("sha256:")
+        assert fixture["official_format_family"]
+        assert fixture["sample_kind"] in {"synthetic", "metadata_only"}
+        assert fixture["record_schema"].startswith("paideia-")
         assert fixture["provider"]
         assert fixture["source_url"].startswith("https://")
         assert "not copied" in fixture["origin_note"].lower() or "no exam text" in fixture["origin_note"].lower()

@@ -45,7 +45,7 @@ The project is complete only when:
 | 11 | Acquired-source manifest diagnostics | Implemented v0.2 core |
 | 12 | Subject-specific stress scenario packs | Implemented v0.2 core |
 | 13 | Engine contract registry and compatibility gate | Implemented v0.2 core |
-| 14 | Official adapter certification matrix | Planned |
+| 14 | Official adapter certification matrix | Implemented v0.2 core |
 | 15 | Evaluation and benchmark pack | Planned |
 | 16 | Persistent runtime and evidence store | Planned |
 | 17 | Release candidate pipeline | Planned |
@@ -286,31 +286,48 @@ Completion criteria:
 - The release checklist includes contract validation before parser, manifest, stress pack, suite output, and smoke checks.
 - Orchestration remains a composition layer and does not hide engine-specific contracts.
 
+## Phase 14. Official Adapter Certification Matrix
+
+Delivered:
+
+- Adapter certification report
+- CLI command: `certify-adapters`
+- Public assessment CSV fixture
+- Source fixture pack linked to acquired-source manifest records
+- Parser/source allowlist checks
+- Manifest hash/source/path linkage checks
+- Public-safe sample policy checks for non-open sources
+
+Completion criteria:
+
+- Every public parser fixture links to a valid acquired-source manifest record by source id, local path, and hash.
+- Source fixture diagnostics and acquired-source manifest diagnostics pass before certification.
+- Unsupported parser/source pairs are blocked.
+- Non-open source fixtures must be synthetic, user-created, or metadata-only public-safe samples.
+- EBSi/public exam data remains metadata-only and cannot be certified as assessment item content.
+- Release checklist includes the adapter certification CLI command.
+
 ## Final Delivery Program
 
 The remaining work must move as a coordinated program, not as isolated one-off patches:
 
-1. **Phase 14: Official Adapter Certification Matrix**
-   - Certify NCIC/data.go.kr, public assessment, AI-Hub-like, and public exam metadata adapters against public-safe local fixture exports.
-   - Require valid acquired-source manifest links, hash checks, parser/source mapping, and failure fixtures.
-
-2. **Phase 15: Evaluation And Benchmark Pack**
+1. **Phase 15: Evaluation And Benchmark Pack**
    - Add golden fixtures for every engine.
    - Add mutation/tamper tests for schemas, boundaries, stress coverage, assessment quality, and governance evidence.
    - Define minimum coverage thresholds for release readiness.
 
-3. **Phase 16: Persistent Runtime And Evidence Store**
+2. **Phase 16: Persistent Runtime And Evidence Store**
    - Persist run bundles that can be replayed after the Python process exits.
    - Validate real artifact file existence, size, and content hash.
    - Add artifact manifest validation to the release path.
 
-4. **Phase 17: Release Candidate Pipeline**
+3. **Phase 17: Release Candidate Pipeline**
    - Build and install the package from a wheel.
    - Run CLI subprocess matrix from the installed package.
    - Add link, encoding, and concrete sensitive-pattern checks.
    - Prepare GitHub release evidence.
 
-5. **Phase 18: Downstream Reuse Recipes**
+4. **Phase 18: Downstream Reuse Recipes**
    - Provide integration recipes for other 22B AI projects.
    - Show how to import one engine alone and how to compose the full suite.
    - Add migration notes from local agent internals to reusable package contracts.
@@ -326,9 +343,8 @@ https://github.com/sinmb79/22b-paideia-engines/pull/1
 
 Next coordinated stages:
 
-1. Complete Phase 14 adapter certification.
-2. Complete Phase 15 benchmark and evaluation fixtures.
-3. Complete Phase 16 persistent runtime evidence.
-4. Complete Phase 17 release candidate pipeline.
-5. Complete Phase 18 downstream reuse recipes.
-6. Convert the PR to ready or cut a release only after every checklist and gate remains green.
+1. Complete Phase 15 benchmark and evaluation fixtures.
+2. Complete Phase 16 persistent runtime evidence.
+3. Complete Phase 17 release candidate pipeline.
+4. Complete Phase 18 downstream reuse recipes.
+5. Convert the PR to ready or cut a release only after every checklist and gate remains green.

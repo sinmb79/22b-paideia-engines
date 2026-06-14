@@ -7,6 +7,7 @@ import json
 from typing import Sequence
 
 from paideia_engines.contracts import validate_engine_contract_registry
+from paideia_engines.data_acquisition.adapter_certification import certify_adapters
 from paideia_engines.data_acquisition.manifest_diagnostics import diagnose_acquired_source_manifest
 from paideia_engines.data_acquisition.source_diagnostics import diagnose_source_fixture_pack
 from paideia_engines.orchestration.config_runner import run_config_file, run_engine_smoke, write_json
@@ -36,6 +37,14 @@ def build_parser() -> argparse.ArgumentParser:
     )
     diagnose_source.add_argument("--manifest", required=True, help="Path to a source fixture-pack JSON file.")
     diagnose_source.add_argument("--output", required=True, help="Path to write the diagnostics report JSON.")
+
+    certify_adapters_parser = subcommands.add_parser(
+        "certify-adapters",
+        help="Certify parser adapters by linking source fixtures to acquired-source manifest records.",
+    )
+    certify_adapters_parser.add_argument("--fixtures", required=True, help="Path to a source fixture-pack JSON file.")
+    certify_adapters_parser.add_argument("--manifest", required=True, help="Path to an acquired-source JSONL manifest.")
+    certify_adapters_parser.add_argument("--output", required=True, help="Path to write the certification report JSON.")
 
     diagnose_manifest = subcommands.add_parser(
         "diagnose-manifest",
@@ -97,6 +106,21 @@ def main(argv: Sequence[str] | None = None) -> int:
                 {
                     "wrote": output_path,
                     "source_diagnostics": result["summary"],
+                    "status": result["status"],
+                },
+                ensure_ascii=False,
+            )
+        )
+        return 0 if result["status"] == "passed" else 1
+
+    if args.command == "certify-adapters":
+        result = certify_adapters(args.fixtures, args.manifest)
+        output_path = write_json(args.output, result)
+        print(
+            json.dumps(
+                {
+                    "wrote": output_path,
+                    "adapter_certification": result["summary"],
                     "status": result["status"],
                 },
                 ensure_ascii=False,

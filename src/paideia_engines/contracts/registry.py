@@ -58,6 +58,8 @@ def engine_contracts() -> list[EngineContract]:
             public_api=[
                 "DataAcquisitionEngine",
                 "diagnose_acquired_source_manifest",
+                "certify_adapters",
+                "certify_adapter_matrix",
                 "diagnose_source_file",
                 "diagnose_source_fixture_pack",
                 "parse_ncic_curriculum_csv",
@@ -75,12 +77,13 @@ def engine_contracts() -> list[EngineContract]:
                 "paideia-acquired-source-manifest-diagnostics/v1",
                 "paideia-source-fixture-pack-diagnostics/v1",
             ],
-            cli_commands=["diagnose-source", "diagnose-manifest"],
+            cli_commands=["certify-adapters", "diagnose-source", "diagnose-manifest"],
             examples=[
                 "examples/data_and_curriculum_pipeline.py",
                 "examples/source_specific_parsers.py",
                 "examples/source_fixture_pack.json",
                 "examples/acquired_sources_manifest.jsonl",
+                "examples/source_samples/public_assessment_sample.csv",
             ],
             docs=[
                 "src/paideia_engines/data_acquisition/README.md",

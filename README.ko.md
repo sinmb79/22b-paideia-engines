@@ -124,6 +124,7 @@ decision = engine.record_experience(
 - Phase 11: acquired-source manifest diagnostics
 - Phase 12: subject-specific stress scenario packs
 - Phase 13: engine contract registry and validation
+- Phase 14: official adapter certification matrix
 
 ## 문서
 

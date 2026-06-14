@@ -36,6 +36,7 @@ When the Config Runner invokes a parser, it carries the validated `source_id`, `
 
 ```powershell
 python examples/source_specific_parsers.py
+python -m paideia_engines.cli certify-adapters --fixtures examples/source_fixture_pack.json --manifest examples/acquired_sources_manifest.jsonl --output .paideia-runs/adapter-certification.json
 python -m paideia_engines.cli diagnose-source --manifest examples/source_fixture_pack.json --output .paideia-runs/source-diagnostics.json
 ```
 
@@ -50,7 +51,8 @@ Use this order for every new parser fixture:
 1. Add only a public-safe local fixture export or a synthetic mini export.
 2. Register the fixture in an acquired-source manifest and run `diagnose-manifest`.
 3. Register the fixture in `examples/source_fixture_pack.json` and run `diagnose-source`.
-4. Run the parser only after manifest diagnostics and source fixture diagnostics pass.
+4. Run `certify-adapters` to prove the fixture links to a valid acquired-source manifest record.
+5. Run the parser only after manifest diagnostics, source fixture diagnostics, and adapter certification pass.
 
 Do not add original textbook PDFs/HWPs, exam PDFs/HWPs/audio/video, AI-Hub full corpora, private paths, or downloaded restricted source bundles to the public repository. Phase 14 will certify official adapter rows by linking parser fixtures to valid acquired-source manifests.
 

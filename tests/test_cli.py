@@ -130,8 +130,39 @@ def test_cli_diagnose_source_fixture_pack_writes_report(tmp_path):
     payload = json.loads(output_path.read_text(encoding="utf-8"))
     assert payload["schema"] == "paideia-source-fixture-pack-diagnostics/v1"
     assert payload["status"] == "passed"
-    assert payload["summary"]["total"] == 3
+    assert payload["summary"]["total"] == 4
     assert "source_diagnostics" in completed.stdout
+
+
+def test_cli_certify_adapters_writes_report(tmp_path):
+    output_path = tmp_path / "adapter-certification.json"
+
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "paideia_engines.cli",
+            "certify-adapters",
+            "--fixtures",
+            str(ROOT / "examples" / "source_fixture_pack.json"),
+            "--manifest",
+            str(ROOT / "examples" / "acquired_sources_manifest.jsonl"),
+            "--output",
+            str(output_path),
+        ],
+        cwd=ROOT,
+        env=_env(),
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+
+    payload = json.loads(output_path.read_text(encoding="utf-8"))
+    assert payload["schema"] == "paideia-adapter-certification-report/v1"
+    assert payload["status"] == "passed"
+    assert payload["summary"]["certification_count"] == 4
+    assert payload["summary"]["certified"] == 4
+    assert "adapter_certification" in completed.stdout
 
 
 def test_cli_diagnose_manifest_writes_report(tmp_path):

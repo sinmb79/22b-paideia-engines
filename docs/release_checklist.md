@@ -15,6 +15,7 @@ python examples\stress_and_promotion_pipeline.py
 python examples\governance_and_runtime_pipeline.py
 python examples\source_specific_parsers.py
 python -m paideia_engines.cli validate-contracts --repo-root . --output .paideia-runs\contract-validation.json
+python -m paideia_engines.cli certify-adapters --fixtures examples\source_fixture_pack.json --manifest examples\acquired_sources_manifest.jsonl --output .paideia-runs\adapter-certification.json
 python -m paideia_engines.cli diagnose-source --manifest examples\source_fixture_pack.json --output .paideia-runs\source-diagnostics.json
 python -m paideia_engines.cli diagnose-manifest --manifest examples\acquired_sources_manifest.jsonl --output .paideia-runs\manifest-diagnostics.json
 python -m paideia_engines.cli diagnose-stress-pack --pack examples\stress_packs\core_subject_stress_pack.json --output .paideia-runs\stress-pack-diagnostics.json
@@ -31,6 +32,7 @@ gh pr view 1 --json number,title,url,isDraft,headRefName,baseRefName,state,commi
 
 - README links to Korean documentation and engine documentation.
 - Engine contract validation passes and every engine has public API, schema, doc, example, and safety-boundary entries.
+- Adapter certification passes and every parser fixture links to a valid acquired-source manifest record.
 - Per-engine README files exist in every engine package.
 - `.paideia-runs/`, `.paideia-data/`, `.paideia-smoke/`, and local generated outputs are not staged.
 - Public seed data contains metadata only, not restricted textbook contents.

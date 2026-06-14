@@ -6,7 +6,7 @@ This roadmap tracks the work needed to turn the Paideia engine suite from a scaf
 
 ## Current Position
 
-The suite now has v0.2 cores for data acquisition, curriculum mapping, cultivation, assessment, stress, promotion, governance, runtime, and config-driven orchestration. Phase 6 adds release hardening. Phase 7 adds acquired-source validation reports and JSON adapters. Phase 8 adds NCIC/data.go.kr-style CSV parsing, AI-Hub-like math JSON parsing, public assessment CSV parsing, and public exam metadata manifests. Phase 9 adds parser diagnostics and public-safe fixture packs. Phase 10 adds configured-suite output validation. Phase 11 adds acquired-source manifest diagnostics. Phase 12 adds subject-specific stress packs. Phase 13 adds the public engine contract registry. The next depth work is official adapter certification with public-safe fixture exports under valid manifests.
+The suite now has v0.2 cores for data acquisition, curriculum mapping, cultivation, assessment, stress, promotion, governance, runtime, and config-driven orchestration. Phase 6 adds release hardening. Phase 7 adds acquired-source validation reports and JSON adapters. Phase 8 adds NCIC/data.go.kr-style CSV parsing, AI-Hub-like math JSON parsing, public assessment CSV parsing, and public exam metadata manifests. Phase 9 adds parser diagnostics and public-safe fixture packs. Phase 10 adds configured-suite output validation. Phase 11 adds acquired-source manifest diagnostics. Phase 12 adds subject-specific stress packs. Phase 13 adds the public engine contract registry. Phase 14 adds adapter certification that links parser fixtures to valid acquired-source manifest records. The next depth work is evaluation and benchmark fixtures.
 
 ## Phase 1: Data And Curriculum
 
@@ -240,13 +240,31 @@ Capabilities:
 - CLI command: `validate-contracts`
 - Pre-1.0 compatibility policy for additive changes, schema bumps, and deprecations
 
+## Phase 14: Official Adapter Certification Matrix
+
+Added:
+
+```text
+src/paideia_engines/data_acquisition/adapter_certification.py
+examples/source_samples/public_assessment_sample.csv
+tests/test_adapter_certification.py
+```
+
+Capabilities:
+
+- Adapter certification report that links source fixture diagnostics to acquired-source manifest diagnostics
+- CLI command: `certify-adapters`
+- Parser/source allowlist checks
+- Fixture path/hash/source_id linkage to acquired-source manifest records
+- Public-safe sample policy for synthetic, metadata-only, and open-public fixture exports
+- Public assessment CSV fixture coverage alongside NCIC/data.go.kr, AI-Hub-like, and EBSi metadata fixtures
+
 ## Next Development Order
 
-1. Official adapter certification matrix with public-safe fixture exports under valid manifests.
-2. Evaluation and benchmark pack for engine-by-engine regression testing.
-3. Persistent runtime and evidence store for replayable run bundles.
-4. Release candidate pipeline with wheel install smoke, CLI matrix, link/encoding checks, and concrete sensitive scans.
-5. Downstream reuse recipes for other 22B AI projects.
+1. Evaluation and benchmark pack for engine-by-engine regression testing.
+2. Persistent runtime and evidence store for replayable run bundles.
+3. Release candidate pipeline with wheel install smoke, CLI matrix, link/encoding checks, and concrete sensitive scans.
+4. Downstream reuse recipes for other 22B AI projects.
 
 ## Verification
 
@@ -258,6 +276,7 @@ python examples\assessment_and_cultivation_pipeline.py
 python examples\stress_and_promotion_pipeline.py
 python examples\governance_and_runtime_pipeline.py
 python -m paideia_engines.cli validate-contracts --repo-root . --output .paideia-runs\contract-validation.json
+python -m paideia_engines.cli certify-adapters --fixtures examples\source_fixture_pack.json --manifest examples\acquired_sources_manifest.jsonl --output .paideia-runs\adapter-certification.json
 python -m paideia_engines.cli diagnose-source --manifest examples\source_fixture_pack.json --output .paideia-runs\source-diagnostics.json
 python -m paideia_engines.cli diagnose-manifest --manifest examples\acquired_sources_manifest.jsonl --output .paideia-runs\manifest-diagnostics.json
 python -m paideia_engines.cli diagnose-stress-pack --pack examples\stress_packs\core_subject_stress_pack.json --output .paideia-runs\stress-pack-diagnostics.json

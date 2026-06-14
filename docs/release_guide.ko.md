@@ -29,6 +29,7 @@ python examples\stress_and_promotion_pipeline.py
 python examples\governance_and_runtime_pipeline.py
 python examples\source_specific_parsers.py
 python -m paideia_engines.cli validate-contracts --repo-root . --output .paideia-runs\contract-validation.json
+python -m paideia_engines.cli certify-adapters --fixtures examples\source_fixture_pack.json --manifest examples\acquired_sources_manifest.jsonl --output .paideia-runs\adapter-certification.json
 python -m paideia_engines.cli diagnose-source --manifest examples\source_fixture_pack.json --output .paideia-runs\source-diagnostics.json
 python -m paideia_engines.cli diagnose-manifest --manifest examples\acquired_sources_manifest.jsonl --output .paideia-runs\manifest-diagnostics.json
 python -m paideia_engines.cli diagnose-stress-pack --pack examples\stress_packs\core_subject_stress_pack.json --output .paideia-runs\stress-pack-diagnostics.json
@@ -55,6 +56,7 @@ python -m paideia_engines.cli smoke --engine all --output .paideia-runs\smoke.js
 - `result.json`: 전체 설정 기반 실행 결과입니다.
 - `.paideia-runs/engines/*.json`: 엔진별 출력입니다.
 - `contract-validation.json`: 공개 엔진 API, schema, 문서, 예제, 안전 경계 레지스트리 검증 결과입니다.
+- `adapter-certification.json`: parser fixture가 valid acquired-source manifest record와 연결되어 있음을 증명하는 adapter certification matrix입니다.
 - `manifest-diagnostics.json`: JSONL parsing, hash, duplicate record, license note, public-release safety를 확인하는 acquired-source manifest diagnostics입니다.
 - `stress-pack-diagnostics.json`: curriculum link, subject coverage, promotion-boundary cleanliness를 확인하는 stress scenario pack diagnostics입니다.
 - `02_acquisition_validation.json`: 확보 자료 검증 리포트입니다.

@@ -29,6 +29,7 @@ python examples\stress_and_promotion_pipeline.py
 python examples\governance_and_runtime_pipeline.py
 python examples\source_specific_parsers.py
 python -m paideia_engines.cli validate-contracts --repo-root . --output .paideia-runs\contract-validation.json
+python -m paideia_engines.cli certify-adapters --fixtures examples\source_fixture_pack.json --manifest examples\acquired_sources_manifest.jsonl --output .paideia-runs\adapter-certification.json
 python -m paideia_engines.cli diagnose-source --manifest examples\source_fixture_pack.json --output .paideia-runs\source-diagnostics.json
 python -m paideia_engines.cli diagnose-manifest --manifest examples\acquired_sources_manifest.jsonl --output .paideia-runs\manifest-diagnostics.json
 python -m paideia_engines.cli diagnose-stress-pack --pack examples\stress_packs\core_subject_stress_pack.json --output .paideia-runs\stress-pack-diagnostics.json
@@ -55,6 +56,7 @@ python -m paideia_engines.cli smoke --engine all --output .paideia-runs\smoke.js
 - `result.json`: full configured-suite result.
 - `.paideia-runs/engines/*.json`: per-engine outputs.
 - `contract-validation.json`: public engine API, schema, doc, example, and safety-boundary registry validation.
+- `adapter-certification.json`: adapter certification matrix proving parser fixtures link to valid acquired-source manifest records.
 - `manifest-diagnostics.json`: acquired-source manifest diagnostics for JSONL parsing, hashes, duplicate records, license notes, and public-release safety.
 - `stress-pack-diagnostics.json`: stress scenario pack diagnostics for curriculum links, subject coverage, and promotion-boundary cleanliness.
 - `02_acquisition_validation.json`: acquired-source validation report.

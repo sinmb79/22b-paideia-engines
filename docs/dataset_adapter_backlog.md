@@ -69,24 +69,30 @@ The Phase 12 stress pack adds reusable math, language, science, and evidence-rev
 
 The Phase 13 registry freezes the current public API, schema, documentation, example, and safety-boundary declarations for every reusable engine before deeper adapter certification and benchmark work.
 
+## Implemented In Phase 14
+
+- `certify_adapters(...)`
+- `certify_adapter_matrix(...)`
+- CLI command: `certify-adapters`
+- Public-safe adapter certification matrix report
+- Public assessment CSV fixture: `examples/source_samples/public_assessment_sample.csv`
+- Source fixture pack to acquired-source manifest linkage
+
+The Phase 14 certification layer proves that parser fixtures are not floating samples: each fixture must link to a valid acquired-source manifest record by source id, local path, and hash before it is treated as an official adapter certification row.
+
 ## Adapter Priorities
 
-1. **Official adapter certification matrix**
-   - Input: public-safe local fixture exports linked to a valid acquired-source manifest.
-   - Output: certified parser/source/schema rows for NCIC/data.go.kr, public assessment, AI-Hub-like, and public exam metadata adapters.
-   - Guardrail: keep HWP/PDF and restricted source parsing out of the public repo until explicit license evidence exists.
-
-2. **Public curriculum standards importer**
+1. **Public curriculum standards importer**
    - Input: official public curriculum files or manually prepared JSON.
    - Output: `CurriculumStandard` mappings.
    - Guardrail: preserve provider attribution and source URL.
 
-3. **Public assessment item importer**
+2. **Public assessment item importer**
    - Input: public example items or manually licensed item banks.
    - Output: `AssessmentItem` records.
    - Guardrail: no scraping restricted pages.
 
-4. **Benchmark and evaluation fixtures**
+3. **Benchmark and evaluation fixtures**
    - Input: public-safe expected-output fixtures for each engine.
    - Output: regression checks for engine contracts and release-readiness.
    - Guardrail: fixtures stay synthetic or metadata-only unless source rights are explicit.

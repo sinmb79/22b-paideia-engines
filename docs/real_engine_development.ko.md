@@ -6,7 +6,7 @@
 
 ## 현재 위치
 
-현재 엔진 모음은 데이터 확보, 교육과정 매핑, 육성, 평가, 스트레스, 승급, 거버넌스, 런타임, 설정 기반 오케스트레이션까지 v0.2 core를 갖추었습니다. Phase 6에서는 릴리스 하드닝을 추가했고, Phase 7에서는 확보 자료 validation report와 JSON 어댑터를 추가했습니다. Phase 8에서는 NCIC/data.go.kr 형식 CSV parsing, AI-Hub식 수학 JSON parsing, 공개 평가 CSV parsing, 공개 시험 metadata manifest를 추가했습니다. Phase 9에서는 parser diagnostics와 공개 안전 fixture pack을 추가했습니다. Phase 10에서는 configured-suite output validation을 추가했습니다. Phase 11에서는 acquired-source manifest diagnostics를 추가했습니다. Phase 12에서는 subject-specific stress pack을 추가했습니다. Phase 13에서는 공개 엔진 계약 레지스트리를 추가했습니다. 다음 심화 작업은 valid manifest 아래의 public-safe fixture export를 기준으로 한 official adapter certification입니다.
+현재 엔진 모음은 데이터 확보, 교육과정 매핑, 육성, 평가, 스트레스, 승급, 거버넌스, 런타임, 설정 기반 오케스트레이션까지 v0.2 core를 갖추었습니다. Phase 6에서는 릴리스 하드닝을 추가했고, Phase 7에서는 확보 자료 validation report와 JSON 어댑터를 추가했습니다. Phase 8에서는 NCIC/data.go.kr 형식 CSV parsing, AI-Hub식 수학 JSON parsing, 공개 평가 CSV parsing, 공개 시험 metadata manifest를 추가했습니다. Phase 9에서는 parser diagnostics와 공개 안전 fixture pack을 추가했습니다. Phase 10에서는 configured-suite output validation을 추가했습니다. Phase 11에서는 acquired-source manifest diagnostics를 추가했습니다. Phase 12에서는 subject-specific stress pack을 추가했습니다. Phase 13에서는 공개 엔진 계약 레지스트리를 추가했습니다. Phase 14에서는 parser fixture를 valid acquired-source manifest record와 연결하는 adapter certification을 추가했습니다. 다음 심화 작업은 evaluation and benchmark fixture입니다.
 
 ## Phase 1: 데이터와 교육과정
 
@@ -237,6 +237,7 @@ python examples\data_and_curriculum_pipeline.py
 python examples\assessment_and_cultivation_pipeline.py
 python examples\stress_and_promotion_pipeline.py
 python examples\governance_and_runtime_pipeline.py
+python -m paideia_engines.cli certify-adapters --fixtures examples\source_fixture_pack.json --manifest examples\acquired_sources_manifest.jsonl --output .paideia-runs\adapter-certification.json
 python -m paideia_engines.cli diagnose-source --manifest examples\source_fixture_pack.json --output .paideia-runs\source-diagnostics.json
 python -m paideia_engines.cli diagnose-manifest --manifest examples\acquired_sources_manifest.jsonl --output .paideia-runs\manifest-diagnostics.json
 python -m paideia_engines.cli diagnose-stress-pack --pack examples\stress_packs\core_subject_stress_pack.json --output .paideia-runs\stress-pack-diagnostics.json

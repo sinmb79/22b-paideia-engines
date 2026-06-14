@@ -380,10 +380,16 @@ from paideia_engines.data_acquisition.source_diagnostics import (
     diagnose_source_fixture_pack,
 )
 from paideia_engines.data_acquisition.manifest_diagnostics import diagnose_acquired_source_manifest
+from paideia_engines.data_acquisition.adapter_certification import (
+    certify_adapter_matrix,
+    certify_adapters,
+)
 
 
 __all__ = [
     "DataAcquisitionEngine",
+    "certify_adapter_matrix",
+    "certify_adapters",
     "diagnose_acquired_source_manifest",
     "diagnose_source_file",
     "diagnose_source_fixture_pack",
