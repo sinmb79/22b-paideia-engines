@@ -51,6 +51,15 @@ The Phase 10 validator reads existing local JSON outputs only. It does not rerun
 
 The Phase 11 diagnostics layer verifies acquired-source manifests before larger local textbook, exam, or AI-Hub corpora are wired into engines. It reads manifest records and local evidence only; it does not download, scrape, copy, or upload source content.
 
+## Implemented In Phase 12
+
+- `StressScenarioBank.from_file(...)`
+- `diagnose_stress_scenario_pack(...)`
+- CLI command: `diagnose-stress-pack`
+- Public-safe subject stress pack: `examples/stress_packs/core_subject_stress_pack.json`
+
+The Phase 12 stress pack adds reusable math, language, science, and evidence-review scenarios while preserving candidate-only promotion boundaries.
+
 ## Adapter Priorities
 
 1. **Public curriculum standards importer**
@@ -68,10 +77,10 @@ The Phase 11 diagnostics layer verifies acquired-source manifests before larger 
    - Output: normalized engine records plus parser diagnostics.
    - Guardrail: keep HWP/PDF and restricted source parsing out of the public repo until explicit license evidence exists.
 
-4. **Subject-specific stress fixture packs**
-   - Input: public-safe scenarios mapped to grade, subject, and standard IDs.
-   - Output: reusable stress banks for math, language, science, and evidence-review skills.
-   - Guardrail: stress packs emit candidate signals only; promotion decisions stay in the promotion engine.
+4. **Benchmark and evaluation fixtures**
+   - Input: public-safe expected-output fixtures for each engine.
+   - Output: regression checks for engine contracts and release-readiness.
+   - Guardrail: fixtures stay synthetic or metadata-only unless source rights are explicit.
 
 ## Deferred
 

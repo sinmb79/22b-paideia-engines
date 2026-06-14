@@ -285,6 +285,8 @@ def _build_stress_bank(config: dict[str, Any], standards: list[dict[str, Any]]) 
         [
             StressScenario(
                 scenario_id="phase5-contradictory-evidence",
+                subject=str(standards[0].get("subject", "math")) if standards else "math",
+                grade_band=f"{standards[0].get('school_level', 'elementary')}-{standards[0].get('grade', '3')}" if standards else "elementary-3",
                 stressor_type="contradiction",
                 prompt="One source says 245 + 130 = 365, another says 375. Resolve.",
                 expected_signal="evidence_reconciliation",

@@ -7,6 +7,8 @@ def test_stress_scenario_bank_builds_domain_scenarios():
         [
             StressScenario(
                 scenario_id="math_misconception_place_value",
+                subject="math",
+                grade_band="elementary-3",
                 stressor_type="misconception",
                 prompt="A learner says 245 + 130 = 365 because only tens changed.",
                 expected_signal="misconception_repair",
@@ -16,6 +18,8 @@ def test_stress_scenario_bank_builds_domain_scenarios():
             ),
             StressScenario(
                 scenario_id="math_time_pressure",
+                subject="math",
+                grade_band="elementary-3",
                 stressor_type="time_pressure",
                 prompt="Solve and explain 245 + 130 under a short time limit.",
                 expected_signal="robust_under_time_pressure",
@@ -38,6 +42,8 @@ def test_stress_engine_runs_scenario_bank_without_promotion_decision():
         [
             StressScenario(
                 scenario_id="contradictory_evidence_math",
+                subject="math",
+                grade_band="elementary-3",
                 stressor_type="contradiction",
                 prompt="One source says 245 + 130 = 365, another says 375. Resolve.",
                 expected_signal="evidence_reconciliation",
@@ -68,6 +74,8 @@ def test_stress_engine_flags_trap_failure_for_review():
         [
             StressScenario(
                 scenario_id="trap_item_math",
+                subject="math",
+                grade_band="elementary-3",
                 stressor_type="trap_item",
                 prompt="A misleading item asks for 245 + 130 but suggests 365.",
                 expected_signal="trap_detection",

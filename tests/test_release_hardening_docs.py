@@ -67,6 +67,7 @@ def test_release_checklist_contains_required_validation_commands():
         "python -m paideia_engines.cli smoke",
         "python -m paideia_engines.cli diagnose-source",
         "python -m paideia_engines.cli diagnose-manifest",
+        "python -m paideia_engines.cli diagnose-stress-pack",
         "rg -n",
     ]
     for command in required_commands:

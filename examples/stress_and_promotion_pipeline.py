@@ -20,6 +20,8 @@ def main() -> None:
         [
             StressScenario(
                 scenario_id="place_value_trap",
+                subject="math",
+                grade_band="elementary-3",
                 stressor_type="trap_item",
                 prompt="A misleading item asks for 245 + 130 but suggests 365.",
                 expected_signal="trap_detection",
@@ -29,6 +31,8 @@ def main() -> None:
             ),
             StressScenario(
                 scenario_id="contradictory_place_value_sources",
+                subject="math",
+                grade_band="elementary-3",
                 stressor_type="contradiction",
                 prompt="One source says 245 + 130 = 365, another says 375. Resolve.",
                 expected_signal="evidence_reconciliation",

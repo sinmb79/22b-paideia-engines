@@ -18,6 +18,7 @@ AI agents become hard to trust when training, evaluation, memory, runtime execut
 - **Cultivation Engine**: builds training blueprints and roadmaps.
 - **Assessment Engine**: scores outputs with deterministic rubrics and transcripts.
 - **Stress Engine**: runs resilience scenarios without directly promoting memory.
+- **Stress Pack Diagnostics**: validates subject stress packs before reuse.
 - **Promotion Engine**: promotes only verified high-quality experiences and quarantines weak ones.
 - **Governance Engine**: enforces local-first safety, boss review gates, and upload restrictions.
 - **Runtime Engine**: produces trace-first execution records and artifact manifests.
@@ -121,6 +122,7 @@ decision = engine.record_experience(
 - Phase 9: parser diagnostics and public-safe source fixture packs
 - Phase 10: configured-suite output validator
 - Phase 11: acquired-source manifest diagnostics
+- Phase 12: subject-specific stress scenario packs
 
 ## Documentation
 
@@ -161,6 +163,7 @@ decision = engine.record_experience(
 - Configured runs write `acquisition_validation` and `verification` JSON outputs.
 - Suite output validation checks per-engine files, schemas, and stress-to-promotion boundaries before release.
 - Manifest diagnostics block malformed, duplicate, unsafe, or non-public full-content source records before release.
+- Stress pack diagnostics keep subject scenarios curriculum-linked and promotion-boundary clean.
 
 ## License
 

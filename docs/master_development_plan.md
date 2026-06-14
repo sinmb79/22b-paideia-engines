@@ -18,6 +18,7 @@ The project is complete only when:
 - Cultivation creates learning roadmaps from curriculum units and licensed data sources.
 - Assessment supports item banks, answers, distractors, explanations, written-response scoring, and solution-process rubrics.
 - Stress simulates misconceptions, time pressure, contradictory evidence, trap items, and missing review.
+- Stress packs provide curriculum-linked subject scenarios while preserving the promotion boundary.
 - Promotion promotes only reviewed high-quality experiences and supports quarantine review, versioning, and supersession.
 - Governance enforces boss approval, copyright/license rules, external upload bans, risky permissions, and committee decision trails.
 - Runtime records traces, acceptance checklists, artifact manifests, and replayable execution evidence.
@@ -42,6 +43,7 @@ The project is complete only when:
 | 9 | Source parser diagnostics and fixture packs | Implemented v0.2 core |
 | 10 | Configured-suite output validator | Implemented v0.2 core |
 | 11 | Acquired-source manifest diagnostics | Implemented v0.2 core |
+| 12 | Subject-specific stress scenario packs | Implemented v0.2 core |
 
 ## Phase 0. Foundation
 
@@ -243,6 +245,23 @@ Completion criteria:
 - Duplicate source/path records block release validation.
 - Non-open full-content records are blocked for public release unless explicitly running in local-only mode.
 - Release checklist includes the manifest diagnostics CLI command.
+
+## Phase 12. Subject-Specific Stress Scenario Packs
+
+Delivered:
+
+- Public-safe subject stress scenario pack
+- Stress scenario pack loader
+- Stress scenario pack diagnostics
+- Promotion-boundary leak checks for `promotion_decision`, `ledger_version`, and `experience_id`
+- CLI command: `diagnose-stress-pack`
+
+Completion criteria:
+
+- Stress packs cover math, language, and science scenarios.
+- Every scenario links to at least one curriculum standard id.
+- Stress pack diagnostics reject promotion-decision or ledger records.
+- Release checklist includes the stress pack diagnostics CLI command.
 
 ## Active Branch And PR
 

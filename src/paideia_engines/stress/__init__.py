@@ -4,7 +4,11 @@ from __future__ import annotations
 
 from typing import Any, Iterable
 
-from paideia_engines.stress.scenario_bank import StressScenario, StressScenarioBank
+from paideia_engines.stress.scenario_bank import (
+    StressScenario,
+    StressScenarioBank,
+    diagnose_stress_scenario_pack,
+)
 
 
 class StressEngine:
@@ -157,4 +161,4 @@ class StressEngine:
         return max(0, min(100, score))
 
 
-__all__ = ["StressEngine", "StressScenario", "StressScenarioBank"]
+__all__ = ["StressEngine", "StressScenario", "StressScenarioBank", "diagnose_stress_scenario_pack"]

@@ -16,6 +16,7 @@ python examples\governance_and_runtime_pipeline.py
 python examples\source_specific_parsers.py
 python -m paideia_engines.cli diagnose-source --manifest examples\source_fixture_pack.json --output .paideia-runs\source-diagnostics.json
 python -m paideia_engines.cli diagnose-manifest --manifest examples\acquired_sources_manifest.jsonl --output .paideia-runs\manifest-diagnostics.json
+python -m paideia_engines.cli diagnose-stress-pack --pack examples\stress_packs\core_subject_stress_pack.json --output .paideia-runs\stress-pack-diagnostics.json
 python -m paideia_engines.cli run-config --config examples\configured_suite.json --output .paideia-runs\result.json --output-dir .paideia-runs\engines
 python -m paideia_engines.cli validate-suite-output --output-dir .paideia-runs\engines --result .paideia-runs\result.json --output .paideia-runs\suite-output-validation.json
 python -m paideia_engines.cli smoke --engine all --output .paideia-runs\smoke.json
@@ -34,6 +35,7 @@ gh pr view 1 --json number,title,url,isDraft,headRefName,baseRefName,state,commi
 - Public release validation does not use `--allow-local-only-full-content`.
 - Acquired-source manifests do not point to AI-Hub corpora, exam PDFs/HWPs/audio/video, or textbook originals inside `examples/`, `data/`, `docs/`, `src/`, or `tests/`.
 - Acquired-source manifests contain no private absolute paths such as `C:\Users\...`.
+- Stress packs contain no `promotion_decision`, `ledger_version`, or `experience_id` records.
 - PR body lists validation commands and current draft/ready status.
 
 ## Release Decision

@@ -13,6 +13,7 @@ from paideia_engines.orchestration.output_validator import (
     validate_configured_suite_outputs,
     validate_configured_suite_result,
 )
+from paideia_engines.stress import diagnose_stress_scenario_pack
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -46,6 +47,13 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Do not block non-open full-content records as public-release unsafe.",
     )
+
+    diagnose_stress_pack = subcommands.add_parser(
+        "diagnose-stress-pack",
+        help="Run stress scenario pack diagnostics.",
+    )
+    diagnose_stress_pack.add_argument("--pack", required=True, help="Path to a stress scenario pack JSON file.")
+    diagnose_stress_pack.add_argument("--output", required=True, help="Path to write the diagnostics report JSON.")
 
     validate_suite = subcommands.add_parser(
         "validate-suite-output",
@@ -99,6 +107,21 @@ def main(argv: Sequence[str] | None = None) -> int:
                 {
                     "wrote": output_path,
                     "manifest_diagnostics": result["summary"],
+                    "status": result["status"],
+                },
+                ensure_ascii=False,
+            )
+        )
+        return 0 if result["status"] == "passed" else 1
+
+    if args.command == "diagnose-stress-pack":
+        result = diagnose_stress_scenario_pack(args.pack)
+        output_path = write_json(args.output, result)
+        print(
+            json.dumps(
+                {
+                    "wrote": output_path,
+                    "stress_pack_diagnostics": result["summary"],
                     "status": result["status"],
                 },
                 ensure_ascii=False,

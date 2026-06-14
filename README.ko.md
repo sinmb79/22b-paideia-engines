@@ -18,6 +18,7 @@ AI 에이전트가 훈련, 평가, 기억, 실행, 통제를 하나의 불투명
 - **육성 엔진**: 훈련 청사진과 학습 로드맵을 만듭니다.
 - **평가 엔진**: 결정적 rubric과 transcript로 결과물을 평가합니다.
 - **스트레스 엔진**: 어려운 상황을 리허설하지만 기억을 직접 승급하지 않습니다.
+- **Stress pack diagnostics**: 과목별 stress pack을 재사용 전에 검증합니다.
 - **승급 엔진**: 검증된 고품질 경험만 승급하고 약한 경험은 격리합니다.
 - **거버넌스 엔진**: 로컬 우선 정책, 보스 검토 gate, 외부 업로드 제한을 적용합니다.
 - **런타임 엔진**: trace와 artifact manifest가 있는 실행 기록을 만듭니다.
@@ -121,6 +122,7 @@ decision = engine.record_experience(
 - Phase 9: parser diagnostics와 공개 안전 source fixture pack
 - Phase 10: configured-suite output validator
 - Phase 11: acquired-source manifest diagnostics
+- Phase 12: subject-specific stress scenario packs
 
 ## 문서
 
@@ -161,6 +163,7 @@ decision = engine.record_experience(
 - 설정 기반 실행은 `acquisition_validation`과 `verification` JSON 출력을 남김
 - Suite output validation은 릴리스 전에 엔진별 파일, schema, stress-to-promotion 경계를 검증함
 - Manifest diagnostics는 릴리스 전에 malformed, duplicate, unsafe, non-public full-content source record를 차단함
+- Stress pack diagnostics는 과목별 scenario가 curriculum-linked이고 promotion-boundary clean 상태인지 검증함
 
 ## 라이선스
 

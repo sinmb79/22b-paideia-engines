@@ -30,6 +30,7 @@ python examples\governance_and_runtime_pipeline.py
 python examples\source_specific_parsers.py
 python -m paideia_engines.cli diagnose-source --manifest examples\source_fixture_pack.json --output .paideia-runs\source-diagnostics.json
 python -m paideia_engines.cli diagnose-manifest --manifest examples\acquired_sources_manifest.jsonl --output .paideia-runs\manifest-diagnostics.json
+python -m paideia_engines.cli diagnose-stress-pack --pack examples\stress_packs\core_subject_stress_pack.json --output .paideia-runs\stress-pack-diagnostics.json
 ```
 
 ## CLI 실행
@@ -53,6 +54,7 @@ python -m paideia_engines.cli smoke --engine all --output .paideia-runs\smoke.js
 - `result.json`: 전체 설정 기반 실행 결과입니다.
 - `.paideia-runs/engines/*.json`: 엔진별 출력입니다.
 - `manifest-diagnostics.json`: JSONL parsing, hash, duplicate record, license note, public-release safety를 확인하는 acquired-source manifest diagnostics입니다.
+- `stress-pack-diagnostics.json`: curriculum link, subject coverage, promotion-boundary cleanliness를 확인하는 stress scenario pack diagnostics입니다.
 - `02_acquisition_validation.json`: 확보 자료 검증 리포트입니다.
 - `10_verification.json`: 설정 기반 실행의 최종 검증 요약입니다.
 - `suite-output-validation.json`: result JSON, 엔진별 파일, 스키마, stress-to-promotion 경계를 교차 검증하는 release-quality 리포트입니다.

@@ -232,3 +232,31 @@ def test_cli_validate_suite_output_writes_report(tmp_path):
     assert payload["status"] == "passed"
     assert payload["summary"]["failed"] == 0
     assert "suite_output_validation" in completed.stdout
+
+
+def test_cli_diagnose_stress_pack_writes_report(tmp_path):
+    output_path = tmp_path / "stress-pack-diagnostics.json"
+
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "paideia_engines.cli",
+            "diagnose-stress-pack",
+            "--pack",
+            str(ROOT / "examples" / "stress_packs" / "core_subject_stress_pack.json"),
+            "--output",
+            str(output_path),
+        ],
+        cwd=ROOT,
+        env=_env(),
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+
+    payload = json.loads(output_path.read_text(encoding="utf-8"))
+    assert payload["schema"] == "paideia-stress-scenario-pack-diagnostics/v1"
+    assert payload["status"] == "passed"
+    assert payload["summary"]["scenario_count"] >= 6
+    assert "stress_pack_diagnostics" in completed.stdout

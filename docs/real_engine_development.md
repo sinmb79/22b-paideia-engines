@@ -6,7 +6,7 @@ This roadmap tracks the work needed to turn the Paideia engine suite from a scaf
 
 ## Current Position
 
-The suite now has v0.2 cores for data acquisition, curriculum mapping, cultivation, assessment, stress, promotion, governance, runtime, and config-driven orchestration. Phase 6 adds release hardening. Phase 7 adds acquired-source validation reports and JSON adapters. Phase 8 adds NCIC/data.go.kr-style CSV parsing, AI-Hub-like math JSON parsing, public assessment CSV parsing, and public exam metadata manifests. Phase 9 adds parser diagnostics and public-safe fixture packs. Phase 10 adds configured-suite output validation. Phase 11 adds acquired-source manifest diagnostics. The next depth work is subject-specific stress packs.
+The suite now has v0.2 cores for data acquisition, curriculum mapping, cultivation, assessment, stress, promotion, governance, runtime, and config-driven orchestration. Phase 6 adds release hardening. Phase 7 adds acquired-source validation reports and JSON adapters. Phase 8 adds NCIC/data.go.kr-style CSV parsing, AI-Hub-like math JSON parsing, public assessment CSV parsing, and public exam metadata manifests. Phase 9 adds parser diagnostics and public-safe fixture packs. Phase 10 adds configured-suite output validation. Phase 11 adds acquired-source manifest diagnostics. Phase 12 adds subject-specific stress packs. The next depth work is official parser hardening with real public exports.
 
 ## Phase 1: Data And Curriculum
 
@@ -206,10 +206,26 @@ Capabilities:
 - Public-release guardrail for non-open full-content records
 - CLI command: `diagnose-manifest`
 
+## Phase 12: Subject-Specific Stress Packs
+
+Added:
+
+```text
+examples/stress_packs/core_subject_stress_pack.json
+tests/test_stress_scenario_packs.py
+```
+
+Capabilities:
+
+- Public-safe reusable stress pack for math, language, science, and evidence review
+- Stress pack JSON loader through `StressScenarioBank.from_file(...)`
+- Stress pack diagnostics for schema, unique ids, valid scenarios, curriculum links, subject coverage, and promotion-boundary cleanliness
+- CLI command: `diagnose-stress-pack`
+
 ## Next Development Order
 
-1. Broader stress scenario packs for subject-specific evaluation.
-2. Official format-specific parser hardening with real public-source exports under a valid manifest.
+1. Official format-specific parser hardening with real public-source exports under a valid manifest.
+2. Broader benchmark/evaluation fixtures for engine-by-engine regression testing.
 3. Ready PR/release preparation after final validation remains green.
 
 ## Verification
@@ -223,6 +239,7 @@ python examples\stress_and_promotion_pipeline.py
 python examples\governance_and_runtime_pipeline.py
 python -m paideia_engines.cli diagnose-source --manifest examples\source_fixture_pack.json --output .paideia-runs\source-diagnostics.json
 python -m paideia_engines.cli diagnose-manifest --manifest examples\acquired_sources_manifest.jsonl --output .paideia-runs\manifest-diagnostics.json
+python -m paideia_engines.cli diagnose-stress-pack --pack examples\stress_packs\core_subject_stress_pack.json --output .paideia-runs\stress-pack-diagnostics.json
 python -m paideia_engines.cli run-config --config examples\configured_suite.json --output .paideia-runs\result.json --output-dir .paideia-runs\engines
 python -m paideia_engines.cli validate-suite-output --output-dir .paideia-runs\engines --result .paideia-runs\result.json --output .paideia-runs\suite-output-validation.json
 python -m paideia_engines.cli smoke --engine all --output .paideia-runs\smoke.json

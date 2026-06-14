@@ -18,6 +18,7 @@
 - 육성은 교육과정 단위와 허가된 데이터 출처로 학습 로드맵을 만든다.
 - 평가는 문항 bank, 정답, 오답, 해설, 서술형 채점, 풀이과정 rubric을 처리한다.
 - 스트레스는 오개념, 시간 압박, 모순 자료, 함정 문항, 검토 누락을 시뮬레이션한다.
+- Stress pack은 promotion boundary를 지키면서 curriculum-linked 과목별 scenario를 제공한다.
 - 승급은 검토된 고품질 경험만 승급하고, 격리 재심사, 버전 관리, 대체 이력을 지원한다.
 - 거버넌스는 보스 승인, 저작권/라이선스 규칙, 외부 업로드 금지, 위험 권한, 위원회 판단 이력을 강제한다.
 - 런타임은 trace, checklist, artifact manifest, 재실행 가능한 실행 증거를 기록한다.
@@ -42,6 +43,7 @@
 | 9 | 출처 parser diagnostics와 fixture pack | v0.2 core 구현 |
 | 10 | configured-suite output validator | v0.2 core 구현 |
 | 11 | acquired-source manifest diagnostics | v0.2 core 구현 |
+| 12 | subject-specific stress scenario packs | v0.2 core 구현 |
 
 ## Phase 0. Foundation
 
@@ -243,6 +245,23 @@ python -m paideia_engines.cli smoke --engine all --output .paideia-runs/smoke.js
 - Duplicate source/path record는 release validation을 blocked로 만든다.
 - Non-open full-content record는 local-only mode를 명시하지 않는 한 public release에서 blocked가 된다.
 - Release checklist에 manifest diagnostics CLI 명령이 포함된다.
+
+## Phase 12. Subject-specific stress scenario packs
+
+산출물:
+
+- 공개 안전 과목별 stress scenario pack
+- Stress scenario pack loader
+- Stress scenario pack diagnostics
+- `promotion_decision`, `ledger_version`, `experience_id` promotion-boundary leak check
+- CLI 명령: `diagnose-stress-pack`
+
+완료 기준:
+
+- Stress pack은 수학, 국어/언어, 과학 scenario를 포함한다.
+- 모든 scenario는 적어도 하나의 curriculum standard id에 연결된다.
+- Stress pack diagnostics는 promotion-decision 또는 ledger record를 거부한다.
+- Release checklist에 stress pack diagnostics CLI 명령이 포함된다.
 
 ## 현재 브랜치와 PR
 
