@@ -15,8 +15,16 @@ This release extends `22b-paideia-engines` with deterministic contracts and gove
 
 ## Validation
 
-- `22b-paideia-engines`: 259 tests passed.
-- Kibo targeted tests: 9 tests passed.
+- `22b-paideia-engines`: 263 tests passed.
+- Kibo targeted tests: 13 tests passed.
+
+## Post-Review Hardening
+
+- High-risk direct reuse is now consistently forbidden in governance.
+- Namespaced validation failures such as `validation_failure:self_critic_gate` and `validation_failure:failure_memory` block direct reuse.
+- Quarantined patterns remain quarantined unless a separate governance process changes status.
+- Failed exams are treated as failed evidence even with high numeric scores.
+- Kibo is now listed in the engine contract registry and engine documentation index.
 
 <details>
 <summary>한국어 설명 보기</summary>
@@ -38,7 +46,15 @@ This release extends `22b-paideia-engines` with deterministic contracts and gove
 
 ## 검증
 
-- `22b-paideia-engines`: 전체 259개 테스트 통과
-- Kibo targeted test: 9개 통과
+- `22b-paideia-engines`: 전체 263개 테스트 통과
+- Kibo targeted test: 13개 통과
+
+## 리뷰 후 보강
+
+- high-risk direct reuse를 governance에서 일관되게 금지했습니다.
+- `validation_failure:self_critic_gate`, `validation_failure:failure_memory` 같은 namespaced validation failure도 direct reuse를 차단합니다.
+- quarantined pattern은 별도 governance 절차 없이는 자동 복구되지 않습니다.
+- failed exam은 숫자 점수가 높아도 실패 evidence로 처리합니다.
+- Kibo를 engine contract registry와 engine documentation index에 등록했습니다.
 
 </details>

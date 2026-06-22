@@ -56,6 +56,7 @@ The command fails if a required engine is missing from the registry, if contract
 - Runtime
 - Orchestration
 - Evaluation
+- Kibo
 
 ## Trust Boundary Notes
 
@@ -71,5 +72,6 @@ The command fails if a required engine is missing from the registry, if contract
 - Promotion trust config is validated at engine initialization: `owner` must be a non-empty string without surrounding whitespace, and `minimum_score` must be an integer between 0 and 100.
 - PromotionEngine only promotes review.status == `verified`; PromotionDecision.from_review also requires review.status == `verified`. `approved` and `passed` are accepted by generic ReviewLabel helpers but are not sufficient for active-memory promotion or promotion decisions.
 - Assessment may count a verified artifact for deterministic rubric scoring, but release-grade promotion must treat it as evidence only after runtime evidence validation proves file existence, byte hash, manifest hash, and replay trace.
+- Kibo direct reuse must fail closed. High-risk tasks cannot use direct reuse, validation-failure markers block direct reuse, and quarantined Kibo records or Pattern Candidates remain blockers until a separate governance review changes their status.
 
 The registry lives in `src/paideia_engines/contracts/registry.py`.

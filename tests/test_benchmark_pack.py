@@ -88,7 +88,7 @@ def test_benchmark_pack_passes_release_ready_evidence(tmp_path):
     assert report["checks"]["golden_engine_schemas_match"] is True
     assert report["checks"]["mutation_expectations_declared"] is True
     assert report["checks"]["thresholds_met"] is True
-    assert report["measurements"]["contract_validation"]["count"] == 10
+    assert report["measurements"]["contract_validation"]["count"] == 11
     assert report["measurements"]["runtime_evidence_validation"]["count"] == 1
 
 

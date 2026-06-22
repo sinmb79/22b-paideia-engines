@@ -25,7 +25,11 @@ def reinforce_pattern(
 ) -> dict[str, Any]:
     related_exams = [exam for exam in exam_results if exam.pattern_id == pattern.pattern_id]
     related_outcomes = [outcome for outcome in outcomes if outcome.pattern_id == pattern.pattern_id]
-    exam_score = _average([exam.score for exam in related_exams], pattern.exam_score)
+    exam_failed = any((not exam.passed) or bool(exam.mistakes) for exam in related_exams)
+    exam_score = _average(
+        [exam.score if exam.passed and not exam.mistakes else 0.0 for exam in related_exams],
+        pattern.exam_score,
+    )
     real_world_score = _real_world_score(related_outcomes, pattern.real_world_score)
     feedback_score = _average(
         [outcome.user_feedback_score / 10 for outcome in related_outcomes if outcome.user_feedback_score is not None],
@@ -33,7 +37,7 @@ def reinforce_pattern(
     )
     failure_penalty = _failure_penalty(related_outcomes)
     critic_passed = any(report.pattern_id == pattern.pattern_id and report.pass_gate for report in critic_reports)
-    critical_failure = any((outcome.error_type or "") in CRITICAL_FAILURE_TYPES for outcome in related_outcomes)
+    critical_failure = any((outcome.error_type or "").casefold() in CRITICAL_FAILURE_TYPES for outcome in related_outcomes)
     reinforcement_score = (
         0.35 * (exam_score or 0.0)
         + 0.40 * (real_world_score or 0.0)
@@ -42,7 +46,13 @@ def reinforce_pattern(
         - 0.30 * failure_penalty
     )
     reinforcement_score = max(0.0, min(1.0, reinforcement_score))
-    status = _status_for_score(reinforcement_score, critical_failure=critical_failure, critic_passed=critic_passed)
+    status = _status_for_score(
+        reinforcement_score,
+        critical_failure=critical_failure,
+        critic_passed=critic_passed,
+        current_status=pattern.status,
+        exam_failed=exam_failed,
+    )
     updated = replace(
         pattern,
         exam_score=exam_score,
@@ -83,14 +93,25 @@ def _failure_penalty(outcomes: list[RealWorldOutcome]) -> float:
         return 0.0
     failures = [outcome for outcome in outcomes if not outcome.success or outcome.error_type]
     penalty = len(failures) / len(outcomes)
-    if any((outcome.error_type or "") in CRITICAL_FAILURE_TYPES for outcome in failures):
+    if any((outcome.error_type or "").casefold() in CRITICAL_FAILURE_TYPES for outcome in failures):
         penalty += 0.5
     return max(0.0, min(1.0, penalty))
 
 
-def _status_for_score(score: float, *, critical_failure: bool, critic_passed: bool) -> str:
+def _status_for_score(
+    score: float,
+    *,
+    critical_failure: bool,
+    critic_passed: bool,
+    current_status: str,
+    exam_failed: bool = False,
+) -> str:
+    if current_status == "quarantined":
+        return "quarantined"
     if critical_failure:
         return "quarantined"
+    if exam_failed:
+        return "draft" if score >= 0.40 else "weakened"
     if score >= 0.85:
         return "reinforced" if critic_passed else "field_validated"
     if score >= 0.70:

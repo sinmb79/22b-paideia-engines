@@ -86,6 +86,34 @@ def test_critical_failure_quarantines_pattern():
     assert report["pattern"]["status"] == "quarantined"
 
 
+def test_quarantined_pattern_stays_quarantined_after_success():
+    pattern = _pattern(status="quarantined", exam_score=0.9, real_world_score=0.9, reinforcement_score=0.9)
+    report = reinforce_pattern(
+        pattern,
+        outcomes=[
+            RealWorldOutcome("outcome-1", pattern.pattern_id, "task-1", "now", "task", True, 1.0, None, 10, None, ())
+        ],
+        critic_reports=[CriticReport("critic-1", pattern.pattern_id, (), (), (), ("guard",), True)],
+    )
+
+    assert report["pattern"]["status"] == "quarantined"
+
+
+def test_failed_exam_blocks_exam_validation_despite_high_score():
+    pattern = _pattern(status="draft")
+    report = reinforce_pattern(
+        pattern,
+        exam_results=[
+            PatternExamResult("exam-1", pattern.pattern_id, "task-1", 0.95, False, ("mistake",), ())
+        ],
+        outcomes=[
+            RealWorldOutcome("outcome-1", pattern.pattern_id, "task-1", "now", "task", True, 0.9, None, 9, None, ())
+        ],
+    )
+
+    assert report["pattern"]["status"] == "draft"
+
+
 def test_governance_blocks_high_risk_pattern_without_critic_gate():
     task = TaskFingerprint(
         task_id="task-1",
@@ -120,4 +148,35 @@ def test_governance_blocks_high_risk_pattern_without_critic_gate():
     review = evaluate_kibo_governance(decision, task=task)
 
     assert review["decision"] == "blocked"
-    assert "self_critic_gate_required" in review["blocked_reasons"]
+    assert "high_risk_direct_reuse_forbidden" in review["blocked_reasons"]
+    assert "validation_required_before_direct_reuse" in review["blocked_reasons"]
+
+
+def test_governance_blocks_namespaced_validation_failure_for_direct_reuse():
+    decision = ReuseDecision(
+        decision_id="reuse-1",
+        task_id="task-1",
+        selected_kibo_ids=("kibo-1",),
+        similarity_score=0.9,
+        confidence_score=0.8,
+        risk_score=0.1,
+        reuse_mode="direct_reuse",
+        llm_required_parts=("validation_failure:failure_memory",),
+        reason="test",
+    )
+
+    review = evaluate_kibo_governance(decision)
+
+    assert review["decision"] == "blocked"
+    assert "validation_required_before_direct_reuse" in review["blocked_reasons"]
+
+
+def test_mixed_case_high_risk_is_normalized():
+    task = TaskFingerprint.from_dict(
+        {
+            "task_id": "task-1",
+            "risk_level": "HIGH",
+        }
+    )
+
+    assert task.risk_level == "high"

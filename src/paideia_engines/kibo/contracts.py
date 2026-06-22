@@ -33,6 +33,11 @@ def _tuple(value: Any) -> tuple[str, ...]:
     return (str(value),)
 
 
+def _risk_level(value: Any, default: str = "medium") -> str:
+    risk = str(value or default).casefold()
+    return risk if risk in {"low", "medium", "high"} else default
+
+
 @dataclass(frozen=True)
 class TaskFingerprint:
     task_id: str
@@ -46,6 +51,9 @@ class TaskFingerprint:
     freshness_required: bool
     expected_output_type: str
     user_style_markers: tuple[str, ...]
+
+    def __post_init__(self) -> None:
+        object.__setattr__(self, "risk_level", _risk_level(self.risk_level))
 
     def to_dict(self) -> dict[str, Any]:
         data = asdict(self)
@@ -64,7 +72,7 @@ class TaskFingerprint:
             intent=str(data.get("intent") or "answer_user_request"),
             constraints=_tuple(data.get("constraints")),
             required_capabilities=_tuple(data.get("required_capabilities")),
-            risk_level=str(data.get("risk_level") or "medium"),
+            risk_level=_risk_level(data.get("risk_level")),
             freshness_required=bool(data.get("freshness_required")),
             expected_output_type=str(data.get("expected_output_type") or "response"),
             user_style_markers=_tuple(data.get("user_style_markers")),

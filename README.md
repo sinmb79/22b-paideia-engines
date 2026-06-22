@@ -17,6 +17,7 @@ AI agents become hard to trust when training, evaluation, memory, runtime execut
 - **Engine Contract Registry**: freezes public APIs, schemas, docs, examples, and safety boundaries.
 - **Suite Output Validator**: cross-checks configured-suite result JSON and per-engine outputs before release.
 - **Evaluation Engine**: validates benchmark packs against release evidence and regression thresholds.
+- **Kibo Engine**: governs reviewed Kibo reuse and Pattern Candidate reinforcement with fail-closed direct reuse gates.
 - **Curriculum Mapping Engine**: maps standards into learning units.
 - **Cultivation Engine**: builds training blueprints and roadmaps.
 - **Assessment Engine**: scores outputs with deterministic rubrics and transcripts.
@@ -140,6 +141,7 @@ decision = engine.record_experience(
 - Phase 16: persistent runtime evidence store
 - Phase 17: release candidate pipeline
 - Phase 18: downstream reuse recipes
+- Phase 19: Kibo pattern reinforcement governance
 
 ## Documentation
 

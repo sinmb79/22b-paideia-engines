@@ -56,6 +56,7 @@ python -m paideia_engines.cli validate-contracts `
 - 런타임
 - 오케스트레이션
 - 평가/벤치마크
+- Kibo
 
 ## 신뢰 경계 노트
 
@@ -71,5 +72,6 @@ python -m paideia_engines.cli validate-contracts `
 - Promotion trust config is validated at engine initialization: `owner`는 surrounding whitespace가 없는 non-empty string이어야 하며, `minimum_score`는 0 and 100 사이의 integer여야 합니다.
 - PromotionEngine only promotes review.status == `verified`; PromotionDecision.from_review also requires review.status == `verified`. `approved` and `passed`는 generic ReviewLabel helper에서는 허용되지만 active-memory promotion 또는 promotion decision에는 충분하지 않습니다.
 - 평가 엔진은 결정적 rubric scoring을 위해 verified artifact를 셀 수 있지만, release-grade promotion은 runtime evidence validation이 파일 존재, byte hash, manifest hash, replay trace를 증명한 뒤에만 이를 증거로 신뢰해야 합니다.
+- Kibo direct reuse는 fail-closed여야 합니다. high-risk task는 direct reuse를 사용할 수 없고, validation-failure marker는 direct reuse를 차단하며, quarantined Kibo record 또는 Pattern Candidate는 별도 governance review 전까지 blocker로 유지됩니다.
 
 레지스트리는 `src/paideia_engines/contracts/registry.py`에 있습니다.

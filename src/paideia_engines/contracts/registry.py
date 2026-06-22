@@ -22,6 +22,7 @@ REQUIRED_ENGINE_NAMES = {
     "runtime",
     "orchestration",
     "evaluation",
+    "kibo",
 }
 
 
@@ -350,6 +351,54 @@ def engine_contracts() -> list[EngineContract]:
                 "release readiness fails closed when suite outputs or evidence reports are missing",
             ],
             compatibility="Benchmark thresholds and checks are additive before 1.0; removed checks require a migration note.",
+        ),
+        EngineContract(
+            name="kibo",
+            package="paideia_engines.kibo",
+            version="0.2",
+            status="phase19_pattern_reinforcement",
+            public_api=[
+                "TaskFingerprint",
+                "KiboRecord",
+                "ReuseDecision",
+                "PatternCandidate",
+                "PatternExamResult",
+                "RealWorldOutcome",
+                "FailureMemory",
+                "CriticReport",
+                "decide_reuse",
+                "evaluate_kibo_governance",
+                "evaluate_kibo_outcome",
+                "reinforce_pattern",
+            ],
+            input_schemas=[
+                "paideia-task-fingerprint/v1",
+                "paideia-kibo-record/v1",
+                "paideia-pattern-candidate/v1",
+                "paideia-pattern-exam-result/v1",
+                "paideia-real-world-outcome/v1",
+                "paideia-critic-report/v1",
+            ],
+            output_schemas=[
+                "paideia-kibo-reuse-decision/v1",
+                "paideia-kibo-governance-review/v1",
+                "paideia-kibo-outcome-evaluation/v1",
+                "paideia-pattern-reinforcement-review/v1",
+            ],
+            cli_commands=[],
+            examples=[],
+            docs=[
+                "src/paideia_engines/kibo/README.md",
+                "src/paideia_engines/kibo/README.ko.md",
+            ],
+            safety_boundaries=[
+                "reviewable Kibo records only",
+                "hidden chain-of-thought is never reusable input",
+                "quarantined records and patterns are runtime blockers",
+                "high-risk direct reuse is forbidden",
+                "pattern reinforcement is deterministic and local-first",
+            ],
+            compatibility="Additive pattern fields are allowed before 1.0; direct reuse gates must fail closed.",
         ),
     ]
 
