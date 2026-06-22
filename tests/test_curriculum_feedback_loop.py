@@ -78,6 +78,14 @@ def test_repeated_failures_increase_weakness_severity_and_recurrence():
     assert weaknesses[0].severity >= 0.85
 
 
+def test_existing_weakness_merge_does_not_duplicate_same_evidence():
+    first = detect_weaknesses([_failure()], domain="investment_research")[0]
+    merged = detect_weaknesses([_failure()], domain="investment_research", existing_weaknesses=[first])[0]
+
+    assert merged.evidence_refs == first.evidence_refs
+    assert merged.recurrence_count == 1
+
+
 def test_weakness_generates_curriculum_plan_with_related_skills():
     weakness = detect_weaknesses([_failure()], domain="investment_research")[0]
     plan = generate_curriculum_plan(weakness, related_skills=("liquidity", "bond_market"))
@@ -103,7 +111,7 @@ def test_curriculum_plan_generates_adaptive_exam():
     exam = generate_adaptive_exam(plan, weakness=weakness)
 
     assert exam.curriculum_id == plan.curriculum_id
-    assert exam.difficulty == "advanced"
+    assert exam.difficulty == "remediation"
     assert len(exam.questions) >= 5
 
 
@@ -112,10 +120,13 @@ def test_exam_completion_reduces_or_increases_weakness():
 
     passed = apply_curriculum_completion(weakness, passed=True, score=0.9)
     failed = apply_curriculum_completion(weakness, passed=False, score=0.3)
+    below_target = apply_curriculum_completion(weakness, passed=True, score=0.6, target_score=0.85)
 
     assert passed["updated_weakness"]["severity"] < weakness.severity
     assert failed["updated_weakness"]["severity"] > weakness.severity
     assert failed["updated_weakness"]["recurrence_count"] == 3
+    assert below_target["effective_passed"] is False
+    assert below_target["updated_weakness"]["severity"] > weakness.severity
 
 
 def test_high_severity_weakness_blocks_direct_reuse_governance():
@@ -163,6 +174,40 @@ def test_high_severity_weakness_blocks_direct_reuse_governance():
     assert review["decision"] == "blocked"
     assert "active_weakness_blocks_direct_reuse" in review["blocked_reasons"]
     assert "high_severity_weakness_requires_reexam" in review["blocked_reasons"]
+
+
+def test_single_high_failure_weakness_blocks_direct_reuse_governance():
+    task = TaskFingerprint(
+        "task-1",
+        "Boss",
+        "investment_research",
+        "comparative_analysis",
+        "assess",
+        (),
+        ("macro_regime_analysis",),
+        "medium",
+        False,
+        "report",
+        (),
+    )
+    decision = ReuseDecision(
+        "reuse-1",
+        "task-1",
+        ("kibo-1",),
+        0.9,
+        0.9,
+        0.1,
+        "direct_reuse",
+        (),
+        "test",
+    )
+    weakness = detect_weaknesses([_failure()], domain="investment_research")[0]
+
+    review = evaluate_kibo_governance(decision, task=task, weakness_records=[weakness])
+
+    assert weakness.severity == 0.75
+    assert review["decision"] == "blocked"
+    assert "active_weakness_blocks_direct_reuse" in review["blocked_reasons"]
 
 
 def test_repeated_weakness_prevents_reinforcement_without_remediation():

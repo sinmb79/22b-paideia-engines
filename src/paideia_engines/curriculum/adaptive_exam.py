@@ -7,6 +7,7 @@ from .contracts import AdaptiveExam, CurriculumPlan, WeaknessRecord
 
 
 ADAPTIVE_EXAM_GENERATION_SCHEMA = "paideia-adaptive-exam-generation-report/v1"
+HIGH_WEAKNESS_THRESHOLD = 0.75
 
 
 def generate_adaptive_exam(
@@ -65,9 +66,9 @@ def _difficulty(weakness: WeaknessRecord | None, *, recent_improvement: bool) ->
         return "maintenance"
     if weakness is None:
         return "standard"
-    if weakness.recurrence_count >= 3:
+    if weakness.recurrence_count >= 3 or weakness.severity >= HIGH_WEAKNESS_THRESHOLD:
         return "remediation"
-    if weakness.severity >= 0.8:
+    if weakness.severity >= 0.6:
         return "advanced"
     return "standard"
 
@@ -80,7 +81,7 @@ def _question_count(weakness: WeaknessRecord | None, *, recent_improvement: bool
     count = 3
     if weakness.severity >= 0.6:
         count += 1
-    if weakness.severity >= 0.8:
+    if weakness.severity >= HIGH_WEAKNESS_THRESHOLD:
         count += 1
     count += min(3, max(0, weakness.recurrence_count - 1))
     return count

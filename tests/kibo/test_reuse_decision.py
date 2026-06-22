@@ -1,3 +1,4 @@
+from paideia_engines.curriculum import WeaknessRecord
 from paideia_engines.kibo import KiboRecord, TaskFingerprint, decide_reuse, score_reuse_candidate
 
 
@@ -60,3 +61,22 @@ def test_different_domain_scores_lower():
     score = score_reuse_candidate(_task(domain="investment_research"), _record())
 
     assert score["reuse_score"] < 0.65
+
+
+def test_decide_reuse_downgrades_direct_reuse_for_active_weakness():
+    weakness = WeaknessRecord(
+        "weakness-1",
+        "Boss",
+        "software_agent_engineering",
+        "code_inspection",
+        "reasoning_gap",
+        ("failure-1",),
+        0.75,
+        1,
+    )
+
+    decision = decide_reuse(_task(), [_record()], weakness_records=[weakness])
+
+    assert decision.reuse_mode == "reference_only"
+    assert "validation_failure:active_weakness" in decision.llm_required_parts
+    assert decision.reason == "active_weakness_blocks_direct_reuse"

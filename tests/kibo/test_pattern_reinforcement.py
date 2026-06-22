@@ -180,3 +180,40 @@ def test_mixed_case_high_risk_is_normalized():
     )
 
     assert task.risk_level == "high"
+
+
+def test_reinforcement_requires_specific_remediated_weakness_ids():
+    pattern = _pattern(
+        status="field_validated",
+        exam_score=0.95,
+        real_world_score=0.95,
+        reinforcement_score=0.9,
+    )
+    weakness = {
+        "weakness_id": "weakness-code-inspection",
+        "owner": "Boss",
+        "domain": "software_agent_engineering",
+        "skill_id": "code_inspection",
+        "severity": 0.75,
+        "recurrence_count": 1,
+    }
+    common = {
+        "exam_results": [PatternExamResult("exam-1", pattern.pattern_id, "task-1", 0.95, True, (), ())],
+        "outcomes": [
+            RealWorldOutcome("outcome-1", pattern.pattern_id, "task-1", "now", "task", True, 0.95, None, 10, None, ())
+        ],
+        "critic_reports": [CriticReport("critic-1", pattern.pattern_id, (), (), (), ("guard",), True)],
+        "weakness_records": [weakness],
+    }
+
+    unremediated = reinforce_pattern(pattern, curriculum_remediated=True, **common)
+    remediated = reinforce_pattern(
+        pattern,
+        curriculum_remediated=True,
+        remediated_weakness_ids=("weakness-code-inspection",),
+        **common,
+    )
+
+    assert unremediated["pattern"]["status"] != "reinforced"
+    assert unremediated["pattern"]["reinforcement_score"] <= 0.69
+    assert remediated["pattern"]["status"] == "reinforced"

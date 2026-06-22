@@ -6,6 +6,7 @@ from .contracts import ReuseDecision, TaskFingerprint
 
 
 GOVERNANCE_SCHEMA = "paideia-kibo-governance-review/v1"
+HIGH_WEAKNESS_THRESHOLD = 0.75
 
 
 def evaluate_kibo_governance(
@@ -33,12 +34,12 @@ def evaluate_kibo_governance(
         weakness for weakness in weakness_records if _weakness_applies_to_task(weakness, task)
     ]
     if decision.reuse_mode == "direct_reuse" and any(
-        _weakness_severity(weakness) >= 0.8 or _weakness_recurrence(weakness) >= 3
+        _weakness_severity(weakness) >= HIGH_WEAKNESS_THRESHOLD or _weakness_recurrence(weakness) >= 3
         for weakness in applicable_weaknesses
     ):
         blocked_reasons.append("active_weakness_blocks_direct_reuse")
     if decision.pattern_status in {"field_validated", "reinforced"} and any(
-        _weakness_severity(weakness) >= 0.8 for weakness in applicable_weaknesses
+        _weakness_severity(weakness) >= HIGH_WEAKNESS_THRESHOLD for weakness in applicable_weaknesses
     ):
         blocked_reasons.append("high_severity_weakness_requires_reexam")
     if any(_weakness_recurrence(weakness) >= 3 for weakness in applicable_weaknesses):
@@ -65,10 +66,13 @@ def _weakness_applies_to_task(weakness: Any, task: TaskFingerprint | None) -> bo
         return True
     domain = str(getattr(weakness, "domain", "") or _mapping_get(weakness, "domain") or "general")
     skill_id = str(getattr(weakness, "skill_id", "") or _mapping_get(weakness, "skill_id") or "")
+    owner = str(getattr(weakness, "owner", "") or _mapping_get(weakness, "owner") or "")
+    if owner and owner != task.owner:
+        return False
     if domain not in {"", "general", task.domain}:
         return False
-    task_terms = {item.casefold() for item in task.required_capabilities + task.constraints}
-    return not skill_id or skill_id.casefold() in task_terms or domain == task.domain
+    task_terms = {item.casefold() for item in task.required_capabilities + task.constraints + (task.intent, task.task_type)}
+    return not skill_id or skill_id.casefold() in task_terms
 
 
 def _weakness_severity(weakness: Any) -> float:

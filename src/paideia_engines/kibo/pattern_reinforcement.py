@@ -7,6 +7,7 @@ from .contracts import CriticReport, PatternCandidate, PatternExamResult, RealWo
 
 
 PATTERN_REINFORCEMENT_SCHEMA = "paideia-pattern-reinforcement-review/v1"
+HIGH_WEAKNESS_THRESHOLD = 0.75
 CRITICAL_FAILURE_TYPES = {
     "freshness_error",
     "domain_mismatch",
@@ -24,6 +25,7 @@ def reinforce_pattern(
     reuse_stability_score: float = 0.5,
     weakness_records: Iterable[Any] = (),
     curriculum_remediated: bool = False,
+    remediated_weakness_ids: Iterable[str] = (),
 ) -> dict[str, Any]:
     related_exams = [exam for exam in exam_results if exam.pattern_id == pattern.pattern_id]
     related_outcomes = [outcome for outcome in outcomes if outcome.pattern_id == pattern.pattern_id]
@@ -58,8 +60,16 @@ def reinforce_pattern(
     active_weaknesses = [
         weakness for weakness in weakness_records if _weakness_applies_to_pattern(weakness, pattern)
     ]
-    if active_weaknesses and not curriculum_remediated:
-        status = _status_after_active_weakness(status, active_weaknesses)
+    remediated_ids = {str(item) for item in remediated_weakness_ids if str(item)}
+    unremediated_weaknesses = [
+        weakness for weakness in active_weaknesses if _weakness_id(weakness) not in remediated_ids
+    ]
+    if unremediated_weaknesses:
+        status = _status_after_active_weakness(status, unremediated_weaknesses)
+        reinforcement_score = min(
+            reinforcement_score,
+            _score_cap_after_active_weakness(unremediated_weaknesses),
+        )
     updated = replace(
         pattern,
         exam_score=exam_score,
@@ -77,6 +87,8 @@ def reinforce_pattern(
             "failure_penalty": round(failure_penalty, 4),
             "active_weakness_count": len(active_weaknesses),
             "curriculum_remediated": curriculum_remediated,
+            "remediated_weakness_ids": tuple(sorted(remediated_ids)),
+            "unremediated_weakness_count": len(unremediated_weaknesses),
         },
     }
 
@@ -137,20 +149,41 @@ def _status_after_active_weakness(status: str, weakness_records: list[Any]) -> s
         return status
     if any(_weakness_recurrence(weakness) >= 3 for weakness in weakness_records):
         return "weakened"
-    if any(_weakness_severity(weakness) >= 0.8 for weakness in weakness_records):
+    if any(_weakness_severity(weakness) >= HIGH_WEAKNESS_THRESHOLD for weakness in weakness_records):
         return "exam_validated" if status in {"field_validated", "reinforced"} else status
     if status == "reinforced":
         return "field_validated"
     return status
 
 
+def _score_cap_after_active_weakness(weakness_records: list[Any]) -> float:
+    if any(_weakness_recurrence(weakness) >= 3 for weakness in weakness_records):
+        return 0.39
+    if any(_weakness_severity(weakness) >= HIGH_WEAKNESS_THRESHOLD for weakness in weakness_records):
+        return 0.69
+    return 0.69
+
+
 def _weakness_applies_to_pattern(weakness: Any, pattern: PatternCandidate) -> bool:
     domain = str(getattr(weakness, "domain", None) or _mapping_get(weakness, "domain") or "general")
     skill_id = str(getattr(weakness, "skill_id", None) or _mapping_get(weakness, "skill_id") or "")
+    owner = str(getattr(weakness, "owner", None) or _mapping_get(weakness, "owner") or "")
+    if owner and owner != pattern.owner:
+        return False
     if domain not in {"", "general", pattern.domain}:
         return False
-    pattern_terms = {item.casefold() for item in pattern.required_conditions + pattern.abstract_strategy}
-    return not skill_id or skill_id.casefold() in pattern_terms or domain == pattern.domain
+    pattern_terms = {
+        item.casefold()
+        for item in pattern.required_conditions
+        + pattern.abstract_strategy
+        + pattern.known_failure_modes
+        + (pattern.task_family,)
+    }
+    return not skill_id or skill_id.casefold() in pattern_terms
+
+
+def _weakness_id(weakness: Any) -> str:
+    return str(getattr(weakness, "weakness_id", None) or _mapping_get(weakness, "weakness_id") or "")
 
 
 def _weakness_severity(weakness: Any) -> float:

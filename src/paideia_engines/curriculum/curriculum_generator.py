@@ -7,6 +7,7 @@ from .contracts import CurriculumPlan, WeaknessRecord
 
 
 CURRICULUM_GENERATION_SCHEMA = "paideia-curriculum-generation-report/v1"
+HIGH_WEAKNESS_THRESHOLD = 0.75
 
 LESSON_MAP: dict[str, tuple[str, ...]] = {
     "freshness_gap": ("source_recency_checks", "current_data_verification", "staleness_risk_review"),
@@ -84,7 +85,7 @@ def build_curriculum_generation_report(
 
 
 def target_score_for_weakness(weakness: WeaknessRecord) -> float:
-    if weakness.severity >= 0.8 or weakness.recurrence_count >= 3:
+    if weakness.severity >= HIGH_WEAKNESS_THRESHOLD or weakness.recurrence_count >= 3:
         return 0.85
     if weakness.severity >= 0.6:
         return 0.80

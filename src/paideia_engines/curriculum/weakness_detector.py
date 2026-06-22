@@ -31,6 +31,7 @@ SEVERITY_MAP = {
     "catastrophic": 0.95,
     "fatal": 1.00,
 }
+HIGH_WEAKNESS_THRESHOLD = SEVERITY_MAP["high"]
 
 
 def detect_weaknesses(
@@ -70,11 +71,12 @@ def detect_weaknesses(
         )
         current["evidence_refs"].extend(weakness.evidence_refs)
         current["severity"] = max(current["severity"], weakness.severity)
-        current["recurrence_count"] += weakness.recurrence_count
+        current["recurrence_count"] = max(current["recurrence_count"], weakness.recurrence_count)
 
     records: list[WeaknessRecord] = []
     for (record_owner, record_domain, skill_id, weakness_type), values in sorted(grouped.items()):
-        recurrence_count = int(values["recurrence_count"])
+        evidence_refs = tuple(dict.fromkeys(str(item) for item in values["evidence_refs"] if str(item)))
+        recurrence_count = max(int(values["recurrence_count"]), len(evidence_refs))
         recurrence_boost = min(0.20, 0.05 * max(0, recurrence_count - 1))
         severity = max(0.0, min(1.0, float(values["severity"]) + recurrence_boost))
         records.append(
@@ -84,7 +86,7 @@ def detect_weaknesses(
                 domain=record_domain,
                 skill_id=skill_id,
                 weakness_type=weakness_type,
-                evidence_refs=tuple(dict.fromkeys(str(item) for item in values["evidence_refs"] if str(item))),
+                evidence_refs=evidence_refs,
                 severity=severity,
                 recurrence_count=recurrence_count,
             )
@@ -124,12 +126,19 @@ def apply_curriculum_completion(
     *,
     passed: bool,
     score: float,
+    target_score: float | None = None,
+    evidence_refs: Iterable[str] = (),
 ) -> dict[str, Any]:
     normalized_score = max(0.0, min(1.0, float(score)))
-    if passed:
+    target = max(0.0, min(1.0, float(target_score))) if target_score is not None else 0.75
+    completion_refs = tuple(str(ref) for ref in evidence_refs if str(ref))
+    updated_refs = tuple(dict.fromkeys((*weakness.evidence_refs, *completion_refs)))
+    effective_passed = bool(passed and normalized_score >= target)
+    if effective_passed:
         reduction = max(0.10, 0.25 * normalized_score)
         updated = replace(
             weakness,
+            evidence_refs=updated_refs,
             severity=max(0.0, weakness.severity - reduction),
             recurrence_count=max(0, weakness.recurrence_count - 1),
         )
@@ -137,6 +146,7 @@ def apply_curriculum_completion(
     else:
         updated = replace(
             weakness,
+            evidence_refs=updated_refs,
             severity=min(1.0, weakness.severity + 0.10),
             recurrence_count=weakness.recurrence_count + 1,
         )
@@ -145,7 +155,10 @@ def apply_curriculum_completion(
         "schema": CURRICULUM_COMPLETION_SCHEMA,
         "weakness_id": weakness.weakness_id,
         "passed": passed,
+        "effective_passed": effective_passed,
         "score": round(normalized_score, 4),
+        "target_score": round(target, 4),
+        "evidence_refs": completion_refs,
         "action": action,
         "updated_weakness": updated.to_dict(),
     }
@@ -175,7 +188,7 @@ def severity_value(severity: str | float | int) -> float:
 
 
 def weakness_blocks_direct_reuse(weakness: WeaknessRecord) -> bool:
-    return weakness.severity >= 0.8 or weakness.recurrence_count >= 3
+    return weakness.severity >= HIGH_WEAKNESS_THRESHOLD or weakness.recurrence_count >= 3
 
 
 def _stable_id(prefix: str, *parts: object) -> str:
