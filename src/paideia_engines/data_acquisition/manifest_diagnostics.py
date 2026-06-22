@@ -62,7 +62,13 @@ def diagnose_acquired_source_manifest(
     checks["content_scopes_supported"] = _check_content_scopes(records, issues)
     checks["no_duplicate_records"] = _check_duplicate_records(records, issues)
     checks["no_auto_download_requests"] = _check_auto_download_requests(records, issues)
-    checks["no_personal_absolute_paths"] = _check_personal_absolute_paths(records, issues, public_release=public_release)
+    checks["no_personal_absolute_paths"] = _check_personal_absolute_paths(
+        records,
+        issues,
+        manifest_dir=resolved_path.parent,
+        storage_root=Path(storage_root).resolve() if storage_root is not None else None,
+        public_release=public_release,
+    )
 
     engine = DataAcquisitionEngine(
         default_seed_catalog(),
@@ -240,6 +246,8 @@ def _check_personal_absolute_paths(
     records: list[dict[str, Any]],
     issues: list[dict[str, Any]],
     *,
+    manifest_dir: Path,
+    storage_root: Path | None,
     public_release: bool,
 ) -> bool:
     clean = True
@@ -247,7 +255,13 @@ def _check_personal_absolute_paths(
         return clean
     for record in records:
         raw_path = str(record.get("local_path", "")).strip()
-        if raw_path and PERSONAL_PATH_PATTERN.search(raw_path):
+        path = Path(raw_path) if raw_path else None
+        path_is_local_fixture = False
+        if path is not None and path.is_absolute():
+            path_is_local_fixture = _is_under_repo(path, manifest_dir) or (
+                storage_root is not None and _is_under_repo(path, storage_root)
+            )
+        if raw_path and PERSONAL_PATH_PATTERN.search(raw_path) and not path_is_local_fixture:
             clean = False
             issues.append(
                 _issue(
