@@ -57,6 +57,7 @@ python -m paideia_engines.cli validate-contracts `
 - 오케스트레이션
 - 평가/벤치마크
 - Kibo
+- Closed-Loop Curriculum
 
 ## 신뢰 경계 노트
 

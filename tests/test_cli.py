@@ -404,7 +404,7 @@ def test_cli_validate_contracts_writes_report(tmp_path):
     payload = json.loads(output_path.read_text(encoding="utf-8"))
     assert payload["schema"] == "paideia-engine-contract-validation/v1"
     assert payload["status"] == "passed"
-    assert payload["summary"]["engine_count"] == 11
+    assert payload["summary"]["engine_count"] == 12
     assert payload["summary"]["failed"] == 0
     assert "contract_validation" in completed.stdout
 

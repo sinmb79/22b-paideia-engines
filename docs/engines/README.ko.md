@@ -8,6 +8,7 @@
 | --- | --- | --- |
 | 데이터 확보 | [한국어](../../src/paideia_engines/data_acquisition/README.ko.md) | [README](../../src/paideia_engines/data_acquisition/README.md) |
 | 교육과정 매핑 | [한국어](../../src/paideia_engines/curriculum_mapping/README.ko.md) | [README](../../src/paideia_engines/curriculum_mapping/README.md) |
+| Closed-Loop Curriculum | [한국어](../../src/paideia_engines/curriculum/README.ko.md) | [README](../../src/paideia_engines/curriculum/README.md) |
 | 육성 | [한국어](../../src/paideia_engines/cultivation/README.ko.md) | [README](../../src/paideia_engines/cultivation/README.md) |
 | 평가 | [한국어](../../src/paideia_engines/assessment/README.ko.md) | [README](../../src/paideia_engines/assessment/README.md) |
 | 스트레스 | [한국어](../../src/paideia_engines/stress/README.ko.md) | [README](../../src/paideia_engines/stress/README.md) |

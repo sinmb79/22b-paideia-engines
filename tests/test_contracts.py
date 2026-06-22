@@ -135,6 +135,7 @@ def test_engine_contract_registry_lists_every_reusable_engine():
     assert names == {
         "data_acquisition",
         "curriculum_mapping",
+        "curriculum",
         "cultivation",
         "assessment",
         "stress",
@@ -153,6 +154,7 @@ def test_engine_contract_registry_lists_every_reusable_engine():
             "phase13_contract_frozen",
             "phase15_benchmark_gate",
             "phase19_pattern_reinforcement",
+            "phase20_closed_loop_curriculum",
         }
 
 
@@ -161,7 +163,7 @@ def test_engine_contract_registry_validation_passes_current_repo():
 
     assert report["schema"] == "paideia-engine-contract-validation/v1"
     assert report["status"] == "passed"
-    assert report["summary"]["engine_count"] == 11
+    assert report["summary"]["engine_count"] == 12
     assert report["summary"]["failed"] == 0
     assert report["issues"] == []
 

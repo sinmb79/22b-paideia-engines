@@ -8,6 +8,7 @@ Each Paideia engine is documented in its package folder so it can be used as an 
 | --- | --- | --- |
 | Data Acquisition | [README](../../src/paideia_engines/data_acquisition/README.md) | [한국어](../../src/paideia_engines/data_acquisition/README.ko.md) |
 | Curriculum Mapping | [README](../../src/paideia_engines/curriculum_mapping/README.md) | [한국어](../../src/paideia_engines/curriculum_mapping/README.ko.md) |
+| Closed-Loop Curriculum | [README](../../src/paideia_engines/curriculum/README.md) | [한국어](../../src/paideia_engines/curriculum/README.ko.md) |
 | Cultivation | [README](../../src/paideia_engines/cultivation/README.md) | [한국어](../../src/paideia_engines/cultivation/README.ko.md) |
 | Assessment | [README](../../src/paideia_engines/assessment/README.md) | [한국어](../../src/paideia_engines/assessment/README.ko.md) |
 | Stress | [README](../../src/paideia_engines/stress/README.md) | [한국어](../../src/paideia_engines/stress/README.ko.md) |

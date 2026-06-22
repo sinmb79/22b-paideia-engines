@@ -2,7 +2,7 @@
 
 [한국어](README.ko.md)
 
-Paideia Engines is a local-first Python engine suite for building AI agent growth systems. The agent itself is only one product. The engines inside it are reusable assets: data acquisition, curriculum mapping, cultivation, assessment, stress rehearsal, promotion, governance, runtime tracing, and orchestration.
+Paideia Engines is a local-first Python engine suite for building AI agent growth systems. The agent itself is only one product. The engines inside it are reusable assets: data acquisition, curriculum mapping, closed-loop curriculum remediation, cultivation, assessment, stress rehearsal, promotion, governance, runtime tracing, and orchestration.
 
 This repository is designed so each engine can be used independently or combined through a config-driven suite runner.
 
@@ -19,6 +19,7 @@ AI agents become hard to trust when training, evaluation, memory, runtime execut
 - **Evaluation Engine**: validates benchmark packs against release evidence and regression thresholds.
 - **Kibo Engine**: governs reviewed Kibo reuse and Pattern Candidate reinforcement with fail-closed direct reuse gates.
 - **Curriculum Mapping Engine**: maps standards into learning units.
+- **Closed-Loop Curriculum Engine**: converts reviewed failures into WeaknessRecords, targeted CurriculumPlans, and AdaptiveExams before reinforcement is restored.
 - **Cultivation Engine**: builds training blueprints and roadmaps.
 - **Assessment Engine**: scores outputs with deterministic rubrics and transcripts.
 - **Stress Engine**: runs resilience scenarios without directly promoting memory.
