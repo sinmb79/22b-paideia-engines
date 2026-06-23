@@ -1,0 +1,91 @@
+{
+  "$id": "https://github.com/sinmb79/22b-paideia-engines/schemas/kibo-v2/validation_profile.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "adversarial_exam_passed": {
+      "type": "boolean"
+    },
+    "behavioral_exam_passed": {
+      "type": "boolean"
+    },
+    "contract_hash": {
+      "maxLength": 64,
+      "minLength": 64,
+      "type": "string"
+    },
+    "critic_clearance_passed": {
+      "type": "boolean"
+    },
+    "evidence_fresh_until": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "evidence_refs": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "far_transfer_passed": {
+      "type": "boolean"
+    },
+    "field_validation_passed": {
+      "type": "boolean"
+    },
+    "high_risk_eligible": {
+      "type": "boolean"
+    },
+    "near_transfer_passed": {
+      "type": "boolean"
+    },
+    "pattern_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "pattern_version": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "profile_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "schema": {
+      "const": "paideia-kibo-v2-validation-profile/v2"
+    },
+    "schema_version": {
+      "pattern": "^2\\.",
+      "type": "string"
+    },
+    "shadow_validation_passed": {
+      "type": "boolean"
+    },
+    "structural_exam_passed": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "schema",
+    "schema_version",
+    "contract_hash",
+    "profile_id",
+    "pattern_id",
+    "pattern_version",
+    "structural_exam_passed",
+    "behavioral_exam_passed",
+    "near_transfer_passed",
+    "far_transfer_passed",
+    "adversarial_exam_passed",
+    "shadow_validation_passed",
+    "field_validation_passed",
+    "critic_clearance_passed",
+    "evidence_fresh_until",
+    "high_risk_eligible",
+    "evidence_refs"
+  ],
+  "title": "Paideia Kibo V2 Pattern Validation Profile",
+  "type": "object"
+}

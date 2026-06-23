@@ -8,6 +8,10 @@ from .registry import (
     engine_contracts,
     validate_engine_contract_registry,
 )
+from .compatibility_manifest import (
+    cross_repo_compatibility_manifest,
+    validate_cross_repo_compatibility_manifest,
+)
 
 __all__ = [
     "EngineContract",
@@ -16,7 +20,9 @@ __all__ = [
     "QuarantineDecision",
     "ReviewLabel",
     "default_local_policy",
+    "cross_repo_compatibility_manifest",
     "engine_contract_registry",
     "engine_contracts",
+    "validate_cross_repo_compatibility_manifest",
     "validate_engine_contract_registry",
 ]

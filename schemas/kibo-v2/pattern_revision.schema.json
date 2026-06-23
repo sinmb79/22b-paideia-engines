@@ -1,0 +1,86 @@
+{
+  "$id": "https://github.com/sinmb79/22b-paideia-engines/schemas/kibo-v2/pattern_revision.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "contract_hash": {
+      "maxLength": 64,
+      "minLength": 64,
+      "type": "string"
+    },
+    "evidence_refs": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "from_pattern_version": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "pattern_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "proposed_changes": {
+      "items": {
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "proposed_pattern_version": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "requires_behavioral_exam": {
+      "type": "boolean"
+    },
+    "requires_shadow_validation": {
+      "type": "boolean"
+    },
+    "revision_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "revision_reasons": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "schema": {
+      "const": "paideia-kibo-v2-pattern-revision/v2"
+    },
+    "schema_version": {
+      "pattern": "^2\\.",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "draft",
+        "quarantined",
+        "testing",
+        "accepted",
+        "rejected",
+        "rolled_back"
+      ]
+    }
+  },
+  "required": [
+    "schema",
+    "schema_version",
+    "contract_hash",
+    "revision_id",
+    "pattern_id",
+    "from_pattern_version",
+    "proposed_pattern_version",
+    "revision_reasons",
+    "proposed_changes",
+    "evidence_refs",
+    "requires_behavioral_exam",
+    "requires_shadow_validation",
+    "status"
+  ],
+  "title": "Paideia Kibo V2 Pattern Revision Proposal",
+  "type": "object"
+}

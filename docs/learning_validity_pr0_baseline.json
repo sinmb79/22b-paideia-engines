@@ -1,0 +1,34 @@
+{
+  "schema": "paideia-learning-validity-pr0-baseline/v1",
+  "captured_at": "2026-06-23T10:40:00+09:00",
+  "repository": "sinmb79/22b-paideia-engines",
+  "branch": "feature/independent-edge-brain-foundation",
+  "scope": "PR-0 Baseline Freeze and Gap Reproduction",
+  "production_behavior_changed": false,
+  "cli_baseline": {
+    "command": "$env:PYTHONPATH='src'; python -m paideia_engines.cli --help",
+    "exit_code": 0,
+    "commands": [
+      "run-config",
+      "smoke",
+      "diagnose-source",
+      "certify-adapters",
+      "validate-contracts",
+      "validate-benchmarks",
+      "persist-runtime-evidence",
+      "validate-runtime-evidence",
+      "replay-runtime-evidence",
+      "validate-release-candidate"
+    ]
+  },
+  "test_baseline": {
+    "command": "$env:PYTHONPATH='src'; $env:PYTHONDONTWRITEBYTECODE='1'; python -m pytest -q -p no:cacheprovider",
+    "result": "280 passed, 1 xfailed in 51.28s"
+  },
+  "known_gap_xfail_tests": [
+    {
+      "test": "tests/kibo/test_learning_validity_known_gaps.py::test_known_gap_cross_repo_contracts_lack_canonical_v2_registry",
+      "reason": "Canonical contracts_v2/schema_registry are not implemented yet, so cross-repo v1 contract drift remains possible."
+    }
+  ]
+}

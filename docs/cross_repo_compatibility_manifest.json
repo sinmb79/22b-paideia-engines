@@ -1,0 +1,17 @@
+{
+  "contract_hashes": {
+    "action_pattern": "43b6758c4958e2cf5ca771b3370bbe3873dc3891790a58a266b8358533058a16",
+    "attribution_report": "c4cd84c4b94e7b65a3680fcc934fa964efd5737294616165319305202fb381fc",
+    "behavioral_exam": "69d41d062d7622da2478ddf7b580fbc419a66d4ee780287482eabd13b19cb795",
+    "case_graph": "ba9bb89c3cec4765e724c86d48831640e4fb6b62ff7b5a688bdc0b27bffe384e",
+    "outcome_evidence": "b2810348bbea25774f4decafbc6a69e397a63c3d7c6f7daa53e7c45e5cb0ec7a",
+    "pattern_revision": "4dc93f38f077b8c40321bfe329fa60b0d91358134bb56ff7ccbd1ba095a62935",
+    "token_usage_receipt": "5d618a99d4b53788ea5897650304150114bdb75b652dbabfd3e5e7345326265a",
+    "validation_profile": "c5f0db475c04b5fe90deb023452b278b2427f1d5ae1dcd8c84a22f24943f7bf0"
+  },
+  "contracts_release": "2.0.0",
+  "genius_derivation": ">=0.x,<1.0",
+  "paideia_agent": ">=0.x,<1.0",
+  "paideia_engines": ">=0.x,<1.0",
+  "schema": "paideia-cross-repo-compatibility/v1"
+}

@@ -6,6 +6,7 @@ import sys
 import pytest
 
 from paideia_engines.release_candidate import validate_release_candidate
+from tests._wheel_smoke import build_wheel_from_clean_source
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -210,23 +211,7 @@ def test_wheel_install_smoke_runs_cli_from_installed_package(tmp_path):
     venv_dir = tmp_path / "venv"
     output_path = tmp_path / "installed-smoke-console.json"
     module_output_path = tmp_path / "installed-smoke-module.json"
-    subprocess.run(
-        [
-            *python_cmd,
-            "-m",
-            "pip",
-            "wheel",
-            ".",
-            "--no-deps",
-            "--no-build-isolation",
-            "--wheel-dir",
-            str(wheel_dir),
-        ],
-        cwd=ROOT,
-        text=True,
-        capture_output=True,
-        check=True,
-    )
+    build_wheel_from_clean_source(python_cmd, root=ROOT, tmp_path=tmp_path, wheel_dir=wheel_dir)
     wheel = next(wheel_dir.glob("paideia_engines-*.whl"))
     try:
         subprocess.run(

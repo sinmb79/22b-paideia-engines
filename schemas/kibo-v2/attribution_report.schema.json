@@ -1,0 +1,122 @@
+{
+  "$id": "https://github.com/sinmb79/22b-paideia-engines/schemas/kibo-v2/attribution_report.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "attribution_confidence": {
+      "maximum": 1,
+      "minimum": 0,
+      "type": "number"
+    },
+    "comparison_baseline": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "confounders": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "contract_hash": {
+      "maxLength": 64,
+      "minLength": 64,
+      "type": "string"
+    },
+    "environment_contribution": {
+      "maximum": 1,
+      "minimum": 0,
+      "type": "number"
+    },
+    "human_contribution": {
+      "maximum": 1,
+      "minimum": 0,
+      "type": "number"
+    },
+    "llm_contribution": {
+      "maximum": 1,
+      "minimum": 0,
+      "type": "number"
+    },
+    "outcome_evidence_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "pattern_contribution": {
+      "maximum": 1,
+      "minimum": 0,
+      "type": "number"
+    },
+    "report_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "schema": {
+      "const": "paideia-kibo-v2-attribution-report/v2"
+    },
+    "schema_version": {
+      "pattern": "^2\\.",
+      "type": "string"
+    },
+    "step_credits": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "causal_confidence": {
+            "maximum": 1,
+            "minimum": 0,
+            "type": "number"
+          },
+          "contribution_score": {
+            "maximum": 1,
+            "minimum": -1,
+            "type": "number"
+          },
+          "reason_codes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "step_id": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "step_id",
+          "contribution_score",
+          "causal_confidence",
+          "reason_codes"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "tool_contribution": {
+      "maximum": 1,
+      "minimum": 0,
+      "type": "number"
+    }
+  },
+  "required": [
+    "schema",
+    "schema_version",
+    "contract_hash",
+    "report_id",
+    "outcome_evidence_id",
+    "pattern_contribution",
+    "llm_contribution",
+    "tool_contribution",
+    "human_contribution",
+    "environment_contribution",
+    "attribution_confidence",
+    "confounders",
+    "comparison_baseline",
+    "step_credits"
+  ],
+  "title": "Paideia Kibo V2 Outcome Attribution Report",
+  "type": "object"
+}

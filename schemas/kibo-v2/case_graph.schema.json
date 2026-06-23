@@ -1,0 +1,285 @@
+{
+  "$id": "https://github.com/sinmb79/22b-paideia-engines/schemas/kibo-v2/case_graph.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "action_steps": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "action_type": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "capability": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "input_refs": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "output_ref": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "receipt_ref": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "step_id": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "step_id",
+          "action_type",
+          "capability",
+          "input_refs",
+          "output_ref",
+          "receipt_ref"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "branch_events": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "event_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "predicate": {
+            "additionalProperties": false,
+            "properties": {
+              "field": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "op": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "predicate_id": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "value": {}
+            },
+            "required": [
+              "predicate_id",
+              "op",
+              "field",
+              "value"
+            ],
+            "type": "object"
+          },
+          "selected_step_id": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "event_id",
+          "predicate",
+          "selected_step_id"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "case_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "constraints": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "constraint_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "predicate": {
+            "additionalProperties": false,
+            "properties": {
+              "field": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "op": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "predicate_id": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "value": {}
+            },
+            "required": [
+              "predicate_id",
+              "op",
+              "field",
+              "value"
+            ],
+            "type": "object"
+          },
+          "severity": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "constraint_id",
+          "predicate",
+          "severity"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "context_variables": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "value": {},
+          "value_type": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "value_type",
+          "value"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "contract_hash": {
+      "maxLength": 64,
+      "minLength": 64,
+      "type": "string"
+    },
+    "domain": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "evidence_hashes": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "failure_refs": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "goal": {
+      "type": "string"
+    },
+    "observations": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "freshness_ms": {
+            "minimum": 0,
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "observation_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "value_type": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "observation_id",
+          "name",
+          "value_type",
+          "required",
+          "freshness_ms"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "outcome_refs": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "owner": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "schema": {
+      "const": "paideia-kibo-v2-case-graph/v2"
+    },
+    "schema_version": {
+      "pattern": "^2\\.",
+      "type": "string"
+    },
+    "source_kibo_ids": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "task_family": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema",
+    "schema_version",
+    "contract_hash",
+    "case_id",
+    "owner",
+    "domain",
+    "task_family",
+    "goal",
+    "context_variables",
+    "observations",
+    "constraints",
+    "action_steps",
+    "branch_events",
+    "outcome_refs",
+    "failure_refs",
+    "source_kibo_ids",
+    "evidence_hashes"
+  ],
+  "title": "Paideia Kibo V2 Case Graph",
+  "type": "object"
+}

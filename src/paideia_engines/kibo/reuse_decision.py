@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import re
 from typing import Any
 
@@ -172,9 +173,12 @@ def _weakness_severity(weakness: Any) -> float:
     if value is None:
         value = _mapping_get(weakness, "severity")
     try:
-        return max(0.0, min(1.0, float(value)))
+        numeric = float(value)
     except (TypeError, ValueError):
         return 0.0
+    if not math.isfinite(numeric):
+        return 0.0
+    return max(0.0, min(1.0, numeric))
 
 
 def _weakness_recurrence(weakness: Any) -> int:

@@ -1,0 +1,194 @@
+{
+  "$id": "https://github.com/sinmb79/22b-paideia-engines/schemas/kibo-v2/outcome_evidence.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "action_receipt_refs": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "artifact_hashes": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "baseline_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "binary_success": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "confidence": {
+      "maximum": 1,
+      "minimum": 0,
+      "type": "number"
+    },
+    "contract_hash": {
+      "maxLength": 64,
+      "minLength": 64,
+      "type": "string"
+    },
+    "environment_fingerprint": {
+      "type": "string"
+    },
+    "evidence_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "observed_at": {
+      "type": "string"
+    },
+    "outcome_latency_seconds": {
+      "minimum": 0,
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "pattern_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "pattern_version": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "provenance": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "artifact_hash": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "confidence": {
+            "maximum": 1,
+            "minimum": 0,
+            "type": "number"
+          },
+          "source_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "source_type": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "source_id",
+          "source_type",
+          "confidence",
+          "artifact_hash"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "run_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "safety_score": {
+      "maximum": 1,
+      "minimum": 0,
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "schema": {
+      "const": "paideia-kibo-v2-outcome-evidence/v2"
+    },
+    "schema_version": {
+      "pattern": "^2\\.",
+      "type": "string"
+    },
+    "started_at": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "pending",
+        "verified",
+        "contested",
+        "invalidated",
+        "expired"
+      ]
+    },
+    "task_difficulty": {
+      "maximum": 1,
+      "minimum": 0,
+      "type": "number"
+    },
+    "task_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "technical_score": {
+      "maximum": 1,
+      "minimum": 0,
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "user_utility_score": {
+      "maximum": 1,
+      "minimum": 0,
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "verifier_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "verifier_type": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema",
+    "schema_version",
+    "contract_hash",
+    "evidence_id",
+    "pattern_id",
+    "pattern_version",
+    "task_id",
+    "run_id",
+    "environment_fingerprint",
+    "task_difficulty",
+    "started_at",
+    "observed_at",
+    "outcome_latency_seconds",
+    "technical_score",
+    "safety_score",
+    "user_utility_score",
+    "binary_success",
+    "baseline_ref",
+    "verifier_type",
+    "verifier_id",
+    "provenance",
+    "action_receipt_refs",
+    "artifact_hashes",
+    "confidence",
+    "status"
+  ],
+  "title": "Paideia Kibo V2 Outcome Evidence",
+  "type": "object"
+}

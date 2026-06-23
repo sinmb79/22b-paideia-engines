@@ -6,6 +6,8 @@ import sys
 
 import pytest
 
+from tests._wheel_smoke import build_wheel_from_clean_source
+
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -45,23 +47,7 @@ def installed_package(tmp_path_factory: pytest.TempPathFactory) -> dict[str, Pat
     venv_dir = tmp_path / "venv"
     downstream_dir = tmp_path / "downstream-project"
     downstream_dir.mkdir()
-    subprocess.run(
-        [
-            *python_cmd,
-            "-m",
-            "pip",
-            "wheel",
-            ".",
-            "--no-deps",
-            "--no-build-isolation",
-            "--wheel-dir",
-            str(wheel_dir),
-        ],
-        cwd=ROOT,
-        text=True,
-        capture_output=True,
-        check=True,
-    )
+    build_wheel_from_clean_source(python_cmd, root=ROOT, tmp_path=tmp_path, wheel_dir=wheel_dir)
     wheel = next(wheel_dir.glob("paideia_engines-*.whl"))
     try:
         subprocess.run(

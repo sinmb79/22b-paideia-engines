@@ -1,0 +1,512 @@
+{
+  "$id": "https://github.com/sinmb79/22b-paideia-engines/schemas/kibo-v2/action_pattern.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "abort_conditions": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "field": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "op": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "predicate_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "value": {}
+        },
+        "required": [
+          "predicate_id",
+          "op",
+          "field",
+          "value"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "contract_hash": {
+      "maxLength": 64,
+      "minLength": 64,
+      "type": "string"
+    },
+    "domain": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "forbidden_contexts": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "field": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "op": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "predicate_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "value": {}
+        },
+        "required": [
+          "predicate_id",
+          "op",
+          "field",
+          "value"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "goal_template": {
+      "type": "string"
+    },
+    "input_slots": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "required": {
+            "type": "boolean"
+          },
+          "slot_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "value_type": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "slot_id",
+          "value_type",
+          "required"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "invariants": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "field": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "op": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "predicate_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "value": {}
+        },
+        "required": [
+          "predicate_id",
+          "op",
+          "field",
+          "value"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "lifecycle_status": {
+      "enum": [
+        "draft",
+        "review_quarantine",
+        "structural_validated",
+        "behavioral_validated",
+        "shadow_validated",
+        "field_validated",
+        "promoted",
+        "suspended",
+        "revoked"
+      ]
+    },
+    "owner": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "parent_pattern_version": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "pattern_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "pattern_version": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "preconditions": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "field": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "op": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "predicate_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "value": {}
+        },
+        "required": [
+          "predicate_id",
+          "op",
+          "field",
+          "value"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "recovery_actions": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "action_node_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "recovery_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "trigger": {
+            "additionalProperties": false,
+            "properties": {
+              "field": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "op": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "predicate_id": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "value": {}
+            },
+            "required": [
+              "predicate_id",
+              "op",
+              "field",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        "required": [
+          "recovery_id",
+          "trigger",
+          "action_node_id"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "required_capabilities": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "required_observations": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "freshness_ms": {
+            "minimum": 0,
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "observation_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "value_type": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "observation_id",
+          "value_type",
+          "freshness_ms"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "schema": {
+      "const": "paideia-kibo-v2-action-pattern/v2"
+    },
+    "schema_version": {
+      "pattern": "^2\\.",
+      "type": "string"
+    },
+    "source_case_ids": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "steps": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "action_type": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "capability": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "expected_effects": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "field": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "op": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "predicate_id": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "value": {}
+              },
+              "required": [
+                "predicate_id",
+                "op",
+                "field",
+                "value"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "human_review_required": {
+            "type": "boolean"
+          },
+          "input_bindings": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
+          },
+          "node_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "on_failure": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "on_success": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "on_uncertain": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "retry_policy": {
+            "additionalProperties": false,
+            "properties": {
+              "backoff_ms": {
+                "minimum": 0,
+                "type": "integer"
+              },
+              "max_attempts": {
+                "minimum": 1,
+                "type": "integer"
+              }
+            },
+            "required": [
+              "max_attempts",
+              "backoff_ms"
+            ],
+            "type": "object"
+          },
+          "timeout_ms": {
+            "minimum": 0,
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "node_id",
+          "action_type",
+          "capability",
+          "input_bindings",
+          "expected_effects",
+          "timeout_ms",
+          "retry_policy",
+          "on_success",
+          "on_failure",
+          "on_uncertain",
+          "human_review_required"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "success_conditions": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "field": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "op": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "predicate_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "value": {}
+        },
+        "required": [
+          "predicate_id",
+          "op",
+          "field",
+          "value"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "task_family": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "transitions": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "condition": {
+            "additionalProperties": false,
+            "properties": {
+              "field": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "op": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "predicate_id": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "value": {}
+            },
+            "required": [
+              "predicate_id",
+              "op",
+              "field",
+              "value"
+            ],
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "from_node_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "to_node_id": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "from_node_id",
+          "to_node_id",
+          "condition"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "validation_profile_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "schema",
+    "schema_version",
+    "contract_hash",
+    "pattern_id",
+    "pattern_version",
+    "parent_pattern_version",
+    "owner",
+    "domain",
+    "task_family",
+    "goal_template",
+    "input_slots",
+    "preconditions",
+    "required_observations",
+    "steps",
+    "transitions",
+    "invariants",
+    "abort_conditions",
+    "recovery_actions",
+    "success_conditions",
+    "forbidden_contexts",
+    "required_capabilities",
+    "source_case_ids",
+    "validation_profile_id",
+    "lifecycle_status"
+  ],
+  "title": "Paideia Kibo V2 Action Pattern",
+  "type": "object"
+}

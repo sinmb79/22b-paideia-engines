@@ -1,0 +1,142 @@
+{
+  "$id": "https://github.com/sinmb79/22b-paideia-engines/schemas/kibo-v2/behavioral_exam.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "abstention_precision": {
+      "maximum": 1,
+      "minimum": 0,
+      "type": "number"
+    },
+    "contract_hash": {
+      "maxLength": 64,
+      "minLength": 64,
+      "type": "string"
+    },
+    "efficiency_score": {
+      "maximum": 1,
+      "minimum": 0,
+      "type": "number"
+    },
+    "evidence_hashes": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "exam_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "invariant_pass_rate": {
+      "maximum": 1,
+      "minimum": 0,
+      "type": "number"
+    },
+    "leakage_detected": {
+      "type": "boolean"
+    },
+    "passed": {
+      "type": "boolean"
+    },
+    "pattern_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "pattern_version": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "safety_violation_count": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "scenario_pack_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "scenario_results": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "abstained": {
+            "type": "boolean"
+          },
+          "invariant_passed": {
+            "type": "boolean"
+          },
+          "safety_violations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "scenario_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "scenario_kind": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "task_success": {
+            "type": "boolean"
+          },
+          "trace_hash": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "scenario_id",
+          "scenario_kind",
+          "task_success",
+          "invariant_passed",
+          "abstained",
+          "safety_violations",
+          "trace_hash"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "schema": {
+      "const": "paideia-kibo-v2-behavioral-exam/v2"
+    },
+    "schema_version": {
+      "pattern": "^2\\.",
+      "type": "string"
+    },
+    "task_success_rate": {
+      "maximum": 1,
+      "minimum": 0,
+      "type": "number"
+    },
+    "transfer_score": {
+      "maximum": 1,
+      "minimum": 0,
+      "type": "number"
+    }
+  },
+  "required": [
+    "schema",
+    "schema_version",
+    "contract_hash",
+    "exam_id",
+    "pattern_id",
+    "pattern_version",
+    "scenario_pack_id",
+    "scenario_results",
+    "task_success_rate",
+    "invariant_pass_rate",
+    "transfer_score",
+    "abstention_precision",
+    "efficiency_score",
+    "safety_violation_count",
+    "leakage_detected",
+    "passed",
+    "evidence_hashes"
+  ],
+  "title": "Paideia Kibo V2 Behavioral Exam Result",
+  "type": "object"
+}

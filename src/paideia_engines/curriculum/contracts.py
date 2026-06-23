@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
+import math
 from typing import Any
 
 
@@ -32,9 +33,10 @@ def _float(value: Any, default: float = 0.0) -> float:
     if isinstance(value, bool):
         return default
     try:
-        return float(value)
+        numeric = float(value)
     except (TypeError, ValueError):
         return default
+    return numeric if math.isfinite(numeric) else default
 
 
 def _int(value: Any, default: int = 0) -> int:

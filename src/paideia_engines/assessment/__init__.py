@@ -6,6 +6,7 @@ import re
 from typing import Any
 
 from .item_bank import AssessmentItem, ItemBank
+from .behavioral_pattern_exam import build_behavioral_exam_result
 
 
 ALLOWED_RUBRIC_CRITERIA = {"accuracy", "explanation", "process", "clarity"}
@@ -219,4 +220,4 @@ class AssessmentEngine:
         return f"{status}: {item.item_id} scored by item-bank rubric ({parts})."
 
 
-__all__ = ["AssessmentEngine", "AssessmentItem", "ItemBank"]
+__all__ = ["AssessmentEngine", "AssessmentItem", "ItemBank", "build_behavioral_exam_result"]

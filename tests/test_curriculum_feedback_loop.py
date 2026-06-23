@@ -118,15 +118,42 @@ def test_curriculum_plan_generates_adaptive_exam():
 def test_exam_completion_reduces_or_increases_weakness():
     weakness = WeaknessRecord("w1", "Boss", "general", "risk_assessment", "risk_gap", ("f1",), 0.8, 2)
 
-    passed = apply_curriculum_completion(weakness, passed=True, score=0.9)
+    passed = apply_curriculum_completion(weakness, passed=True, score=0.9, transfer_passed=True, retention_passed=True)
     failed = apply_curriculum_completion(weakness, passed=False, score=0.3)
     below_target = apply_curriculum_completion(weakness, passed=True, score=0.6, target_score=0.85)
+    no_transfer = apply_curriculum_completion(weakness, passed=True, score=0.95, target_score=0.85)
 
     assert passed["updated_weakness"]["severity"] < weakness.severity
     assert failed["updated_weakness"]["severity"] > weakness.severity
     assert failed["updated_weakness"]["recurrence_count"] == 3
     assert below_target["effective_passed"] is False
     assert below_target["updated_weakness"]["severity"] > weakness.severity
+    assert no_transfer["effective_passed"] is False
+    assert no_transfer["action"] == "weakness_increased"
+
+
+def test_exam_completion_rejects_non_finite_scores_fail_closed():
+    weakness = WeaknessRecord("w1", "Boss", "general", "risk_assessment", "risk_gap", ("f1",), 0.8, 2)
+
+    completion = apply_curriculum_completion(
+        weakness,
+        passed=True,
+        score=float("nan"),
+        target_score=0.85,
+        transfer_passed=True,
+        retention_passed=True,
+    )
+
+    assert completion["effective_passed"] is False
+    assert completion["score"] == 0.0
+    assert completion["action"] == "weakness_increased"
+    assert completion["updated_weakness"]["severity"] > weakness.severity
+
+
+def test_weakness_record_rejects_non_finite_severity_fail_closed():
+    weakness = WeaknessRecord("w1", "Boss", "general", "risk_assessment", "risk_gap", ("f1",), float("nan"), 1)
+
+    assert weakness.severity == 0.0
 
 
 def test_high_severity_weakness_blocks_direct_reuse_governance():
